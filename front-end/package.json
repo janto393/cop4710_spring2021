@@ -1,0 +1,15 @@
+{
+  "name": "front-end",
+  "version": "1.0.0",
+  "description": "Front-end for COP4710 Event Manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "JonElliot Antognoni",
+  "license": "ISC",
+  "dependencies": {
+    "create-react-app": "^4.0.1",
+    "react": "^17.0.1"
+  }
+}
