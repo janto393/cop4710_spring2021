@@ -3,9 +3,13 @@
   "version": "1.0.0",
   "description": "COP4710 Spring 2021 Event Manager App",
   "main": "index.js",
+  "directories": {
+    "frontend": "front-end"
+  },
   "scripts": {
-		"start": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "nodemon server.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false cd front-end && npm install && npm run build"
   },
   "repository": {
     "type": "git",
