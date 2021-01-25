@@ -14,6 +14,15 @@ app.use(bodyParser.json());
 const PORT = process.env.PORT || 5000;
 app.set('port', PORT);
 
+// MySQL connection setup
+const mysql = require('mysql');
+const connection = mysql.createConnection({
+	host : process.env.RDS_HOSTNAME,
+	user : process.env.RDS_USERNAME,
+	password : process.env.RDS_PASSWORD,
+	port : process.env.RDS_PORT
+});
+
 // Server static assets if in production
 if (process.env.NODE_ENV === 'production') 
 {
@@ -40,7 +49,5 @@ app.use((request, response, next) =>
   );
   next();
 });
-
-
 
 app.listen(PORT); // start Node + Expresponses server on specified port
