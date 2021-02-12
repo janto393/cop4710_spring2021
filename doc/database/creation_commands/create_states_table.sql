@@ -1,6 +1,7 @@
 use event_manager;
-create table States (
+
+create table States(
 ID int primary key not null auto_increment,
-name varchar(20),
-acronym varchar(2)
+name varchar(50) not null,
+acronym varchar(2) not null
 );
