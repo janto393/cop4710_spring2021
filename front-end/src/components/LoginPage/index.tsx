@@ -1,7 +1,7 @@
 import "./index.css";
 
 import { Grid } from "@material-ui/core";
-import LoginImage from "./Images/LoginImage";
+import LoginImage from "../Images/LoginImage";
 import React from "react";
 
 type LoginPageProps = {};

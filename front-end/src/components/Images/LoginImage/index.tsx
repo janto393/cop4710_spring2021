@@ -1,6 +1,6 @@
 import "./index.css";
 
-import ucfLogo from "../../../../images/ucf_logo_login.png";
+import ucfLogo from "../../../images/ucf_logo_login.png";
 
 const LoginImage = () => {
   return (
