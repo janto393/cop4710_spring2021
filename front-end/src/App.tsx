@@ -1,5 +1,7 @@
 // React imports
 
+import "./index.css";
+
 import {
   Redirect,
   Route,
@@ -10,9 +12,7 @@ import {
 import LoginPage from "./components/LoginPage/index";
 import React from "react";
 
-// Pages
-
-const App: React.FC = () => {
+const App = () => {
   return (
     <Router>
       <Switch>

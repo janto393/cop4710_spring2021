@@ -1,14 +1,18 @@
-// React imports
+import "./index.css";
 
+import { Grid } from "@material-ui/core";
+import LoginImage from "./Images/LoginImage";
 import React from "react";
 
-type loginPageType = {};
+type LoginPageProps = {};
 
-const LoginPage: React.FC = (props: loginPageType) => {
+const LoginPage: React.FC<LoginPageProps> = (props: LoginPageProps) => {
   return (
-    <div>
-      <h1>Hello, World!</h1>
-    </div>
+    <Grid container className="login-container" direction="row">
+      <Grid item xs={12} className="login-item">
+        <LoginImage />
+      </Grid>
+    </Grid>
   );
 };
 
