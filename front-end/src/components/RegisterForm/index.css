@@ -1,0 +1,20 @@
+.login-container .login-card-container {
+  margin: 50px;
+}
+
+.login-card-container .login-card {
+  background-color: #97979794;
+}
+
+.form-title {
+  color: white;
+  padding-bottom: 10px;
+}
+
+.login-card .input-field-container .input-field-item {
+  padding: 10px;
+}
+
+.login-card .input-field-container .input-field-item input {
+  background-color: #e8f0fe;
+}

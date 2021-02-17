@@ -8,8 +8,8 @@ const LoginImage = () => {
       <img
         src={ucfLogo}
         alt="UCF Logo"
-        width={200}
-        height={300}
+        width={50}
+        height={75}
         className="ucf-logo-login"
       />
     </div>

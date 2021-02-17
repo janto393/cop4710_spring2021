@@ -9,15 +9,25 @@ import {
   Switch,
 } from "react-router-dom";
 
-import LoginPage from "./components/LoginPage/index";
+import LoginForm from "./components/LoginForm";
+import LoginPageContainer from "./containers/LoginPageContainer/index";
 import React from "react";
+import RegisterForm from "./components/RegisterForm";
 
 const App = () => {
   return (
     <Router>
       <Switch>
         <Route path="/" exact>
-          <LoginPage />
+          <LoginPageContainer>
+            <LoginForm />
+          </LoginPageContainer>
+        </Route>
+
+        <Route path="/register" exact>
+          <LoginPageContainer>
+            <RegisterForm />
+          </LoginPageContainer>
         </Route>
       </Switch>
     </Router>
