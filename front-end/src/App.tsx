@@ -8,7 +8,7 @@ import {
   BrowserRouter as Router,
   Switch,
 } from "react-router-dom";
-import { loginTextFields, registerTextFields } from "./Utils/staticUtils";
+import { loginTextFields, registerTextFields } from "./Utils/formUtils";
 
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import React from "react";
@@ -21,11 +21,19 @@ const App = () => {
         {/* splash page routes */}
         <LoginPageContainer>
           <Route path="/" exact>
-            <StudForms title="Login" textFields={loginTextFields} />
+            <StudForms
+              title="Login"
+              textFields={loginTextFields}
+              buttonText="Sign in"
+            />
           </Route>
 
           <Route path="/register" exact>
-            <StudForms title="Register" textFields={registerTextFields} />
+            <StudForms
+              title="Register"
+              textFields={registerTextFields}
+              buttonText="Submit"
+            />
           </Route>
         </LoginPageContainer>
 

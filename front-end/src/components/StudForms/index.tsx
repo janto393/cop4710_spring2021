@@ -1,6 +1,7 @@
 import "./index.css";
 
 import {
+  Button,
   Card,
   CardContent,
   Grid,
@@ -18,10 +19,16 @@ export type FormFieldType = {
 export type FormPropsType = {
   title: string;
   textFields: Array<FormFieldType>;
+  buttonText: string;
 };
 
 const StudForms: React.FC<FormPropsType> = (props: FormPropsType) => {
-  const { title, textFields } = props;
+  const { title, textFields, buttonText } = props;
+  const isLoginOrRegister: boolean = title === "Login" || title === "Register";
+  const redirectButtonText: string =
+    title === "Register"
+      ? "Already have an account?"
+      : "Don't have an account? Sign up!";
 
   return (
     <Card className="login-card" variant="elevation">
@@ -31,7 +38,6 @@ const StudForms: React.FC<FormPropsType> = (props: FormPropsType) => {
           <Typography variant="h4" className="form-title">
             {title}
           </Typography>
-
           {/* maps the list of text fields on the identical textfield component */}
           {textFields.map((field) => {
             const { label, type } = field;
@@ -49,6 +55,24 @@ const StudForms: React.FC<FormPropsType> = (props: FormPropsType) => {
               </Grid>
             );
           })}
+        </Grid>
+
+        {/* buttons */}
+        <Grid container className="button-container">
+          <Grid item xs={12} className="button-submit-item">
+            <Button variant="contained" className="button-submit">
+              {buttonText}
+            </Button>
+          </Grid>
+
+          {/* login/register page redirect */}
+          {isLoginOrRegister && (
+            <Grid item xs={12} className="button-redirect-item">
+              <Button variant="text" className="button-redirect">
+                {redirectButtonText}
+              </Button>
+            </Grid>
+          )}
         </Grid>
       </CardContent>
     </Card>
