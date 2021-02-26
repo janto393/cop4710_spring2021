@@ -8,27 +8,36 @@ import {
   BrowserRouter as Router,
   Switch,
 } from "react-router-dom";
+import { loginTextFields, registerTextFields } from "./Utils/formUtils";
 
-import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import React from "react";
-import RegisterForm from "./components/RegisterForm";
+import StudForms from "./components/StudForms";
 
 const App = () => {
   return (
     <Router>
       <Switch>
-        <Route path="/" exact>
-          <LoginPageContainer>
-            <LoginForm />
-          </LoginPageContainer>
-        </Route>
+        {/* splash page routes */}
+        <LoginPageContainer>
+          <Route path="/" exact>
+            <StudForms
+              title="Login"
+              textFields={loginTextFields}
+              buttonText="Sign in"
+            />
+          </Route>
 
-        <Route path="/register" exact>
-          <LoginPageContainer>
-            <RegisterForm />
-          </LoginPageContainer>
-        </Route>
+          <Route path="/register" exact>
+            <StudForms
+              title="Register"
+              textFields={registerTextFields}
+              buttonText="Submit"
+            />
+          </Route>
+        </LoginPageContainer>
+
+        {/* rest of the app will go below */}
       </Switch>
     </Router>
   );
