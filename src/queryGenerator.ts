@@ -1,3 +1,7 @@
+
+export const InvalidJoin: string = 'Invalid join type';
+export const InvalidOrder: string = 'Invalid order type';
+
 export interface GeneratedQuery
 {
 	success: Boolean,
@@ -202,8 +206,7 @@ export function queryGenerator(input: QueryGeneratorInput)
 				}
 				default:
 				{
-					generatedQuery.error = "Invalid join type: " + input.joinStatements[i].joinType;
-					return generatedQuery;
+					throw new Error(InvalidJoin);
 				}
 			}
 
@@ -242,8 +245,7 @@ export function queryGenerator(input: QueryGeneratorInput)
 			}
 			default:
 			{
-				generatedQuery.error = "Invalid order type";
-				return generatedQuery;
+				throw new Error(InvalidOrder);
 			}
 		}
 
