@@ -1,0 +1,57 @@
+.login-container .login-card-container {
+  margin: 50px;
+}
+
+.login-card-container .login-card {
+  background-color: #97979794;
+}
+
+.login-card .input-field-container .form-title {
+  color: white;
+  padding-bottom: 10px;
+}
+
+.login-card .input-field-container .input-field-item {
+  padding: 10px;
+}
+
+.login-card .input-field-container .input-field-item .input {
+  background-color: white;
+}
+
+.login-card .button-container .button-submit-item {
+  padding: 10px 10px;
+}
+
+.login-card .button-container .button-submit-item {
+  padding: 10px 10px;
+}
+
+.login-card .button-container .button-submit-item .button-submit {
+  width: 100%;
+  height: 45px;
+  background-color: rgba(0, 0, 0, 0.671);
+  color: white;
+  text-transform: none;
+  font-size: 20px;
+}
+
+.login-card .button-container .button-submit-item .button-submit:hover {
+  background-color: rgba(255, 217, 0, 0.788);
+  color: white;
+}
+
+.button-container .button-redirect-item {
+  text-align: right;
+}
+
+.button-container .button-redirect-item .button-redirect {
+  text-transform: none;
+  font-size: small;
+  color: rgba(255, 217, 0, 0.616);
+}
+
+.button-container .button-redirect-item .button-redirect:hover {
+  color: rgba(255, 217, 0, 0.959);
+  background-color: transparent;
+}
