@@ -1,18 +1,6 @@
 import { Request, Response } from "express";
 import * as mysql from "mysql";
 
-interface UserQueryResult
-{
-	ID: number,
-	firstName: string,
-	lastName: string,
-	password: string,
-	email: string,
-	universityID: number,
-	rsoID: number,
-	role: number
-};
-
 export interface UserData
 {
 	userID: number,
