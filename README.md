@@ -1,1 +1,10 @@
-# cop4710_spring2021
+# UCF Event Manager Project
+
+This repo contains the front-end/backend nodejs server code for the COP4710, Spring 2021 class project.
+
+## Developers
+
+- [JonElliot Antognoni](https://github.com/Deadcoast)
+- Jamile Gonzalez
+- Troy Morgan
+- Nolan Schafer
