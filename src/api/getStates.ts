@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import * as mysql from "mysql";
 
+// utility imports
+import configureSqlConnection from "../util/configureSqlConnection";
+
 interface State
 {
 	stateID: number,
@@ -23,5 +26,5 @@ export async function getStates(request: Request, response: Response, next: Call
 		states: []
 	};
 
-	
+	const connectionData: mysql.ConnectionConfig = configureSqlConnection();
 }
