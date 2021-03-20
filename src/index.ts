@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import express from "express";
 
 // Endpoint imports
+import { getStates } from "./api/getStates";
 import { login } from "./api/login";
 import { register } from "./api/register";
 import { updateUser } from "./api/updateUser";
@@ -20,6 +21,7 @@ app.get('/', (_, res) => {
 	res.status(200).send();
 });
 
+app.post("/api/getStates", getStates);
 app.post("/api/login", login);
 app.post("/api/register", register);
 app.post("/api/updateUser", updateUser);
