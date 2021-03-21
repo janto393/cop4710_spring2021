@@ -71,6 +71,7 @@ export async function login(request: Request, response: Response, next: Callable
 		connection.query(queryString, (error: string, rows: Array<Object>) => {
 			if (error)
 			{
+				connection.end();
 				returnPackage.error = error;
 				response.json(returnPackage);
 				response.status(500);
@@ -81,6 +82,7 @@ export async function login(request: Request, response: Response, next: Callable
 			// return with error if no user was found
 			if (rows.length < 1)
 			{
+				connection.end();
 				returnPackage.error = "Username of Password incorrect";
 				response.json(returnPackage);
 				response.status(404);
@@ -100,6 +102,7 @@ export async function login(request: Request, response: Response, next: Callable
 			returnPackage.userData.role = userData.role;
 			returnPackage.userData.rsoID = userData.rsoID;
 
+			connection.end();
 			returnPackage.success = true;
 			response.json(returnPackage);
 			response.status(200);
