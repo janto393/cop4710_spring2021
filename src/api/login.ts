@@ -1,6 +1,9 @@
 import { Request, Response } from "express";
 import * as mysql from "mysql";
 
+// utility imports
+import configureSqlConnection from "../util/configureSqlConnection";
+
 export interface UserData
 {
 	userID: number,
@@ -44,13 +47,7 @@ export async function login(request: Request, response: Response, next: Callable
 	};
 
 	// configure mysql connection data
-	const connectionData: mysql.ConnectionConfig = {
-		host: process.env.RDS_HOSTNAME,
-		user: process.env.RDS_USERNAME,
-		password: process.env.RDS_PASSWORD,
-		port: Number(process.env.RDS_PORT),
-		database: "event_manager"
-	};
+	const connectionData: mysql.ConnectionConfig = configureSqlConnection();
 
 	const connection: mysql.Connection = mysql.createConnection(connectionData);
 

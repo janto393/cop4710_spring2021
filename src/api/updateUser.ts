@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import { InformationEvent } from "http";
 import * as mysql from "mysql";
-import { stringify } from "querystring";
+
+// utility imports
+import configureSqlConnection from "../util/configureSqlConnection";
 
 /**
  * Null represents no changes to the field in the database
@@ -165,13 +166,7 @@ export async function updateUser(request: Request, response: Response, next: Cal
 	let queryString: string = generateUpdateQuery(parsedInfo);
 
 	// configure mysql connection data
-	const connectionData: mysql.ConnectionConfig = {
-		host: process.env.RDS_HOSTNAME,
-		user: process.env.RDS_USERNAME,
-		password: process.env.RDS_PASSWORD,
-		port: Number(process.env.RDS_PORT),
-		database: "event_manager"
-	};
+	const connectionData: mysql.ConnectionConfig = configureSqlConnection();
 
 	const connection: mysql.Connection = mysql.createConnection(connectionData);
 
