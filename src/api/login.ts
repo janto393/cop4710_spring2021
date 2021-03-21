@@ -118,6 +118,4 @@ export async function login(request: Request, response: Response, next: Callable
 		connection.end();
 		return;
 	}
-
-	connection.end();
 }
