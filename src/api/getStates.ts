@@ -15,11 +15,6 @@ interface GetStatesReturn
 	states: Array<State>
 }
 
-/**
- * structure of the state object in the database
- */
-
-
 export async function getStates(request: Request, response: Response, next: CallableFunction)
 {
 	let returnPackage: GetStatesReturn = {
