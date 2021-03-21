@@ -78,6 +78,7 @@ export async function getStates(request: Request, response: Response, next: Call
 	}
 	catch (e)
 	{
+		connection.end();
 		returnPackage.error = e.toString;
 		response.json(returnPackage);
 		response.status(500);
