@@ -4,6 +4,7 @@ import express from "express";
 
 // Endpoint imports
 import { createRso } from "./api/createRso";
+import { getRso } from "./api/getRso";
 import { getStates } from "./api/getStates";
 import { login } from "./api/login";
 import { register } from "./api/register";
@@ -23,6 +24,7 @@ app.get('/', (_, res) => {
 });
 
 app.post("/api/createRso", createRso);
+app.post("/api/getRso", getRso);
 app.post("/api/getStates", getStates);
 app.post("/api/login", login);
 app.post("/api/register", register);
