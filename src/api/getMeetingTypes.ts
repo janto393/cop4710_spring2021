@@ -5,26 +5,25 @@ import * as mysql from "mysql";
 import configureSqlConnection from "../util/configureSqlConnection";
 
 // type imports
-import { State } from "../commonTypes/addressTypes";
-import { SqlState } from "../commonTypes/sqlSchema";
+import { MeetingType } from "../commonTypes/eventTypes";
+import { SqlMeetingType } from "../commonTypes/sqlSchema";
 
-interface GetStatesReturn
+interface EndpointReturn
 {
 	success: boolean,
 	error: string,
-	states: Array<State>
+	meetingTypes: Array<MeetingType>
 }
 
-export async function getStates(request: Request, response: Response, next: CallableFunction)
+export async function getMeetingTypes(request: Request, response: Response, next: CallableFunction): Promise<void>
 {
-	let returnPackage: GetStatesReturn = {
+	let returnPackage: EndpointReturn = {
 		success: false,
 		error: "",
-		states: []
+		meetingTypes: []
 	};
 
 	const connectionData: mysql.ConnectionConfig = configureSqlConnection();
-
 	const connection: mysql.Connection = mysql.createConnection(connectionData);
 
 	try
@@ -42,30 +41,30 @@ export async function getStates(request: Request, response: Response, next: Call
 
 	try
 	{
-		let queryString: string = "SELECT * FROM States";
+		let queryString = "SELECT * FROM Meeting_Types ORDER BY Meeting_Types.name ASC";
 
-		connection.query(queryString, (error: string, rows: Array<SqlState>) => {
+		connection.query(queryString, (error: string, rows: Array<SqlMeetingType>) => {
 			if (error)
 			{
 				connection.end();
 				returnPackage.error = error.toString();
 				response.json(returnPackage);
-				response.send(400);
+				response.send(500);
 				response.send();
 				return;
 			}
 
-			// go through each state record and parse it into the returnPackage
+			// parse each meeting type into the return package
 			let i: number;
 			for (i = 0; i < rows.length; i++)
 			{
-				let state: State = {
-					stateID: rows[i].ID,
-					name: rows[i].name,
-					abbreviation: rows[i].acronym
-				}
+				let rawData: SqlMeetingType = rows[i];
+				let parsedData: MeetingType = {
+					meetingTypeID: rawData.ID,
+					name: rawData.name
+				};
 
-				returnPackage.states.push(state);
+				returnPackage.meetingTypes.push(parsedData);
 			}
 
 			connection.end();

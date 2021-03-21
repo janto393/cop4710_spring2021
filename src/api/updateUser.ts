@@ -4,48 +4,29 @@ import * as mysql from "mysql";
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
 
+// type imports
+import { UserWithoutPassword } from "../commonTypes/UserTypes";
+import { SqlUser } from "../commonTypes/sqlSchema";
+
 /**
  * Null represents no changes to the field in the database
  */
 export interface UpdateInput
 {
-	firstName: string | null,
-	lastName: string | null,
-	email: string | null,
-	universityID: number | null,
-	rsoID: number | null,
-	role: number | null
+	firstname: string | undefined,
+	lastname: string | undefined,
+	password: string | undefined,
+	email: string | undefined,
+	universityID: number | undefined,
+	rsoID: number | undefined,
+	role: number | undefined
 };
-
-interface UserInfo
-{
-	userID: number,
-	username: string,
-	firstName: string,
-	lastName: string,
-	email: string,
-	universityID: number,
-	rsoID: number,
-	role: number
-};
-
-interface UserQueryReturn
-{
-	ID: number,
-	username: string,
-	firstName: string,
-	lastName: string,
-	email: string,
-	universityID: number,
-	rsoID: number,
-	role: number
-}
 
 export interface UpdateUserReturnPackage
 {
 	success: boolean,
 	error: string,
-	newUserData: UserInfo
+	newUserData: UserWithoutPassword
 };
 
 export interface ParsedUpdateInfo
@@ -64,42 +45,49 @@ function parseNewInformation(info: UpdateInput, userID: number): ParsedUpdateInf
 	};
 
 	// parse firstname
-	if (info.firstName !== null)
+	if (info.firstname !== undefined)
 	{
 		parsedInfo.columnNames.push("Users.firstName");
-		parsedInfo.newValues.push("'" + info.firstName + "'");
+		parsedInfo.newValues.push("'" + info.firstname + "'");
 	}
 
 	// parse lastname
-	if (info.lastName !== null)
+	if (info.lastname !== undefined)
 	{
 		parsedInfo.columnNames.push("Users.lastName");
-		parsedInfo.newValues.push("'" + info.lastName + "'");
+		parsedInfo.newValues.push("'" + info.lastname + "'");
+	}
+
+	// parse password
+	if (info.password !== undefined)
+	{
+		parsedInfo.columnNames.push("Users.password");
+		parsedInfo.newValues.push("'" + info.password + "'");
 	}
 
 	// parse email
-	if (info.email !== null)
+	if (info.email !== undefined)
 	{
 		parsedInfo.columnNames.push("Users.email");
 		parsedInfo.newValues.push("'" + info.email + "'");
 	}
 
 	// parse universityID
-	if (info.universityID !== null)
+	if (info.universityID !== undefined)
 	{
 		parsedInfo.columnNames.push("Users.universityID");
 		parsedInfo.newValues.push(info.universityID);
 	}
 
 	// parse rsoID
-	if (info.rsoID !== null)
+	if (info.rsoID !== undefined)
 	{
 		parsedInfo.columnNames.push("Users.rsoID");
 		parsedInfo.newValues.push(info.rsoID);
 	}
 
 	// parse role
-	if (info.role !== null)
+	if (info.role !== undefined)
 	{
 		parsedInfo.columnNames.push("Users.role");
 		parsedInfo.newValues.push(info.role);
@@ -142,8 +130,8 @@ export async function updateUser(request: Request, response: Response, next: Cal
 		newUserData: {
 			userID: -1,
 			username: '',
-			firstName: '',
-			lastName: '',
+			firstname: '',
+			lastname: '',
 			email: '',
 			universityID: -1,
 			rsoID: -1,
@@ -154,8 +142,9 @@ export async function updateUser(request: Request, response: Response, next: Cal
 	let userID: number = request.body.userID;
 
 	let updateInfo: UpdateInput = {
-		firstName: request.body.firstName,
-		lastName: request.body.lastName,
+		firstname: request.body.firstname,
+		lastname: request.body.lastname,
+		password: request.body.password,
 		email: request.body.email,
 		universityID: request.body.universityID,
 		rsoID: request.body.rsoID,
@@ -210,13 +199,13 @@ export async function updateUser(request: Request, response: Response, next: Cal
 				return;
 			}
 			
-			let userData: UserQueryReturn = JSON.parse(JSON.stringify(rows[0]));
+			let userData: SqlUser = JSON.parse(JSON.stringify(rows[0]));
 
 			// transfer the new user data into the return package
 			returnPackage.newUserData.userID = userData.ID;
 			returnPackage.newUserData.username = userData.username;
-			returnPackage.newUserData.firstName = userData.firstName;
-			returnPackage.newUserData.lastName = userData.lastName;
+			returnPackage.newUserData.firstname = userData.firstName;
+			returnPackage.newUserData.lastname = userData.lastName;
 			returnPackage.newUserData.email = userData.email;
 			returnPackage.newUserData.universityID = userData.universityID;
 			returnPackage.newUserData.rsoID = userData.rsoID;
