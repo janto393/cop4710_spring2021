@@ -6,7 +6,7 @@ import configureSqlConnection from "../util/configureSqlConnection";
 
 // type imports
 import { RSO } from "../commonTypes/rsoTypes";
-import { SqlUniversity } from "src/commonTypes/sqlSchema";
+import { SqlRso, SqlUniversity } from "src/commonTypes/sqlSchema";
 
 interface CreateRsoInput
 {
@@ -81,6 +81,89 @@ export async function createRso(request: Request, response: Response, next: Call
 				response.send();
 				return;
 			}
+
+			// formulate query to ensure that there isn't already an rso with the same
+			// name at the university selected
+			queryString = "SELECT *\nFROM Registered_Student_Organizations\nWHERE ";
+			queryString = queryString.concat("Registered_Student_Organizations.name like \'" + input.name + "' ");
+			queryString = queryString.concat("AND Registered_Student_Organizations.universityID=" + input.universityID + ";");
+
+			connection.query(queryString, (error: string, rows: Array<SqlRso>) => {
+				if (error)
+				{
+					connection.end();
+					returnPackage.error = error.toString();
+					response.json(returnPackage);
+					response.send(500);
+					response.send();
+					return;
+				}
+
+				if (rows.length > 0)
+				{
+					connection.end();
+					returnPackage.error = "RSO already exists with given name";
+					response.json(returnPackage);
+					response.status(400);
+					response.send();
+					return;
+				}
+
+				// formulate query string to insert the new RSO
+				queryString = "INSERT INTO Registered_Student_Organizations (name, universityID)\n";
+				queryString = queryString.concat("VALUES ('" + input.name + "', " + input.universityID + ");")
+
+				// add the rso to the university
+				connection.query(queryString, (error: string, rows: Array<SqlRso>) => {
+					if (error)
+					{
+						connection.end();
+						returnPackage.error = error.toString();
+						response.json(returnPackage);
+						response.send(500);
+						response.send();
+						return;
+					}
+
+					// formulate query where we get the info from the new rso
+					queryString = "SELECT * FROM Registered_Student_Organizations AS rso WHERE rso.name='" + input.name + "' AND rso.universityID=" + input.universityID + ";";
+
+					connection.query(queryString, (error: string, rows: Array<SqlRso>) => {
+						if (error)
+						{
+							connection.end();
+							returnPackage.error = error.toString();
+							response.json(returnPackage);
+							response.send(500);
+							response.send();
+							return;
+						}
+
+						if (rows.length < 1)
+						{
+							connection.end();
+							returnPackage.error = "Failed to create RSO";
+							response.json(returnPackage);
+							response.status(500);
+							response.send();
+							return;
+						}
+
+						let newRso: SqlRso = rows[0];
+
+						returnPackage.rsoData.rsoID = newRso.ID;
+						returnPackage.rsoData.name = newRso.name;
+						returnPackage.rsoData.universityID = newRso.universityID;
+
+						connection.end();
+						returnPackage.success = true;
+						response.json(returnPackage);
+						response.status(200);
+						response.send();
+						return;
+					});
+				});
+			});
 		});
 	}
 	catch (e)
