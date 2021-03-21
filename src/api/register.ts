@@ -75,7 +75,7 @@ export async function register(request: Request, response: Response, next: Calla
 				connection.end();
 				returnPackage.error = "Username unavailable";
 				response.json(returnPackage);
-				response.status(404);
+				response.status(400);
 				response.send();
 				return;
 			}

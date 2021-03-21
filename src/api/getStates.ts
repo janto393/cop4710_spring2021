@@ -50,7 +50,7 @@ export async function getStates(request: Request, response: Response, next: Call
 				connection.end();
 				returnPackage.error = error.toString();
 				response.json(returnPackage);
-				response.send(404);
+				response.send(400);
 				response.send();
 				return;
 			}

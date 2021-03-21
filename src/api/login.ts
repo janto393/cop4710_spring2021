@@ -85,7 +85,7 @@ export async function login(request: Request, response: Response, next: Callable
 				connection.end();
 				returnPackage.error = "Username of Password incorrect";
 				response.json(returnPackage);
-				response.status(404);
+				response.status(400);
 				response.send();
 				return;
 			}
