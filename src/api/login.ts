@@ -4,23 +4,15 @@ import * as mysql from "mysql";
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
 
-export interface UserData
-{
-	userID: number,
-	username: string,
-	firstName: string,
-	lastName: string,
-	email: string,
-	universityID: number,
-	rsoID: number,
-	role: number
-};
+// type imports
+import { UserWithoutPassword } from "../commonTypes/UserTypes";
+import { SqlUser } from "src/commonTypes/sqlSchema";
 
 export interface LoginReturnPackage
 {
 	success: boolean,
 	error: string,
-	userData: UserData
+	userData: UserWithoutPassword
 };
 
 export interface LoginCredentials
@@ -37,8 +29,8 @@ export async function login(request: Request, response: Response, next: Callable
 		userData: {
 			userID: -1,
 			username: '',
-			firstName: '',
-			lastName: '',
+			firstname: '',
+			lastname: '',
 			email: '',
 			universityID: -1,
 			rsoID: -1,
@@ -96,13 +88,13 @@ export async function login(request: Request, response: Response, next: Callable
 				return;
 			}
 
-			let userData: UserData = JSON.parse(JSON.stringify(rows[0]));
+			let userData: SqlUser = JSON.parse(JSON.stringify(rows[0]));
 
 			// transfer query data to returnPackage fields
-			returnPackage.userData.userID = userData.userID;
+			returnPackage.userData.userID = userData.ID;
 			returnPackage.userData.username = userData.username;
-			returnPackage.userData.firstName = userData.firstName;
-			returnPackage.userData.lastName = userData.lastName;
+			returnPackage.userData.firstname = userData.firstName;
+			returnPackage.userData.lastname = userData.lastName;
 			returnPackage.userData.email = userData.email;
 			returnPackage.userData.universityID = userData.universityID;
 			returnPackage.userData.role = userData.role;

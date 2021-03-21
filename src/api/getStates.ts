@@ -4,12 +4,9 @@ import * as mysql from "mysql";
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
 
-interface State
-{
-	stateID: number,
-	name: string,
-	abbreviation: string
-}
+// type imports
+import { State } from "../commonTypes/addressTypes";
+import { SqlState } from "../commonTypes/sqlSchema";
 
 interface GetStatesReturn
 {
@@ -21,12 +18,7 @@ interface GetStatesReturn
 /**
  * structure of the state object in the database
  */
-interface SqlState
-{
-	ID: number,
-	name: string,
-	acronym: string
-}
+
 
 export async function getStates(request: Request, response: Response, next: CallableFunction)
 {

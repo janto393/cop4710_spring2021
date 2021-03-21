@@ -12,7 +12,7 @@ export interface Address
 
 export interface State
 {
-	statID: number,
+	stateID: number,
 	name: string,
 	abbreviation: string
 }

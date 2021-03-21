@@ -17,7 +17,7 @@ export interface Role
 	level: number
 }
 
-export interface User
+export interface UserWithPassword
 {
 	userID: number,
 	username: string,
@@ -26,6 +26,18 @@ export interface User
 	lastname: string,
 	email: string,
 	universityID: number,
-	roleID: number,
+	rsoID: number,
+	role: number
+}
+
+export interface UserWithoutPassword
+{
+	userID: number,
+	username: string,
+	firstname: string,
+	lastname: string,
+	email: string,
+	universityID: number,
+	rsoID: number,
 	role: number
 }
