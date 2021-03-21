@@ -17,6 +17,18 @@ export interface Role
 	level: number
 }
 
+export interface NewUser
+{
+	username: string,
+	password: string,
+	firstname: string,
+	lastname: string,
+	email: string,
+	universityID: number,
+	rsoID: number,
+	role: number
+}
+
 export interface UserWithPassword
 {
 	userID: number,

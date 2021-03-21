@@ -4,6 +4,9 @@ import * as mysql from "mysql";
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
 
+// type imports
+import { NewUser } from "../commonTypes/UserTypes";
+
 /**
  * only returns success and error because website will redirect
  * new users to the login menu after registering
@@ -14,18 +17,6 @@ export interface RegisterReturnPackage
 	error: string
 };
 
-export interface NewUserInfo
-{
-	username: string,
-	password: string,
-	firstName: string,
-	lastName: string,
-	email: string,
-	universityID: number,
-	rsoID: number,
-	role: number
-};
-
 export async function register(request: Request, response: Response, next: CallableFunction)
 {
 	let returnPackage: RegisterReturnPackage = {
@@ -33,11 +24,11 @@ export async function register(request: Request, response: Response, next: Calla
 		error: ''
 	};
 
-	let newUserInfo: NewUserInfo = {
+	let newUserInfo: NewUser = {
 		username: request.body.username,
 		password: request.body.password,
-		firstName: request.body.firstName,
-		lastName: request.body.lastName,
+		firstname: request.body.firstname,
+		lastname: request.body.lastname,
 		email: request.body.email,
 		universityID: request.body.universityID,
 		rsoID: request.body.rsoID,
@@ -92,8 +83,8 @@ export async function register(request: Request, response: Response, next: Calla
 			// formulate the query string
 			queryString = "INSERT INTO Users (";
 			queryString = queryString.concat("username, firstName, lastName, password, email, universityID, rsoID, role)\n");
-			queryString = queryString.concat("VALUES ('" + newUserInfo.username + "', '" + newUserInfo.firstName + "', '");
-			queryString = queryString.concat(newUserInfo.lastName + "', '" + newUserInfo.password + "', '" + newUserInfo.email + "', ");
+			queryString = queryString.concat("VALUES ('" + newUserInfo.username + "', '" + newUserInfo.firstname + "', '");
+			queryString = queryString.concat(newUserInfo.lastname + "', '" + newUserInfo.password + "', '" + newUserInfo.email + "', ");
 			queryString = queryString.concat(newUserInfo.universityID + ", " + newUserInfo.rsoID + ", " + newUserInfo.role + ");");
 
 			// insert the new user in the database

@@ -21,7 +21,7 @@ export interface LoginCredentials
 	password: string
 }
 
-export async function login(request: Request, response: Response, next: CallableFunction)
+export async function login(request: Request, response: Response, next: CallableFunction): Promise<void>
 {
 	let returnPackage: LoginReturnPackage = {
 		success: false,
