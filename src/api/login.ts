@@ -124,7 +124,6 @@ export async function login(request: Request, response: Response, next: Callable
 					let parsedData: ProfilePicture = {
 						pictureID: rawData.ID,
 						userID: rawData.userID,
-						filename: rawData.filename,
 						picture: rawData.picture
 					};
 

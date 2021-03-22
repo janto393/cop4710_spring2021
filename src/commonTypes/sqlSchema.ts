@@ -72,7 +72,6 @@ export interface SqlProfilePictures
 {
 	ID: number,
 	userID: number,
-	filename: string,
 	picture: mysql.Types.MEDIUM_BLOB
 }
 

@@ -8,7 +8,6 @@ export interface ProfilePicture
 {
 	pictureID: number,
 	userID: number,
-	filename: string,
 	picture: mysql.Types.MEDIUM_BLOB
 }
 

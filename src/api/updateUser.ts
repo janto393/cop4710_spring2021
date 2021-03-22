@@ -5,8 +5,8 @@ import * as mysql from "mysql";
 import configureSqlConnection from "../util/configureSqlConnection";
 
 // type imports
-import { UserWithoutPassword } from "../commonTypes/UserTypes";
-import { SqlUser } from "../commonTypes/sqlSchema";
+import { ProfilePicture, UserWithoutPassword } from "../commonTypes/UserTypes";
+import { SqlProfilePictures, SqlUser } from "../commonTypes/sqlSchema";
 
 /**
  * Null represents no changes to the field in the database
@@ -19,7 +19,8 @@ export interface UpdateInput
 	email: string | undefined,
 	universityID: number | undefined,
 	rsoID: number | undefined,
-	role: number | undefined
+	role: number | undefined,
+	profilePicture: mysql.Types.MEDIUM_BLOB | undefined
 };
 
 export interface UpdateUserReturnPackage
@@ -142,6 +143,7 @@ export async function updateUser(request: Request, response: Response, next: Cal
 
 	let userID: number = request.body.userID;
 
+
 	let updateInfo: UpdateInput = {
 		firstname: request.body.firstname,
 		lastname: request.body.lastname,
@@ -149,7 +151,8 @@ export async function updateUser(request: Request, response: Response, next: Cal
 		email: request.body.email,
 		universityID: request.body.universityID,
 		rsoID: request.body.rsoID,
-		role: request.body.role
+		role: request.body.role,
+		profilePicture: request.body.profilePicture
 	};
 
 	let parsedInfo: ParsedUpdateInfo = parseNewInformation(updateInfo, userID);
@@ -173,23 +176,37 @@ export async function updateUser(request: Request, response: Response, next: Cal
 		return;
 	}
 
-	// update the information in the database
-	connection.query(queryString, (error: string, rows: Array<Object>) => {
-		if (error)
-		{
-			connection.end();
-			returnPackage.error = error;
-			response.json(returnPackage);
-			response.status(500);
-			response.send();
-			return;
-		}
+	// updates all user info besides the profilePicture
+	const updateUserInfo = (): void => {
+		// update the information in the database
+		connection.query(queryString, (error: string, rows: Array<Object>) => {
+			if (error)
+			{
+				connection.end();
+				returnPackage.error = error;
+				response.json(returnPackage);
+				response.status(500);
+				response.send();
+				return;
+			}	
+		});
 
+		if (request.body.profilePicture !== undefined)
+		{
+			updateProfilePicture();
+		}
+		else
+		{
+			getUserInfo();
+		}
+	};
+
+	const getUserInfo = (): void => {
 		// formulate queryString to get user whose information was updated
 		queryString = "SELECT * FROM Users WHERE Users.ID=" + parsedInfo.userID;
 
 		// get the new user info
-		connection.query(queryString, (error: string, rows: Array<Object>) => {
+		connection.query(queryString, (error: string, rows: Array<SqlUser>) => {
 			if (error)
 			{
 				connection.end();
@@ -200,7 +217,7 @@ export async function updateUser(request: Request, response: Response, next: Cal
 				return;
 			}
 			
-			let userData: SqlUser = JSON.parse(JSON.stringify(rows[0]));
+			let userData: SqlUser = rows[0];
 
 			// transfer the new user data into the return package
 			returnPackage.newUserData.userID = userData.ID;
@@ -212,12 +229,123 @@ export async function updateUser(request: Request, response: Response, next: Cal
 			returnPackage.newUserData.rsoID = userData.rsoID;
 			returnPackage.newUserData.role = userData.role;
 
-			connection.end();
-			returnPackage.success = true;
-			response.json(returnPackage);
-			response.status(200);
-			response.send();
-			return;
+			queryString = "SELECT * FROM Profile_Pictures WHERE userID=" + parsedInfo.userID + ";";
+
+			connection.query(queryString, (error: string, rows: Array<SqlProfilePictures>) => {
+				if (error)
+				{
+					connection.end();
+					returnPackage.error = error;
+					response.json(returnPackage);
+					response.status(500);
+					response.send();
+					return;
+				}
+
+				// parse the returned blob into the return package
+				if (rows.length > 0)
+				{
+					let rawData: SqlProfilePictures = rows[0];
+					let parsedData: ProfilePicture = {
+						pictureID: rawData.ID,
+						userID: rawData.userID,
+						picture: rawData.picture
+					}
+					returnPackage.newUserData.profilePicture = parsedData;
+				}
+				
+				returnPackage.success = true;
+				response.json(returnPackage);
+				response.status(200);
+				response.send();
+				return;
+			});
 		});
-	});
+	};
+
+	// updates the profile picture in the database, defined in separate function
+	// so the endpoint can just update the profile picture if necessary
+	const updateProfilePicture = (): void => {
+		// check if there is a profile picture record for the user already
+		queryString = "SELECT * FROM Profile_Pictures WHERE userID=" + parsedInfo.userID + ";";
+
+		connection.query(queryString, (error: string, rows: Array<SqlProfilePictures>) => {
+			if (error)
+			{
+				connection.end();
+				returnPackage.error = error;
+				response.json(returnPackage);
+				response.status(500);
+				response.send();
+				return;
+			}
+
+			// update the current record if it exists
+			if (rows.length > 0)
+			{
+				queryString = "UPDATE Profile_Pictures SET picture='" + updateInfo.profilePicture + "' WHERE userID=" + parsedInfo.userID + ";";
+
+				connection.query(queryString, (error: string, rows: Array<Object>) => {
+					if (error)
+					{
+						connection.end();
+						returnPackage.error = error;
+						response.json(returnPackage);
+						response.status(500);
+						response.send();
+						return;
+					}
+				});
+
+				getUserInfo();
+			}
+
+			// create a new record
+			else
+			{
+				queryString = "INSERT INTO Profile_Pictures (userID, picture) VALUES (" + parsedInfo.userID + ", '" + updateInfo.profilePicture + "');";
+
+				connection.query(queryString, (error: string, rows: Array<SqlProfilePictures>) => {
+					if (error)
+					{
+						connection.end();
+						returnPackage.error = error;
+						response.json(returnPackage);
+						response.status(500);
+						response.send();
+						return;
+					}
+
+					getUserInfo();
+				});
+			}
+		});
+	};
+
+	try
+	{
+		/**
+		 * The function calls are set as an if/else if due to the mysql driver doing promise-like behavior,
+		 * but not actually implementing promises
+		 * 
+		 * updateUserInfo calls updateProfilePicture if the profile picture needs to be changed
+		 */
+		if (parsedInfo.columnNames.length > 0)
+		{
+			updateUserInfo();
+		}
+		else if (request.body.profilePicture != undefined)
+		{
+			updateProfilePicture();
+		}
+	}
+	catch (e)
+	{
+		connection.end();
+		returnPackage.error = e;
+		response.json(returnPackage);
+		response.status(500);
+		response.send();
+		return;
+	}
 }
