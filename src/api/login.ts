@@ -35,7 +35,7 @@ export async function login(request: Request, response: Response, next: Callable
 			universityID: -1,
 			rsoID: -1,
 			role: -1,
-			profilePicture: null
+			profilePicture: undefined
 		}
 	};
 

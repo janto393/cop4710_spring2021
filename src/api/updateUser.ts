@@ -137,7 +137,7 @@ export async function updateUser(request: Request, response: Response, next: Cal
 			universityID: -1,
 			rsoID: -1,
 			role: -1,
-			profilePicture: null
+			profilePicture: undefined
 		}
 	}
 

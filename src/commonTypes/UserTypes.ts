@@ -27,7 +27,8 @@ export interface NewUser
 	email: string,
 	universityID: number,
 	rsoID: number,
-	role: number
+	role: number,
+	profilePicture: ProfilePicture | undefined
 }
 
 export interface UserWithPassword
@@ -41,7 +42,7 @@ export interface UserWithPassword
 	universityID: number,
 	rsoID: number,
 	role: number,
-	profilePicture: ProfilePicture
+	profilePicture: ProfilePicture | undefined
 }
 
 export interface UserWithoutPassword
@@ -54,5 +55,5 @@ export interface UserWithoutPassword
 	universityID: number,
 	rsoID: number,
 	role: number,
-	profilePicture: ProfilePicture | null
+	profilePicture: ProfilePicture | undefined
 }
