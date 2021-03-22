@@ -17,7 +17,7 @@ export interface SqlCampusPictures
 	ID: number,
 	universityID: number,
 	filename: string,
-	picture: mysql.Types.BLOB,
+	picture: mysql.Types.MEDIUM_BLOB,
 	position: number
 }
 
@@ -35,7 +35,7 @@ export interface SqlEventPictures
 	ID: number,
 	universityID: number,
 	filename: string,
-	picture: mysql.Types.BLOB,
+	picture: mysql.Types.MEDIUM_BLOB,
 	position: number
 }
 
@@ -73,7 +73,7 @@ export interface SqlProfilePictures
 	ID: number,
 	userID: number,
 	filename: string,
-	picture: mysql.Types.BLOB
+	picture: mysql.Types.MEDIUM_BLOB
 }
 
 export interface SqlRso

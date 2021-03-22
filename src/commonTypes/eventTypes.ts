@@ -3,6 +3,7 @@
  */
 
 import { Address } from "./addressTypes";
+import * as mysql from "mysql";
 
 export interface Attendee
 {
@@ -25,7 +26,7 @@ export interface EventPicture
 	pictureID: number,
 	universityID: number,
 	filename: string,
-	picture: File,
+	picture: mysql.Types.MEDIUM_BLOB,
 	position: number
 }
 

@@ -2,12 +2,14 @@
  * Interfaces related to Users
  */
 
+import * as mysql from "mysql";
+
 export interface ProfilePicture
 {
 	pictureID: number,
 	userID: number,
 	filename: string,
-	picture: File
+	picture: mysql.Types.MEDIUM_BLOB
 }
 
 export interface Role
@@ -39,7 +41,8 @@ export interface UserWithPassword
 	email: string,
 	universityID: number,
 	rsoID: number,
-	role: number
+	role: number,
+	profilePicture: ProfilePicture
 }
 
 export interface UserWithoutPassword
@@ -51,5 +54,6 @@ export interface UserWithoutPassword
 	email: string,
 	universityID: number,
 	rsoID: number,
-	role: number
+	role: number,
+	profilePicture: ProfilePicture | null
 }
