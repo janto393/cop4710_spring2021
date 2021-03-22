@@ -3,6 +3,7 @@
  */
 
 import { Address } from "./addressTypes";
+import * as mysql from "mysql";
 
 export interface Attendee
 {
@@ -23,10 +24,14 @@ export interface Comment
 export interface EventPicture
 {
 	pictureID: number,
-	universityID: number,
-	filename: string,
-	picture: File,
+	eventID: number,
+	picture: mysql.Types.MEDIUM_BLOB | null,
 	position: number
+}
+
+export interface NewEventPicture
+{
+	picture: mysql.Types.MEDIUM_BLOB | null
 }
 
 export interface NewEvent
@@ -45,7 +50,7 @@ export interface NewEvent
 	isPublic: boolean,
 	numAttendees: number,
 	capacity: number,
-	eventPictures: Array<EventPicture | null>
+	eventPictures: Array<NewEventPicture>
 }
 
 export interface Event
