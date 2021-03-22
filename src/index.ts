@@ -1,9 +1,9 @@
 import bodyParser from "body-parser";
-import { create } from "domain";
 import * as dotenv from "dotenv";
 import express from "express";
 
 // Endpoint imports
+import { createEvent } from "./api/createEvent";
 import { createMeetingType } from "./api/createMeetingType";
 import { createRso } from "./api/createRso";
 import { getMeetingTypes } from "./api/getMeetingTypes";
@@ -26,6 +26,7 @@ app.get('/', (_, res) => {
 	res.status(200).send();
 });
 
+app.post("/api/createEvent", createEvent);
 app.post("/api/createMeetingType", createMeetingType);
 app.post("/api/createRso", createRso);
 app.post("/api/getMeetingTypes", getMeetingTypes);
