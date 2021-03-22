@@ -5,8 +5,8 @@ import * as mysql from "mysql";
 import configureSqlConnection from "../util/configureSqlConnection";
 
 // type imports
-import { UserWithoutPassword } from "../commonTypes/UserTypes";
-import { SqlUser } from "src/commonTypes/sqlSchema";
+import { ProfilePicture, UserWithoutPassword } from "../commonTypes/UserTypes";
+import { SqlProfilePictures, SqlUser } from "src/commonTypes/sqlSchema";
 
 export interface LoginReturnPackage
 {
@@ -34,7 +34,8 @@ export async function login(request: Request, response: Response, next: Callable
 			email: '',
 			universityID: -1,
 			rsoID: -1,
-			role: -1
+			role: -1,
+			profilePicture: null
 		}
 	};
 
@@ -68,7 +69,7 @@ export async function login(request: Request, response: Response, next: Callable
 	// query the database for the Users with matching credentials
 	try
 	{
-		connection.query(queryString, (error: string, rows: Array<Object>) => {
+		connection.query(queryString, (error: string, rows: Array<SqlUser>) => {
 			if (error)
 			{
 				connection.end();
@@ -90,7 +91,7 @@ export async function login(request: Request, response: Response, next: Callable
 				return;
 			}
 
-			let userData: SqlUser = JSON.parse(JSON.stringify(rows[0]));
+			let userData: SqlUser = rows[0];
 
 			// transfer query data to returnPackage fields
 			returnPackage.userData.userID = userData.ID;
@@ -102,11 +103,41 @@ export async function login(request: Request, response: Response, next: Callable
 			returnPackage.userData.role = userData.role;
 			returnPackage.userData.rsoID = userData.rsoID;
 
-			connection.end();
-			returnPackage.success = true;
-			response.json(returnPackage);
-			response.status(200);
-			response.send();
+			queryString = "SELECT * FROM Profile_Pictures as PFP WHERE PFP.userID=" + returnPackage.userData.userID + ";";
+
+			// get the profile picture if one exists
+			connection.query(queryString, (error: string, rows: Array<SqlProfilePictures>) => {
+				if (error)
+				{
+					connection.end();
+					returnPackage.error = error;
+					response.json(returnPackage);
+					response.status(500);
+					response.send();
+					return;
+				}
+
+				// only parse the profile picture data if one exists
+				if (rows.length > 0)
+				{
+					let rawData: SqlProfilePictures = rows[0];
+					let parsedData: ProfilePicture = {
+						pictureID: rawData.ID,
+						userID: rawData.userID,
+						filename: rawData.filename,
+						picture: rawData.picture
+					};
+
+					returnPackage.userData.profilePicture = parsedData;
+				}
+
+				returnPackage.success = true;
+				response.json(returnPackage);
+				response.status(200);
+				response.send();
+				connection.end();
+				return;
+			});
 		});
 	}
 	catch (e)
