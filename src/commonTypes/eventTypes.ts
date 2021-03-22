@@ -29,12 +29,30 @@ export interface EventPicture
 	position: number
 }
 
+export interface NewEvent
+{
+	schoolID: number,
+	address: string,
+	city: string,
+	stateID: number,
+	zip: string
+	rsoID: number,
+	meetingTypeID: number
+	name: string,
+	description: string,
+	room: string,
+	rating: number,
+	isPublic: boolean,
+	numAttendees: number,
+	capacity: number,
+	eventPictures: Array<EventPicture | null>
+}
+
 export interface Event
 {
 	eventID: number,
 	schoolID: number,
 	address: Address,
-	stateID: number,
 	rsoID: number,
 	meetingType: MeetingType,
 	name: string,
@@ -43,7 +61,8 @@ export interface Event
 	rating: number,
 	isPublic: boolean,
 	numAttendees: number,
-	capacity: number
+	capacity: number,
+	eventPictures: Array<EventPicture | null>
 }
 
 export interface MeetingType
