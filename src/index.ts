@@ -6,6 +6,7 @@ import express from "express";
 import { createEvent } from "./api/createEvent";
 import { createMeetingType } from "./api/createMeetingType";
 import { createRso } from "./api/createRso";
+import { updateEvent } from "./api/updateEvent";
 import { getEvents } from "./api/getEvents";
 import { getMeetingTypes } from "./api/getMeetingTypes";
 import { getRso } from "./api/getRso";
@@ -30,6 +31,7 @@ app.get('/', (_, res) => {
 app.post("/api/createEvent", createEvent);
 app.post("/api/createMeetingType", createMeetingType);
 app.post("/api/createRso", createRso);
+app.post("/api/updateEvent", updateEvent);
 app.post("/api/getEvents", getEvents);
 app.post("/api/getMeetingTypes", getMeetingTypes);
 app.post("/api/getRso", getRso);
