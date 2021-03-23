@@ -84,6 +84,7 @@ function createEventQuery(info: EndpointInput): string
 		"Events.ID AS eventID,\n",
 		"Events.schoolID AS schoolID,\n",
 		"Events.rsoID AS rsoID,\n",
+		"RSO.name AS rsoName,\n",
 		"MT.ID AS meetingTypeID,\n",
 		"MT.name AS meetingTypeName,\n",
 		"Events.name AS eventName,\n",
@@ -107,6 +108,7 @@ function createEventQuery(info: EndpointInput): string
 
 	const joinStatements: Array<string> = [
 		"INNER JOIN Events AS E1 ON (Events.ID=E1.ID AND ((Events.schoolID=" + info.schoolID + " AND Events.rsoID=" + info.rsoID + " AND Events.isPublic=false) OR (Events.schoolID=" + info.schoolID + " AND Events.isPublic=true)))\n",
+		"LEFT JOIN Registered_Student_Organizations AS RSO ON (RSO.ID=Events.rsoID AND RSO.universityID=Events.schoolID)\n",
 		"LEFT JOIN Event_Pictures AS EP ON (Events.ID=EP.eventID)\n", // creates separate event records for each picture
 		"LEFT JOIN Meeting_Types AS MT ON (Events.meetingType=MT.ID)\n",
 		"LEFT JOIN States AS ST ON (Events.stateID=ST.ID)\n"
@@ -150,63 +152,63 @@ export async function getEvents(request: Request, response: Response, next: Call
 	const connectionData: mysql.ConnectionConfig = configureSqlConnection();
 	const connection: mysql.Connection = mysql.createConnection(connectionData);
 
-	// try
-	// {
-	// 	connection.connect();
-	// }
-	// catch (e)
-	// {
-	// 	returnPackage.error = e;
-	// 	response.json(returnPackage);
-	// 	response.status(500);
-	// 	response.send();
-	// 	return;
-	// }
+	try
+	{
+		connection.connect();
+	}
+	catch (e)
+	{
+		returnPackage.error = e;
+		response.json(returnPackage);
+		response.status(500);
+		response.send();
+		return;
+	}
 
-	// try
-	// {
-	// 	let queryString: string = createEventQuery(input);
+	try
+	{
+		let queryString: string = createEventQuery(input);
 
-	// 	connection.query(queryString, (error: string, rows: Array<SqlEvents>) => {
-	// 		if (error)
-	// 		{
-	// 			connection.end();
-	// 			returnPackage.error = error;
-	// 			response.json(returnPackage);
-	// 			response.status(500);
-	// 			response.send();
-	// 			return;
-	// 		}
+		connection.query(queryString, (error: string, rows: Array<SqlEvents>) => {
+			if (error)
+			{
+				connection.end();
+				returnPackage.error = error;
+				response.json(returnPackage);
+				response.status(500);
+				response.send();
+				return;
+			}
 
-	// 		/**
-	// 		 * Set to store all the event IDs that have been parsed. The query in it's
-	// 		 * current form returns a separate record for each event picture record and
-	// 		 * we only want a single record for each event in the return package with
-	// 		 * an array of the base64 encoded pictures
-	// 		 */
-	// 		let parsedEvents: Set<number> = new Set();
+			/**
+			 * Set to store all the event IDs that have been parsed. The query in it's
+			 * current form returns a separate record for each event picture record and
+			 * we only want a single record for each event in the return package with
+			 * an array of the base64 encoded pictures
+			 */
+			let parsedEvents: Set<number> = new Set();
 
-	// 		// parse all the returned events into the return package
-	// 		let i: number;
-	// 		for (i = 0; i < rows.length; i++)
-	// 		{
-	// 			let rawData: SqlEvents = rows[i];
+			// parse all the returned events into the return package
+			let i: number;
+			for (i = 0; i < rows.length; i++)
+			{
+				let rawData: SqlEvents = rows[i];
 				
-	// 			// create a new event record if the current event hasn't been seen yet
-	// 			if (!parsedEvents.has(rawData.ID))
-	// 			{
+				// create a new event record if the current event hasn't been seen yet
+				if (!parsedEvents.has(rawData.ID))
+				{
 
-	// 			}
-	// 		}
-	// 	});
-	// }
-	// catch (e)
-	// {
-	// 	connection.end();
-	// 	returnPackage.error = e;
-	// 	response.json(returnPackage);
-	// 	response.status(500);
-	// 	response.send();
-	// 	return;
-	// }
+				}
+			}
+		});
+	}
+	catch (e)
+	{
+		connection.end();
+		returnPackage.error = e;
+		response.json(returnPackage);
+		response.status(500);
+		response.send();
+		return;
+	}
 }
