@@ -5,8 +5,13 @@ import * as mysql from "mysql";
 import configureSqlConnection from "../util/configureSqlConnection";
 
 // type imports
-import { MeetingType } from "../commonTypes/eventTypes";
 import { SqlMeetingType } from "../commonTypes/sqlSchema";
+
+interface MeetingType
+{
+	meetingTypeID: number,
+	name: string
+}
 
 interface EndpointReturn
 {

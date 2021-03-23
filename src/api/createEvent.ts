@@ -4,13 +4,34 @@ import * as mysql from "mysql";
 // util imports
 import configureSqlConnection from "../util/configureSqlConnection";
 
-// type imports
-import { NewEvent, NewEventPicture } from "../commonTypes/eventTypes";
-
 interface EndpointReturn
 {
 	success: boolean,
 	error: string
+}
+
+interface NewEventPicture
+{
+	picture: mysql.Types.MEDIUM_BLOB
+}
+
+interface NewEvent
+{
+	schoolID: number,
+	address: string,
+	city: string,
+	stateID: number,
+	zip: string
+	rsoID: number,
+	meetingTypeID: number
+	name: string,
+	description: string,
+	room: string,
+	rating: number,
+	isPublic: boolean,
+	numAttendees: number,
+	capacity: number,
+	eventPictures: Array<NewEventPicture>
 }
 
 function generateNewEventQuery(input: NewEvent): string
