@@ -3,6 +3,7 @@ import * as dotenv from "dotenv";
 import express from "express";
 
 // Endpoint imports
+import { createAttendee } from "./api/createAttendee";
 import { createEvent } from "./api/createEvent";
 import { createMeetingType } from "./api/createMeetingType";
 import { createRso } from "./api/createRso";
@@ -29,6 +30,7 @@ app.get('/', (_, res) => {
 	res.status(200).send();
 });
 
+app.post("/api/createAttendee", createAttendee);
 app.post("/api/createEvent", createEvent);
 app.post("/api/createMeetingType", createMeetingType);
 app.post("/api/createRso", createRso);
