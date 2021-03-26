@@ -1,8 +1,8 @@
 use event_manager;
 
 delimiter //
-create trigger notTooManyAttendees
-before insert on Attendees
+CREATE trigger notTooManyAttendees
+BEFORE INSERT ON Attendees
 FOR EACH ROW
 BEGIN
   SET @numAttendees = (SELECT numAttendees FROM Events WHERE NEW.eventID=Events.ID);
