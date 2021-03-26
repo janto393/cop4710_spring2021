@@ -17,7 +17,7 @@ export interface SqlCampusPictures
 	ID: number,
 	universityID: number,
 	filename: string,
-	picture: mysql.Types.BLOB,
+	picture: mysql.Types.MEDIUM_BLOB,
 	position: number
 }
 
@@ -35,24 +35,8 @@ export interface SqlEventPictures
 	ID: number,
 	universityID: number,
 	filename: string,
-	picture: mysql.Types.BLOB,
+	picture: mysql.Types.MEDIUM_BLOB,
 	position: number
-}
-
-export interface SqlEvents
-{
-	ID: number,
-	schoolID: number,
-	rsoID: number,
-	meetingType: number,
-	name: string,
-	description: string,
-	address: Address,
-	room: string,
-	rating: number,
-	isPublic: boolean,
-	numAttendees: number,
-	capacity: number
 }
 
 export interface SqlMeetingType
@@ -72,8 +56,7 @@ export interface SqlProfilePictures
 {
 	ID: number,
 	userID: number,
-	filename: string,
-	picture: mysql.Types.BLOB
+	picture: mysql.Types.MEDIUM_BLOB
 }
 
 export interface SqlRso
