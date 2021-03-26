@@ -6,6 +6,7 @@ import configureSqlConnection from "../util/configureSqlConnection";
 
 // type imports
 import { NewUser } from "../commonTypes/UserTypes";
+import { SqlProfilePictures, SqlUser } from "src/commonTypes/sqlSchema";
 
 /**
  * only returns success and error because website will redirect
@@ -32,7 +33,8 @@ export async function register(request: Request, response: Response, next: Calla
 		email: request.body.email,
 		universityID: request.body.universityID,
 		rsoID: request.body.rsoID,
-		role: request.body.role
+		role: request.body.role,
+		profilePicture: request.body.profilePicture
 	};
 
 	// configure mysql connection data
@@ -103,7 +105,7 @@ export async function register(request: Request, response: Response, next: Calla
 				queryString = "SELECT * FROM Users WHERE Users.username='" + newUserInfo.username + "';";
 
 				// make sure new user was inserted in to the database
-				connection.query(queryString, (error: string, rows: Array<Object>) => {
+				connection.query(queryString, (error: string, rows: Array<SqlUser>) => {
 					if (error)
 					{
 						connection.end();
@@ -124,11 +126,59 @@ export async function register(request: Request, response: Response, next: Calla
 						return;
 					}
 
-					connection.end();
-					returnPackage.success = true;
-					response.json(returnPackage);
-					response.status(200);
-					response.send();
+					// parse user Data into local variable for easier manipulation
+					let rawData: SqlUser = rows[0];
+
+					// insert a record with the profile picture, if no picture was passed, create
+					// a record with an empty BLOB
+					if (request.body.profilePicture !== undefined)
+					{
+						queryString = "INSERT INTO Profile_Pictures (userID, picture) VALUES (" + rawData.ID + ", '" + newUserInfo.profilePicture + "');";
+					}
+					else
+					{
+						queryString = "INSERT INTO Profile_Pictures (userID, picture) VALUES (" + rawData.ID + ", '');";
+					}
+
+					connection.query(queryString, (error: string, rows: Array<Object>) => {
+						if (error)
+						{
+							connection.end();
+							returnPackage.success = true; // setting success to true because the user was inserted if we got this far
+							returnPackage.error = error;
+							response.json(returnPackage);
+							response.status(500);
+							response.send();
+							return;
+						}
+
+						queryString = "SELECT * FROM Profile_Pictures WHERE userID=" + rawData.ID + ";";
+
+						// make sure the record was created
+						connection.query(queryString, (error: string, rows: Array<SqlProfilePictures>) => {
+							if (error)
+							{
+								connection.end();
+								returnPackage.success = true; // setting success to true because the user was inserted if we got this far
+								returnPackage.error = error;
+								response.json(returnPackage);
+								response.status(500);
+								response.send();
+								return;
+							}
+
+							if (rows.length < 1)
+							{
+								returnPackage.error = "Failed to upload profile picture";
+							}
+
+							connection.end();
+							returnPackage.success = true;
+							response.json(returnPackage);
+							response.status(200);
+							response.send();
+						});
+					});
 				});
 			});
 		});
