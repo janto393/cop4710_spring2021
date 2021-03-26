@@ -84,6 +84,11 @@ export function queryGenerator(input: QueryGeneratorInput)
 	// ensure there is at least 1 select element
 	if (input.selectStatements.length < 1)
 	{
+		if (input.fromStatements.length < 1)
+		{
+			generatedQuery.error = "No SELECT or FROM elements specified";
+			return generatedQuery;
+		}
 		generatedQuery.error = "No SELECT elements specified";
 		return generatedQuery;
 	}
@@ -91,21 +96,21 @@ export function queryGenerator(input: QueryGeneratorInput)
 	// combine the select elements
 	for (let i: number = 0; i < input.selectStatements.length; i++)
 	{
-		selectClause.concat(input.selectStatements[i].columnName);
+		selectClause = selectClause.concat(input.selectStatements[i].columnName);
 		
 		if (i === input.selectStatements.length - 1)
 		{
-			selectClause.concat("\n");
+			selectClause = selectClause.concat("\n");
 		}
 		else
 		{
-			selectClause.concat(", ");
+			selectClause = selectClause.concat(", ");
 		}
 	}
 
 	// join the select statement to the query string
-	generatedQuery.query.concat(selectClause);
-
+	generatedQuery.query = generatedQuery.query.concat(selectClause);
+	
 
 	/////////////////
 	// FROM CLAUSE //
@@ -123,20 +128,20 @@ export function queryGenerator(input: QueryGeneratorInput)
 	// combine the from elements
 	for (let i: number = 0; i < input.fromStatements.length; i++)
 	{
-		fromClause.concat(input.fromStatements[i].tableName);
+		fromClause = fromClause.concat(input.fromStatements[i].tableName);
 
 		if (i === input.fromStatements.length - 1)
 		{
-			fromClause.concat("\n");
+			fromClause = fromClause.concat("\n");
 		}
 		else
 		{
-			fromClause.concat(", ");
+			fromClause = fromClause.concat(", ");
 		}
 	}
 
 	// join the from clause to the query string
-	generatedQuery.query.concat(fromClause);
+	generatedQuery.query = generatedQuery.query.concat(fromClause);
 
 
 	//////////////////
@@ -151,22 +156,22 @@ export function queryGenerator(input: QueryGeneratorInput)
 		for (let i: number = 0; i < input.whereStatements.length; i++)
 		{
 			// insert a tab before each criteria to make query more readable
-			whereClause.concat("	");
+			whereClause = whereClause.concat("	");
 
-			whereClause.concat(input.whereStatements[i].criteria);
+			whereClause = whereClause.concat(input.whereStatements[i].criteria);
 
 			if (i === input.whereStatements.length - 1)
 			{
-				whereClause.concat("\n");
+				whereClause = whereClause.concat("\n");
 			}
 			else
 			{
-				whereClause.concat(",\n");
+				whereClause = whereClause.concat(",\n");
 			}
 		}
 
 		// join the where clause to the query string
-		generatedQuery.query.concat(whereClause);
+		generatedQuery.query = generatedQuery.query.concat(whereClause);
 	}
 
 
@@ -186,22 +191,22 @@ export function queryGenerator(input: QueryGeneratorInput)
 			{
 				case JoinType.INNER_JOIN:
 				{
-					joinClause.concat("INNER JOIN ");
+					joinClause = joinClause.concat("INNER JOIN ");
 					break;
 				}
 				case JoinType.LEFT_JOIN:
 				{
-					joinClause.concat("LEFT JOIN ");
+					joinClause = joinClause.concat("LEFT JOIN ");
 					break;
 				}
 				case JoinType.RIGHT_JOIN:
 				{
-					joinClause.concat("RIGHT JOIN ");
+					joinClause = joinClause.concat("RIGHT JOIN ");
 					break;
 				}
 				case JoinType.OUTER_JOIN:
 				{
-					joinClause.concat("OUTER JOIN ");
+					joinClause = joinClause.concat("OUTER JOIN ");
 					break;
 				}
 				default:
@@ -211,12 +216,12 @@ export function queryGenerator(input: QueryGeneratorInput)
 			}
 
 			// insert the table name to be joined on the current line
-			joinClause.concat(input.joinStatements[i].tableName);
-			joinClause.concat(" ON " + input.joinStatements[i].criteria + "\n");
+			joinClause = joinClause.concat(input.joinStatements[i].tableName);
+			joinClause = joinClause.concat(" ON " + input.joinStatements[i].criteria + "\n");
 		}
 
 		// join the join clause to the query string
-		generatedQuery.query.concat(joinClause);
+		generatedQuery.query = generatedQuery.query.concat(joinClause);
 	}
 
 
@@ -229,18 +234,18 @@ export function queryGenerator(input: QueryGeneratorInput)
 	{
 		let orderClause: string = "ORDER BY ";
 
-		orderClause.concat(input.orderStatements.criteria + " ");
+		orderClause = orderClause.concat(input.orderStatements.criteria + " ");
 
 		switch (input.orderStatements.orderType)
 		{
 			case (OrderType.ASC):
 			{
-				orderClause.concat("ASC");
+				orderClause = orderClause.concat("ASC");
 				break;
 			}
 			case (OrderType.DESC):
 			{
-				orderClause.concat("DESC");
+				orderClause = orderClause.concat("DESC");
 				break;
 			}
 			default:
@@ -249,10 +254,10 @@ export function queryGenerator(input: QueryGeneratorInput)
 			}
 		}
 
-		orderClause.concat("\n");
+		orderClause = orderClause.concat("\n");
 
 		// add the order clause to the query string
-		generatedQuery.query.concat(orderClause);
+		generatedQuery.query = generatedQuery.query.concat(orderClause);
 	}
 
 
@@ -264,9 +269,9 @@ export function queryGenerator(input: QueryGeneratorInput)
 	{
 		let groupClause: string = "GROUP BY ";
 
-		groupClause.concat(input.groupByStatements.criteria + "\n");
+		groupClause = groupClause.concat(input.groupByStatements.criteria + "\n");
 
-		generatedQuery.query.concat(groupClause);
+		generatedQuery.query = generatedQuery.query.concat(groupClause);
 	}
 	
 
