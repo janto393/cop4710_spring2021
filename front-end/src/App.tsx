@@ -3,7 +3,6 @@
 import "./index.css";
 
 import {
-  Redirect,
   Route,
   BrowserRouter as Router,
   Switch,
@@ -11,10 +10,10 @@ import {
 import { loginTextFields, registerTextFields } from "./Utils/formUtils";
 
 import LoginPageContainer from "./containers/LoginPageContainer/index";
-import React from "react";
 import StudForms from "./components/StudForms";
 
 const App = () => {
+
   return (
     <Router>
       <Switch>
@@ -38,6 +37,9 @@ const App = () => {
         </LoginPageContainer>
 
         {/* rest of the app will go below */}
+        <Route path="/home" exact>
+          
+        </Route>
       </Switch>
     </Router>
   );
