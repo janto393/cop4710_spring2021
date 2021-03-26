@@ -39,22 +39,6 @@ export interface SqlEventPictures
 	position: number
 }
 
-export interface SqlEvents
-{
-	ID: number,
-	schoolID: number,
-	rsoID: number,
-	meetingType: number,
-	name: string,
-	description: string,
-	address: Address,
-	room: string,
-	rating: number,
-	isPublic: boolean,
-	numAttendees: number,
-	capacity: number
-}
-
 export interface SqlMeetingType
 {
 	ID: number,

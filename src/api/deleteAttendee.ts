@@ -4,28 +4,28 @@ import * as mysql from "mysql";
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
 
-// type imports
-import { SqlMeetingType } from "../commonTypes/sqlSchema";
-
-interface MeetingType
+interface EndpointInput
 {
-	meetingTypeID: number,
-	name: string
+	userID: number,
+	eventID: number
 }
 
 interface EndpointReturn
 {
 	success: boolean,
-	error: string,
-	meetingTypes: Array<MeetingType>
+	error: string
 }
 
-export async function getMeetingTypes(request: Request, response: Response, next: CallableFunction): Promise<void>
+export async function deleteAttendee(request: Request, response: Response, next: CallableFunction): Promise<void>
 {
+	let input: EndpointInput = {
+		userID: request.body.userID,
+		eventID: request.body.eventID
+	};
+
 	let returnPackage: EndpointReturn = {
 		success: false,
-		error: "",
-		meetingTypes: []
+		error: ""
 	};
 
 	const connectionData: mysql.ConnectionConfig = configureSqlConnection();
@@ -37,7 +37,7 @@ export async function getMeetingTypes(request: Request, response: Response, next
 	}
 	catch (e)
 	{
-		returnPackage.error = e.toString;
+		returnPackage.error = e;
 		response.json(returnPackage);
 		response.status(500);
 		response.send();
@@ -46,30 +46,17 @@ export async function getMeetingTypes(request: Request, response: Response, next
 
 	try
 	{
-		let queryString = "SELECT * FROM Meeting_Types ORDER BY Meeting_Types.name ASC";
+		let queryString: string = "DELETE FROM Attendees WHERE userID=" + String(input.userID) + " AND eventID=" + String(input.eventID) + ";";
 
-		connection.query(queryString, (error: string, rows: Array<SqlMeetingType>) => {
+		connection.query(queryString, (error: string, rows: Array<any>) => {
 			if (error)
 			{
 				connection.end();
-				returnPackage.error = error.toString();
+				returnPackage.error = error;
 				response.json(returnPackage);
-				response.send(500);
+				response.status(500);
 				response.send();
 				return;
-			}
-
-			// parse each meeting type into the return package
-			let i: number;
-			for (i = 0; i < rows.length; i++)
-			{
-				let rawData: SqlMeetingType = rows[i];
-				let parsedData: MeetingType = {
-					meetingTypeID: rawData.ID,
-					name: rawData.name
-				};
-
-				returnPackage.meetingTypes.push(parsedData);
 			}
 
 			connection.end();
@@ -83,7 +70,7 @@ export async function getMeetingTypes(request: Request, response: Response, next
 	catch (e)
 	{
 		connection.end();
-		returnPackage.error = e.toString;
+		returnPackage.error = e;
 		response.json(returnPackage);
 		response.status(500);
 		response.send();
