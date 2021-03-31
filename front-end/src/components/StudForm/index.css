@@ -6,19 +6,6 @@
   background-color: #97979794;
 }
 
-.login-card .input-field-container .form-title {
-  color: white;
-  padding-bottom: 10px;
-}
-
-.login-card .input-field-container .input-field-item {
-  padding: 10px;
-}
-
-.login-card .input-field-container .input-field-item .input {
-  background-color: white;
-}
-
 .login-card .button-container .button-submit-item {
   padding: 10px 10px;
 }

@@ -7,12 +7,16 @@ import {
   BrowserRouter as Router,
   Switch,
 } from "react-router-dom";
-import { loginTextFields, registerTextFields } from "./Utils/formUtils";
 
 import LoginPageContainer from "./containers/LoginPageContainer/index";
-import StudForms from "./components/StudForms";
+import React from "react";
+import RegisterForm from "./components/RegisterForm";
+import StudForm from "./components/StudForm";
 
 const App = () => {
+  // 1. create hook to maintain user state while they create an account
+  // 2. create <StudLogin path="/" user={user} /> to encapsulate login form logic and callback
+  // 3. same for register
 
   return (
     <Router>
@@ -20,19 +24,15 @@ const App = () => {
         {/* splash page routes */}
         <LoginPageContainer>
           <Route path="/" exact>
-            <StudForms
+            <StudForm
               title="Login"
-              textFields={loginTextFields}
+              textFields={[{label: 'email', fieldType: 'textField'}, {label: 'password', inputType: 'password', fieldType: 'textField'}]}
               buttonText="Sign in"
             />
           </Route>
 
           <Route path="/register" exact>
-            <StudForms
-              title="Register"
-              textFields={registerTextFields}
-              buttonText="Submit"
-            />
+            <RegisterForm />
           </Route>
         </LoginPageContainer>
 
