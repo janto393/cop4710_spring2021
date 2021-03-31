@@ -1,10 +1,5 @@
-import React, { useEffect } from "react";
-
 // bootstrap imports
 import { Accordion, Button, Card, Image } from "react-bootstrap";
-
-// utility imports
-import { decode, encode, EncodeOptions } from "node-base64-image";
 
 interface EventPicture
 {
