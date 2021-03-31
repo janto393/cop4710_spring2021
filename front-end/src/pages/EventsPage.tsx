@@ -38,7 +38,6 @@ function EventsPage()
 		}
 	};
 
-	console.log("FUCK");
 	fetch(buildpath("/api/getEvents"), request)
 		.then((response: Response) => {
 			return response.json();
