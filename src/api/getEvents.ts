@@ -33,7 +33,7 @@ interface SqlEvent
 interface EventPicture
 {
 	ID: number,
-	picture: mysql.Types.MEDIUM_BLOB,
+	picture: Buffer,
 	position: number
 }
 
@@ -244,7 +244,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 						eventPictures: [
 							{
 								ID: rawData.eventPictureID,
-								picture: rawData.eventPicture,
+								picture: Buffer.from(rawData.eventPicture.toString(), "base64"),
 								position: rawData.eventPicturePosition
 							}
 						]
@@ -269,7 +269,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 
 					let parsedPicture: EventPicture = {
 						ID: rawData.eventPictureID,
-						picture: rawData.eventPicture,
+						picture: Buffer.from(rawData.eventPicture.toString(), "base64"),
 						position: rawData.eventPicturePosition
 					};
 

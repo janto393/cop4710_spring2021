@@ -10,8 +10,9 @@ import {
 } from "react-router-dom";
 import { loginTextFields, registerTextFields } from "./Utils/formUtils";
 
+import EventsPage from "./pages/EventsPage";
+
 import LoginPageContainer from "./containers/LoginPageContainer/index";
-import React from "react";
 import StudForms from "./components/StudForms";
 
 const App = () => {
@@ -38,6 +39,9 @@ const App = () => {
         </LoginPageContainer>
 
         {/* rest of the app will go below */}
+				<Route path="/events" exact>
+					<EventsPage />
+				</Route>
       </Switch>
     </Router>
   );
