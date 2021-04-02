@@ -24,7 +24,7 @@ interface EndpointInput
 interface EndpointReturn
 {
 	success: boolean,
-	error: string
+	error: string | mysql.MysqlError
 }
 
 function generateQuery(info: EndpointInput): string
@@ -183,11 +183,27 @@ export async function updateEvent(request: Request, response: Response, next: Ca
 	{
 		let queryString: string = generateQuery(input);
 
-		connection.query(queryString, (error: string, rows: any) => {
+		connection.query(queryString, (error: mysql.MysqlError, rows: any) => {
 			if (error)
 			{
+				/**
+				 * The trigger that ensures that the new capacity being set (if one was
+				 * specified) is not lower than the current number of attendees for the
+				 * event being updated. If the new value is less than the current
+				 * number of attendees, it will set the ID column to null so MySQL
+				 * does not update the row.
+				 */
+				if ((error.errno === 1048) && (error.sqlMessage == "Column 'ID' cannot be null"))
+				{
+					returnPackage.error = "New Capacity is less than number of attendees";
+				}
+				else
+				{
+					returnPackage.error = error;
+				}
+				
+
 				connection.end();
-				returnPackage.error = error;
 				response.json(returnPackage);
 				response.status(500);
 				response.send();
