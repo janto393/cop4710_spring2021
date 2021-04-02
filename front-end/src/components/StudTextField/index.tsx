@@ -7,10 +7,12 @@ import React from 'react'
 export type StudTextFieldProps = {
 	label: string;
 	type?: string;
+	handleOnChange?: Function
 }
 
 const StudTextField: React.FC<StudTextFieldProps>  = (props: StudTextFieldProps) => {
-	const { label, type } = props
+	const { label, type, handleOnChange = () => null } = props
+
 	return (
 		<Grid item xs={12} className="input-field-item">
 		  <TextField
@@ -20,6 +22,7 @@ const StudTextField: React.FC<StudTextFieldProps>  = (props: StudTextFieldProps)
 			className="input"
 			label={label}
 			type={type}
+			onChange={handleOnChange()}
 		  />
 		</Grid>
 	  )

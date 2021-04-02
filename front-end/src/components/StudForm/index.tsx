@@ -12,25 +12,25 @@ import {
 import React from "react";
 import StudSelect from "../StudSelect";
 import StudTextField from "../StudTextField";
-import { UserInfoType } from "../RegisterForm";
+import { UserInfoType } from "../../hooks/useRegister";
 import { useHistory } from "react-router-dom"
 
 export type FormFieldType = {
   label: string;
   inputType?: string;
   fieldType: string;
-  selectItems?: Array<string>
+  selectItems?: Array<string>;
+  handleOnChange: Function;
 };
 
 export type FormPropsType = {
   title: string;
   textFields: Array<FormFieldType>;
   buttonText: string;
+  registerInfo?: UserInfoType;
   handleClick?: Function;
   handleBackClick?: Function;
-  registerInfo?: UserInfoType;
   setRegisterInfo?: Function;
-  step?: number;
 };
 
 const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
@@ -38,18 +38,14 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
     title, 
     textFields, 
     buttonText, 
-    handleClick = () => null, 
-    handleBackClick = () => null, 
-    registerInfo = {}, 
-    setRegisterInfo = () => null,
-    step = 1 
+    handleClick = () => null,
+    setRegisterInfo = () => null
   } = props;
   
+  // used to redirect to a different route
   const history = useHistory()
   const { location } = history
 
-  const canGoBack = step > 1
-  const isLoginOrRegister: boolean = title === "Login" || title === "Register";
   const redirectButtonText: string =
     title === "Login"
       ? "Don't have an account? Sign up!"
@@ -72,12 +68,31 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
 
           {/* renders all of the fields */}
           {textFields.map((field) => {
-            const { label, inputType = 'email', fieldType, selectItems = [] } = field;
+            const { 
+              label, 
+              inputType = 'email', 
+              fieldType, 
+              selectItems = [], 
+              handleOnChange = () => null 
+            } = field;
+            
+            // only supports text and select fields. can add more below in switch
             switch (fieldType) {
               case 'textField':
-                return <StudTextField label={label} type={inputType} />
+                return (
+                <StudTextField 
+                label={label} 
+                type={inputType} 
+                handleOnChange={() => handleOnChange} />)
               case 'dropDown':
-                return <StudSelect label={label} selectItems={selectItems} setRegisterInfo={setRegisterInfo} registerInfo={registerInfo} />
+                return (
+                  <StudSelect 
+                  label={label} 
+                  selectItems={selectItems} 
+                  setRegisterInfo={setRegisterInfo} 
+                  handleOnChange={() => handleOnChange}
+                  />
+                )
               default:
                 console.log('textfield not available: create component and add to switch statement')
             }
@@ -94,24 +109,14 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
         </Grid>
       </CardContent>
 
-        <Grid container className="button-container">
-          {/* back button */}
-          {canGoBack && (
-            <Grid item xs={6} className="back-button">
-            <CardActions onClick={() => handleBackClick()}>
-              <Button size='small'>Back</Button>
-            </CardActions>
-          </Grid>
-          )}
-          {/* login/register page redirect */}
-          
-            <Grid item xs={canGoBack ? 6 : 12} className="button-redirect-item">
-              <Button variant="text" className="button-redirect" onClick={handleRedirect}>
-                {redirectButtonText}
-              </Button>
-            </Grid>
-          
+        {/* login/register page redirect */}
+      <Grid container className="button-container">
+        <Grid item xs={12} className="button-redirect-item">
+          <Button variant="text" className="button-redirect" onClick={handleRedirect}>
+            {redirectButtonText}
+          </Button>
         </Grid>
+      </Grid>
     </Card>
   )
 };

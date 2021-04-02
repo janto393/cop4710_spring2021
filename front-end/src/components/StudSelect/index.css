@@ -1,6 +1,6 @@
 .input-field-container .select-field-item  {
 	margin: 0 10px;
-	padding-bottom: 10px;
+	padding: 10px 0;
 }
 
 .input-field-container .select-field-item .MuiFormControl-root {

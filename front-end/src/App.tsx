@@ -2,44 +2,65 @@
 
 import "./index.css";
 
-import {
-  Route,
-  BrowserRouter as Router,
-  Switch,
-} from "react-router-dom";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
+import { LinearProgress } from "@material-ui/core";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import React from "react";
 import RegisterForm from "./components/RegisterForm";
 import StudForm from "./components/StudForm";
+import { useRegister } from "./hooks/useRegister";
 
 const App = () => {
-  // 1. create hook to maintain user state while they create an account
-  // 2. create <StudLogin path="/" user={user} /> to encapsulate login form logic and callback
-  // 3. same for register
+  const {
+    registerInfo,
+    setRegisterInfo,
+    registerUser,
+    isLoading,
+  } = useRegister();
+
+  const loginTextFields = [
+    {
+      label: "email",
+      fieldType: "textField",
+      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
+        setRegisterInfo({ ...registerInfo, email: e.target.value });
+      },
+    },
+    {
+      label: "password",
+      inputType: "password",
+      fieldType: "textField",
+      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
+        setRegisterInfo({ ...registerInfo, password: e.target.value });
+      },
+    },
+  ];
 
   return (
     <Router>
       <Switch>
         {/* splash page routes */}
         <LoginPageContainer>
+          {isLoading && <LinearProgress />}
           <Route path="/" exact>
             <StudForm
               title="Login"
-              textFields={[{label: 'email', fieldType: 'textField'}, {label: 'password', inputType: 'password', fieldType: 'textField'}]}
+              textFields={loginTextFields}
               buttonText="Sign in"
+              handleClick={registerUser} // add signInUser fn
             />
           </Route>
-
           <Route path="/register" exact>
-            <RegisterForm />
+            <RegisterForm
+              registerInfo={registerInfo}
+              setRegisterInfo={setRegisterInfo}
+              registerUser={registerUser}
+            />
           </Route>
         </LoginPageContainer>
-
         {/* rest of the app will go below */}
-        <Route path="/home" exact>
-          
-        </Route>
+        <Route path="/home" exact></Route>
       </Switch>
     </Router>
   );

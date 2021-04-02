@@ -1,110 +1,108 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
+import StudForm, { FormFieldType } from '../StudForm'
 
-import StudForm from '../StudForm'
+import { UserInfoType } from '../../hooks/useRegister'
 
-export type RegisterProps = {}
-
-export type UserInfoType = {
-	accountType?: string;
-	email?: string;
-	university?: string;
+export type RegisterProps = {
+	registerInfo: UserInfoType;
+	setRegisterInfo: Function;
+	registerUser: Function;
 }
 
-const INITIAL_VALUE: UserInfoType = {
-	accountType: '',
-	university: '',
-	email:  ''
-}
 
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
-	const [registerStep, setRegisterStep] = useState(1)
-	const [registerInfo, setRegisterInfo] = useState<UserInfoType>(INITIAL_VALUE)
+	const { registerInfo, setRegisterInfo, registerUser } = props
+	const buttonText = 'Submit'
+
+	// when we change account type we want to reset university
+	useEffect(() => {
+		registerInfo.role === 'Student' ? setRegisterInfo({
+			...registerInfo,
+			university: ''
+		}) : null 
+	}, [registerInfo.role])
+
+	const selectAccountTypeField: Array<FormFieldType> = [
+		{label: 'Select account type', 
+		fieldType: "dropDown", 
+		selectItems: ['University (Super admin)', 'Student'],
+		handleOnChange: (e: React.ChangeEvent<{value: unknown}>) => {
+				setRegisterInfo({
+					...registerInfo,
+					role: e.target.value === 'University (Super admin)' ? 1 : 2
+				})
+			}
+		}
+	]
+	
+	const selectUniveristyField = [
+		{label: 'Select your University', 
+		fieldType: "dropDown", 
+		selectItems: [
+		'University of Central Florida', 
+		'University of Florida', 
+		'Florida State University'],
+		handleOnChange: (e: React.ChangeEvent<{value: unknown}>) => {
+			setRegisterInfo({
+				...registerInfo,
+				universityID: e.target.value
+			})
+		}}
+	]
+	
+	const emailPasswordFields = [
+		{label: 'first name', 
+		fieldType: 'textField', 
+		handleOnChange: (e: React.ChangeEvent<{value: unknown}>) => {
+			setRegisterInfo({...registerInfo, firstName: e.target.value})}
+		},{label: 'last name', 
+		fieldType: 'textField', 
+		handleOnChange: (e: React.ChangeEvent<{value: unknown}>) => {
+			setRegisterInfo({...registerInfo, lastName: e.target.value})}
+		},
+		{label: 'email', 
+		fieldType: 'textField', 
+		handleOnChange: (e: React.ChangeEvent<{value: unknown}>) => {
+			setRegisterInfo({...registerInfo, email: e.target.value, userName: e.target.value})}
+		},
+		{label: 'password', 
+		inputType: 'password', 
+		fieldType: 'textField', 
+		handleOnChange: (e: React.ChangeEvent<{value: unknown}>) => {
+			setRegisterInfo({...registerInfo, password: e.target.value})}
+		},
+		{label: 'confirm password', 
+		inputType: 'password', 
+		fieldType: 'textField', 
+		handleOnChange: (e: React.ChangeEvent<{value: unknown}>) => {
+			setRegisterInfo({...registerInfo, rePassword: e.target.value})}}
+	]
 
 
-	// TODO: connect form submit with api
-	const handleSubmitRegistration = () => {
-		console.log('user login/create account!')
+	const getFormFields = (): Array<FormFieldType> =>  {
+		const formFields: Array<FormFieldType> = []
+
+		formFields.push(selectAccountTypeField?.[0]);
+
+		formFields.push(selectUniveristyField?.[0]);
+		
+		emailPasswordFields.forEach((field: FormFieldType) => formFields.push(field))
+		return formFields
 	}
 
 	const getSelectAccountType = (
 			<StudForm
-				title="Select Account Type"
-				textFields={[
-					{label: 'Account', 
-					fieldType: "dropDown", 
-					selectItems: ['University', 'Student']}
-				]}
-				buttonText="Next"
-				registerInfo={registerInfo}
-				setRegisterInfo={setRegisterInfo}
-				step={registerStep}
-				handleClick={() => 
-					registerInfo.accountType === 'Student' 
-					?  setRegisterStep(registerStep + 2) 
-					: setRegisterStep(registerStep + 1)
-				}
-			/>
-		)
-	
-
-	const getUniversityDetails = (
-			<StudForm
-				title="University Details"
-				textFields={[
-					{label: 'University', 
-					fieldType: "dropDown", 
-					selectItems: [
-						'University of Central Florida', 
-						'University of Florida', 
-						'Florida State University'
-					]}
-				]}
-				buttonText="Next"
-				registerInfo={registerInfo}
-				setRegisterInfo={setRegisterInfo}
-				step={registerStep}
-				handleClick={() => setRegisterStep(registerStep + 1)}
-				handleBackClick={() => setRegisterStep(registerStep - 1)}
-			/>
-	)
-	
-
-	const getRegisterAccount = (
-			<StudForm
 				title="Register"
-				textFields={[
-				{label: 'email', fieldType: 'textField'},
-				{label: 'password', inputType: 'password', fieldType: 'textField'},
-				{label: 'confirm password', inputType: 'password', fieldType: 'textField'}
-				]}
-				buttonText="Submit"
+				textFields={getFormFields()}
 				registerInfo={registerInfo}
 				setRegisterInfo={setRegisterInfo}
-				step={registerStep}
-				handleBackClick={() => 
-					registerInfo.accountType === 'Student' 
-					? setRegisterStep(registerStep - 2)
-					: setRegisterStep(registerStep - 1)
-				}
-				handleClick={handleSubmitRegistration}
+				buttonText={buttonText}
+				handleClick={registerUser}
 			/>
 		)
-	
 
-	const getForm = () => {
-		switch(registerStep) {
-			case 1:
-				return getSelectAccountType
-			case 2:
-				return getUniversityDetails
-			case 3:
-				return getRegisterAccount
-			default:
-				return null
-		}
-	}
 
-	return getForm()
+	return getSelectAccountType
 }
 
 export default RegisterForm
