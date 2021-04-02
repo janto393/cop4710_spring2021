@@ -20,47 +20,49 @@ interface GetEventsResponse
 	events: Array<EventInfo>
 }
 
-function EventsPage()
+const EventsPage = () =>
 {
 	const [events, setEvents] = useState<Array<EventInfo>>([]);
+	const [eventsFetched, setEventsFetched] = useState<boolean>(false);
 
-	// TODO Implement dynamic selection of payload values
-	let payload: GetEventsPayload = {
-		schoolID: 1,
-		rsoID: 1
-	};
+	if (!eventsFetched)
+	{
+		// TODO Implement dynamic selection of payload values
+		let payload: GetEventsPayload = {
+			schoolID: 1,
+			rsoID: 1
+		};
 
-	let request: Object = {
-		method: "POST",
-		body: JSON.stringify(payload),
-		headers: {
-			"Content-Type" : "application/json"
-		}
-	};
-
-	fetch(buildpath("/api/getEvents"), request)
-		.then((response: Response) => {
-			return response.json();
-		})
-		.then((data: GetEventsResponse) => {
-			if (!data.success)
-			{
-				console.log(data.error);
-				return;
+		let request: Object = {
+			method: "POST",
+			body: JSON.stringify(payload),
+			headers: {
+				"Content-Type" : "application/json"
 			}
+		};
 
-			setEvents(data.events);
-		});
+		fetch(buildpath("/api/getEvents"), request)
+			.then((response: Response) => {
+				return response.json();
+			})
+			.then((data: GetEventsResponse) => {
+				if (!data.success)
+				{
+					console.log(data.error);
+					return;
+				}
+
+				setEvents(data.events);
+				setEventsFetched(true);
+			});
+	};
 
 	return (
-		<div className="EventsPage">
-			<p>
-				Hello, world
-			</p>
+		<>
 			<Accordion>
 				{events.map(EventCard)}
 			</Accordion>
-		</div>
+		</>
 	);
 }
 

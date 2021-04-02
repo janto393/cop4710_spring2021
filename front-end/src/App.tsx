@@ -20,23 +20,25 @@ const App = () => {
     <Router>
       <Switch>
         {/* splash page routes */}
-        <LoginPageContainer>
           <Route path="/" exact>
-            <StudForms
-              title="Login"
-              textFields={loginTextFields}
-              buttonText="Sign in"
-            />
+						<LoginPageContainer>
+							<StudForms
+								title="Login"
+								textFields={loginTextFields}
+								buttonText="Sign in"
+							/>
+						</LoginPageContainer>
           </Route>
 
           <Route path="/register" exact>
-            <StudForms
-              title="Register"
-              textFields={registerTextFields}
-              buttonText="Submit"
-            />
+						<LoginPageContainer>
+							<StudForms
+								title="Register"
+								textFields={registerTextFields}
+								buttonText="Submit"
+							/>
+						</LoginPageContainer>
           </Route>
-        </LoginPageContainer>
 
         {/* rest of the app will go below */}
 				<Route path="/events" exact>

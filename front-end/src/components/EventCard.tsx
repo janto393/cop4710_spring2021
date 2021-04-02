@@ -52,12 +52,12 @@ function EventCard(props: EventInfo, index: number)
 
 	return (
 		<Card className="eventCard">
-			Test
-			{/* <Card.Img src={props.eventPictures[0].toString("base64")} alt="Event Image" />
+			<Card.Img src={props.eventPictures[0].picture.toString("base64")} alt="Event Image" />
 			<Card.Header>
-				<Accordion.Toggle as={Button} variant="link" eventKey={String(props.eventInfo.eventIndex)}>
+				{props.name}
+				<Accordion.Toggle as={Button} variant="link" eventKey={String(props.index)}>
 				</Accordion.Toggle>
-			</Card.Header> */}
+			</Card.Header>
 		</Card>
 	);
 }
