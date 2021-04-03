@@ -17,8 +17,11 @@ function createEventPage(): JSX.Element
 	const [RSOs, setRSOs] = useState<Array<RSO>>([]);
 	const [states, setStates] = useState<Array<State>>([]);
 
+	// data for university that user attends (will be displayed but
+	// can't be changed)
+	const [university, setUniversity] = useState<University>();
+
 	// hooks to store event information
-	const [schoolID, setSchoolID] = useState<number>(-1);
 	const [address, setAddress] = useState<string>("");
 	const [city, setCity] = useState<string>("");
 	const [stateID, setStateID] = useState<number>(-1);
@@ -55,7 +58,11 @@ function createEventPage(): JSX.Element
 		// parse the user Data into a json object
 		let userData: UserDataWithoutPassword = JSON.parse(rawUserData);
 
-		
+		// fetch data from the api
+		fetchStates();
+		fetchAllRSOs(userData.universityID);
+		fetchMeetingTypes();
+		fetchUniversityData(userData.universityID);
 	};
 
 	const fetchStates = (): void => {
@@ -132,6 +139,12 @@ function createEventPage(): JSX.Element
 
 			setMeetingTypes(data.meetingTypes);
 		});
+	};
+
+	const fetchUniversityData = (): void => {
+		// let payload: GetUniversityRequest = {
+
+		// }
 	};
 
 	return (
