@@ -1,7 +1,7 @@
 /**
  * If an endpoint request body is not explicitly defined, then it
  * does not require a request body.
- */
+*/
 
 export interface CreateAttendeeRequest
 {

@@ -10,6 +10,7 @@ import {
 } from "react-router-dom";
 import { loginTextFields, registerTextFields } from "./Utils/formUtils";
 
+import CreateEventPage from "./pages/CreateEventPage";
 import EventsPage from "./pages/EventsPage";
 
 import LoginPageContainer from "./containers/LoginPageContainer/index";
@@ -41,6 +42,9 @@ const App = () => {
           </Route>
 
         {/* rest of the app will go below */}
+				<Route path="/createEvent" exact>
+					<CreateEventPage />
+				</Route>
 				<Route path="/events" exact>
 					<EventsPage />
 				</Route>
