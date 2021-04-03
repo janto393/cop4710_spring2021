@@ -7,7 +7,7 @@ import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
-import { useStudUser } from "./hooks/userStudUser";
+import { useStudUser } from "./hooks/useStudUser";
 
 const App = () => {
   const {

@@ -12,7 +12,7 @@ import {
 import React from "react";
 import StudSelect from "../StudSelect";
 import StudTextField from "../StudTextField";
-import { UserInfoType } from "../../hooks/userStudUser";
+import { UserInfoType } from "../../hooks/useStudUser";
 import { useHistory } from "react-router-dom";
 
 // fields that should be passed into formField

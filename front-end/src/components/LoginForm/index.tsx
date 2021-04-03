@@ -1,7 +1,7 @@
 import StudForm, { FormFieldType } from "../StudForm";
 
 import React from "react";
-import { UserInfoType } from "../../hooks/userStudUser";
+import { UserInfoType } from "../../hooks/useStudUser";
 
 export type LoginFormProps = {
   studUser: UserInfoType;

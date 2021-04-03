@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import StudForm, { FormFieldType } from "../StudForm";
 
-import { UserInfoType } from "../../hooks/userStudUser";
+import { UserInfoType } from "../../hooks/useStudUser";
 
 export type RegisterProps = {
   studUser: UserInfoType;
@@ -98,13 +98,16 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
   ];
 
   /*
-	- each array above is full of formFields
-	this fn maps through each of the arrays above
-	and pushes the individual fields inside the comprehensive
-	formFields array and returns that to our studForm
+	- each array above is full individual formFields
+	- this fn maps through each of the arrays above
+    and pushes the individual fields inside the comprehensive
+    formFields array and returns that to our studForm
 
 	- our studForm will know how to render each field to the screen
 	in sequence
+
+  - we seperated them in individual related arrays incase we wanted some form fields
+   to appear only after a dropdown selection. Modularity scales well
   */
   const getFormFields = (): Array<FormFieldType> => {
     const formFields: Array<FormFieldType> = [];
