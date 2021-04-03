@@ -30,7 +30,7 @@ export const useStudUser = () => {
   const [studUser, setStudUser] = useState(INITIAL_VALUE);
   const [isLoading, setIsLoading] = useState(false);
 
-  const logIn = async (username: string, password: string) => {
+  const logIn = async (username: string, password: string, history: any) => {
     setIsLoading(true);
 
     await axios
@@ -43,12 +43,13 @@ export const useStudUser = () => {
 
         setStudUser(data.userData);
 
+        // if successful login, forward user to home page
         data.success === false
           ? alert("Username and/or password incorrect.")
-          : alert("Successfully logged in!");
+          : history.push("/home");
       })
       .catch((e) => {
-        console.log(e);
+        console.log("Unknown error.", e);
       });
 
     setIsLoading(false);

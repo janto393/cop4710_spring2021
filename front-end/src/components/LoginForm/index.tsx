@@ -2,6 +2,7 @@ import StudForm, { FormFieldType } from "../StudForm";
 
 import React from "react";
 import { UserInfoType } from "../../hooks/useStudUser";
+import { useHistory } from "react-router";
 
 export type LoginFormProps = {
   studUser: UserInfoType;
@@ -12,6 +13,7 @@ export type LoginFormProps = {
 const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
   const { studUser, setStudUser, logIn } = props;
   const { username, password } = studUser;
+  const history = useHistory();
 
   // formFields for login form
   const loginTextFields: Array<FormFieldType> = [
@@ -41,7 +43,7 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
       title="Login"
       textFields={loginTextFields}
       buttonText="Sign in"
-      handleClick={() => logIn(username, password)}
+      handleClick={() => logIn(username, password, history)}
     />
   );
 };
