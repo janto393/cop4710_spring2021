@@ -13,7 +13,7 @@ import React from "react";
 import StudSelect from "../StudSelect";
 import StudTextField from "../StudTextField";
 import { UserInfoType } from "../../hooks/useRegister";
-import { useHistory } from "react-router-dom"
+import { useHistory } from "react-router-dom";
 
 export type FormFieldType = {
   label: string;
@@ -23,6 +23,7 @@ export type FormFieldType = {
   handleOnChange: Function;
 };
 
+// fields that should be passed into component
 export type FormPropsType = {
   title: string;
   textFields: Array<FormFieldType>;
@@ -34,17 +35,17 @@ export type FormPropsType = {
 };
 
 const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
-  const { 
-    title, 
-    textFields, 
-    buttonText, 
+  const {
+    title,
+    textFields,
+    buttonText,
     handleClick = () => null,
-    setRegisterInfo = () => null
+    setRegisterInfo = () => null,
   } = props;
-  
+
   // used to redirect to a different route
-  const history = useHistory()
-  const { location } = history
+  const history = useHistory();
+  const { location } = history;
 
   const redirectButtonText: string =
     title === "Login"
@@ -54,13 +55,13 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
   // routes to login/signup
   const handleRedirect = () => {
     // checks current path and redirects to the either register or login
-    location.pathname === '/' ? history.push('/register') : history.push('/')
-  }
+    location.pathname === "/" ? history.push("/register") : history.push("/");
+  };
 
   return (
     <Card className="login-card" variant="elevation">
       <CardContent>
-        <Grid container direction="row" className="input-field-container"> 
+        <Grid container direction="row" className="input-field-container">
           {/* form title */}
           <Typography variant="h4" className="form-title">
             {title}
@@ -68,33 +69,37 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
 
           {/* renders all of the fields */}
           {textFields.map((field) => {
-            const { 
-              label, 
-              inputType = 'email', 
-              fieldType, 
-              selectItems = [], 
-              handleOnChange = () => null 
+            const {
+              label,
+              inputType = "email",
+              fieldType,
+              selectItems = [],
+              handleOnChange = () => null,
             } = field;
-            
+
             // only supports text and select fields. can add more below in switch
             switch (fieldType) {
-              case 'textField':
+              case "textField":
                 return (
-                <StudTextField 
-                label={label} 
-                type={inputType} 
-                handleOnChange={() => handleOnChange} />)
-              case 'dropDown':
-                return (
-                  <StudSelect 
-                  label={label} 
-                  selectItems={selectItems} 
-                  setRegisterInfo={setRegisterInfo} 
-                  handleOnChange={() => handleOnChange}
+                  <StudTextField
+                    label={label}
+                    type={inputType}
+                    handleOnChange={() => handleOnChange}
                   />
-                )
+                );
+              case "dropDown":
+                return (
+                  <StudSelect
+                    label={label}
+                    selectItems={selectItems}
+                    setRegisterInfo={setRegisterInfo}
+                    handleOnChange={() => handleOnChange}
+                  />
+                );
               default:
-                console.log('textfield not available: create component and add to switch statement')
+                console.log(
+                  "textfield not available: create component and add to switch statement"
+                );
             }
           })}
         </Grid>
@@ -102,23 +107,31 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
         {/* buttons */}
         <Grid container className="button-container">
           <Grid item xs={12} className="button-submit-item">
-            <Button variant="contained" className="button-submit" onClick={() => handleClick()}>
+            <Button
+              variant="contained"
+              className="button-submit"
+              onClick={() => handleClick()}
+            >
               {buttonText}
             </Button>
           </Grid>
         </Grid>
       </CardContent>
 
-        {/* login/register page redirect */}
+      {/* login/register page redirect */}
       <Grid container className="button-container">
         <Grid item xs={12} className="button-redirect-item">
-          <Button variant="text" className="button-redirect" onClick={handleRedirect}>
+          <Button
+            variant="text"
+            className="button-redirect"
+            onClick={handleRedirect}
+          >
             {redirectButtonText}
           </Button>
         </Grid>
       </Grid>
     </Card>
-  )
+  );
 };
 
 export default StudForm;

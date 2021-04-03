@@ -2,11 +2,12 @@ import axios from "axios";
 import { useState } from "react";
 
 export type UserInfoType = {
-  userName: "";
-  firstName: any;
-  lastName: any;
+  username: any;
+  firstname: any;
+  lastname: any;
   email: any;
   role?: any;
+  profilePicture?: any;
   universityID: any;
   rsoID: any;
   password: any;
@@ -14,9 +15,9 @@ export type UserInfoType = {
 };
 
 const INITIAL_VALUE: UserInfoType = {
-  userName: "",
-  firstName: "",
-  lastName: "",
+  username: "",
+  firstname: "",
+  lastname: "",
   email: "",
   role: "",
   universityID: "",
@@ -29,34 +30,66 @@ export const useRegister = () => {
   const [registerInfo, setRegisterInfo] = useState(INITIAL_VALUE);
   const [isLoading, setIsLoading] = useState(false);
 
-  const registerUser = async () => {
+  const logIn = async (username: string, password: string) => {
     setIsLoading(true);
+
+    await axios
+      .post("http://localhost:5000/api/login", {
+        username: username,
+        password: password,
+      })
+      .then((res) => {
+        const { data } = res;
+
+        setRegisterInfo(data.userData);
+
+        data.success === false
+          ? alert("Username and/or password incorrect.")
+          : alert("Successfully logged in!");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
+    setIsLoading(false);
+  };
+
+  const submitUserRegistration = async () => {
+    setIsLoading(true);
+
     const {
-      userName,
-      firstName,
-      lastName,
+      username,
+      password,
+      firstname,
+      lastname,
       email,
+      universityID, // hard coded for test
+      rsoID, // ^
       role,
-      universityID,
-      rsoID,
     } = registerInfo;
+
+    const registerBody = {
+      username: username,
+      firstname: firstname,
+      lastname: lastname,
+      email: email,
+      universityID: 1,
+      rsoID: 1,
+      role: role,
+      password: password,
+    };
 
     // call to regiser account
     await axios
-      .post("http://localhost:5000/api/register", {
-        userName: userName,
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        role: role,
-        universityID: universityID,
-        rsoID: rsoID,
-      })
+      .post("http://localhost:5000/api/register", registerBody)
       .then((res) => {
-        console.log(res);
+        const { data } = res;
+        data.success === false
+          ? alert("Account successfully created!")
+          : alert("Error creating account!");
       })
       .catch((e) => {
-        console.log("Error registering account", e);
+        console.log("Unknown error registering account", e);
       });
 
     setIsLoading(false);
@@ -65,7 +98,8 @@ export const useRegister = () => {
   return {
     registerInfo,
     setRegisterInfo,
-    registerUser,
+    submitUserRegistration,
     isLoading,
+    logIn,
   };
 };
