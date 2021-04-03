@@ -12,9 +12,10 @@ import {
 import React from "react";
 import StudSelect from "../StudSelect";
 import StudTextField from "../StudTextField";
-import { UserInfoType } from "../../hooks/useRegister";
+import { UserInfoType } from "../../hooks/userStudUser";
 import { useHistory } from "react-router-dom";
 
+// fields that should be passed into formField
 export type FormFieldType = {
   label: string;
   inputType?: string;
@@ -28,20 +29,14 @@ export type FormPropsType = {
   title: string;
   textFields: Array<FormFieldType>;
   buttonText: string;
-  registerInfo?: UserInfoType;
+  studUser?: UserInfoType;
   handleClick?: Function;
   handleBackClick?: Function;
-  setRegisterInfo?: Function;
+  setStudUser?: Function;
 };
 
 const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
-  const {
-    title,
-    textFields,
-    buttonText,
-    handleClick = () => null,
-    setRegisterInfo = () => null,
-  } = props;
+  const { title, textFields, buttonText, handleClick = () => null } = props;
 
   // used to redirect to a different route
   const history = useHistory();
@@ -92,7 +87,6 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
                   <StudSelect
                     label={label}
                     selectItems={selectItems}
-                    setRegisterInfo={setRegisterInfo}
                     handleOnChange={() => handleOnChange}
                   />
                 );

@@ -1,26 +1,25 @@
 import React, { useEffect } from "react";
 import StudForm, { FormFieldType } from "../StudForm";
 
-import { UserInfoType } from "../../hooks/useRegister";
+import { UserInfoType } from "../../hooks/userStudUser";
 
 export type RegisterProps = {
-  registerInfo: UserInfoType;
-  setRegisterInfo: Function;
+  studUser: UserInfoType;
+  setStudUser: Function;
   registerUser: Function;
 };
 
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
-  const { registerInfo, setRegisterInfo, registerUser } = props;
+  const { studUser, setStudUser, registerUser } = props;
   const buttonText = "Submit";
 
   // when we change account type we want to reset universityID
   useEffect(() => {
-    setRegisterInfo({
-      ...registerInfo,
-      universityID:
-        registerInfo.role === "Student" ? "" : registerInfo.universityID,
+    setStudUser({
+      ...studUser,
+      universityID: studUser.role === "Student" ? "" : studUser.universityID,
     });
-  }, [registerInfo.role]);
+  }, [studUser.role]);
 
   const selectAccountTypeField: Array<FormFieldType> = [
     {
@@ -28,8 +27,8 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       fieldType: "dropDown",
       selectItems: ["University (Super admin)", "Student"],
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setRegisterInfo({
-          ...registerInfo,
+        setStudUser({
+          ...studUser,
           role: e.target.value === "University (Super admin)" ? 1 : 2,
         });
       },
@@ -46,8 +45,8 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
         "Florida State University",
       ],
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setRegisterInfo({
-          ...registerInfo,
+        setStudUser({
+          ...studUser,
           universityID: e.target.value,
         });
       },
@@ -59,22 +58,22 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       label: "first name",
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setRegisterInfo({ ...registerInfo, firstname: e.target.value });
+        setStudUser({ ...studUser, firstname: e.target.value });
       },
     },
     {
       label: "last name",
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setRegisterInfo({ ...registerInfo, lastname: e.target.value });
+        setStudUser({ ...studUser, lastname: e.target.value });
       },
     },
     {
       label: "email",
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setRegisterInfo({
-          ...registerInfo,
+        setStudUser({
+          ...studUser,
           email: e.target.value,
           username: e.target.value,
         });
@@ -85,7 +84,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       inputType: "password",
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setRegisterInfo({ ...registerInfo, password: e.target.value });
+        setStudUser({ ...studUser, password: e.target.value });
       },
     },
     {
@@ -93,7 +92,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       inputType: "password",
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setRegisterInfo({ ...registerInfo, rePassword: e.target.value });
+        setStudUser({ ...studUser, rePassword: e.target.value });
       },
     },
   ];
@@ -124,8 +123,8 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     <StudForm
       title="Register"
       textFields={getFormFields()}
-      registerInfo={registerInfo}
-      setRegisterInfo={setRegisterInfo}
+      studUser={studUser}
+      setStudUser={setStudUser}
       buttonText={buttonText}
       handleClick={registerUser}
     />

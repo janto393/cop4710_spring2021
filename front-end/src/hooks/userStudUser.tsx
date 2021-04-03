@@ -26,8 +26,8 @@ const INITIAL_VALUE: UserInfoType = {
   rePassword: "",
 };
 
-export const useRegister = () => {
-  const [registerInfo, setRegisterInfo] = useState(INITIAL_VALUE);
+export const useStudUser = () => {
+  const [studUser, setStudUser] = useState(INITIAL_VALUE);
   const [isLoading, setIsLoading] = useState(false);
 
   const logIn = async (username: string, password: string) => {
@@ -41,7 +41,7 @@ export const useRegister = () => {
       .then((res) => {
         const { data } = res;
 
-        setRegisterInfo(data.userData);
+        setStudUser(data.userData);
 
         data.success === false
           ? alert("Username and/or password incorrect.")
@@ -66,7 +66,7 @@ export const useRegister = () => {
       universityID, // hard coded for test
       rsoID, // ^
       role,
-    } = registerInfo;
+    } = studUser;
 
     const registerBody = {
       username: username,
@@ -96,8 +96,8 @@ export const useRegister = () => {
   };
 
   return {
-    registerInfo,
-    setRegisterInfo,
+    studUser,
+    setStudUser,
     submitUserRegistration,
     isLoading,
     logIn,

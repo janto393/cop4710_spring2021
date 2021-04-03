@@ -1,17 +1,17 @@
 import StudForm, { FormFieldType } from "../StudForm";
 
 import React from "react";
-import { UserInfoType } from "../../hooks/useRegister";
+import { UserInfoType } from "../../hooks/userStudUser";
 
 export type LoginFormProps = {
-  registerInfo: UserInfoType;
-  setRegisterInfo: Function;
+  studUser: UserInfoType;
+  setStudUser: Function;
   logIn: Function;
 };
 
 const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
-  const { registerInfo, setRegisterInfo, logIn } = props;
-  const { username, password } = registerInfo;
+  const { studUser, setStudUser, logIn } = props;
+  const { username, password } = studUser;
 
   // formFields for login form
   const loginTextFields: Array<FormFieldType> = [
@@ -19,8 +19,8 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
       label: "email",
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setRegisterInfo({
-          ...registerInfo,
+        setStudUser({
+          ...studUser,
           email: e.target.value,
           username: e.target.value,
         });
@@ -31,7 +31,7 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
       inputType: "password",
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setRegisterInfo({ ...registerInfo, password: e.target.value });
+        setStudUser({ ...studUser, password: e.target.value });
       },
     },
   ];

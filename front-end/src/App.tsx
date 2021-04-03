@@ -7,16 +7,16 @@ import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
-import { useRegister } from "./hooks/useRegister";
+import { useStudUser } from "./hooks/userStudUser";
 
 const App = () => {
   const {
-    registerInfo,
-    setRegisterInfo,
+    studUser,
+    setStudUser,
     submitUserRegistration,
-    isLoading,
     logIn,
-  } = useRegister();
+    isLoading,
+  } = useStudUser();
 
   return (
     <Router>
@@ -25,8 +25,8 @@ const App = () => {
         <Route path="/" exact>
           <LoginPageContainer isLoading={isLoading}>
             <LoginForm
-              registerInfo={registerInfo}
-              setRegisterInfo={setRegisterInfo}
+              studUser={studUser}
+              setStudUser={setStudUser}
               logIn={logIn}
             />
           </LoginPageContainer>
@@ -35,8 +35,8 @@ const App = () => {
         <Route path="/register" exact>
           <LoginPageContainer isLoading={isLoading}>
             <RegisterForm
-              registerInfo={registerInfo}
-              setRegisterInfo={setRegisterInfo}
+              studUser={studUser}
+              setStudUser={setStudUser}
               registerUser={submitUserRegistration}
             />
           </LoginPageContainer>
