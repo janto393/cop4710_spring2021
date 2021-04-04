@@ -2,44 +2,48 @@
 
 import "./index.css";
 
-import {
-  Route,
-  BrowserRouter as Router,
-  Switch,
-} from "react-router-dom";
-import { loginTextFields, registerTextFields } from "./Utils/formUtils";
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
+import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
-import StudForms from "./components/StudForms";
+import RegisterForm from "./components/RegisterForm";
+import { useStudUser } from "./hooks/useStudUser";
 
 const App = () => {
+  const {
+    studUser,
+    setStudUser,
+    submitUserRegistration,
+    logIn,
+    isLoading,
+  } = useStudUser();
 
   return (
     <Router>
       <Switch>
         {/* splash page routes */}
-        <LoginPageContainer>
-          <Route path="/" exact>
-            <StudForms
-              title="Login"
-              textFields={loginTextFields}
-              buttonText="Sign in"
+        <Route path="/" exact>
+          <LoginPageContainer isLoading={isLoading}>
+            <LoginForm
+              studUser={studUser}
+              setStudUser={setStudUser}
+              logIn={logIn}
             />
-          </Route>
+          </LoginPageContainer>
+        </Route>
 
-          <Route path="/register" exact>
-            <StudForms
-              title="Register"
-              textFields={registerTextFields}
-              buttonText="Submit"
+        <Route path="/register" exact>
+          <LoginPageContainer isLoading={isLoading}>
+            <RegisterForm
+              studUser={studUser}
+              setStudUser={setStudUser}
+              registerUser={submitUserRegistration}
             />
-          </Route>
-        </LoginPageContainer>
+          </LoginPageContainer>
+        </Route>
 
         {/* rest of the app will go below */}
-        <Route path="/home" exact>
-          
-        </Route>
+        <Route path="/home" exact></Route>
       </Switch>
     </Router>
   );
