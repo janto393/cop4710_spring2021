@@ -1,10 +1,18 @@
 import "./index.css";
 
-import { Grid } from "@material-ui/core";
+import { Grid, LinearProgress } from "@material-ui/core";
+
 import LoginImage from "../../components/Images/LoginImage";
 import React from "react";
 
-const LoginPageContainer: React.FC = ({ children }) => {
+export type LoginPageProps = {
+  isLoading: boolean;
+};
+
+const LoginPageContainer: React.FC<LoginPageProps> = ({
+  children,
+  isLoading,
+}) => {
   return (
     <>
       <Grid
@@ -20,6 +28,7 @@ const LoginPageContainer: React.FC = ({ children }) => {
 
       <Grid container className="login-card-container" justify="center">
         <Grid item xs={4}>
+          {isLoading && <LinearProgress />}
           {children}
         </Grid>
       </Grid>

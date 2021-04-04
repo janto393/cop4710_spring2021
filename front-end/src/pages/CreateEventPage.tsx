@@ -62,7 +62,7 @@ function createEventPage(): JSX.Element
 		fetchStates();
 		fetchAllRSOs(userData.universityID);
 		fetchMeetingTypes();
-		fetchUniversityData(userData.universityID);
+		// fetchUniversityData(userData.universityID);
 	};
 
 	const fetchStates = (): void => {
