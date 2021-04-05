@@ -5,7 +5,7 @@ import { UserInfoType } from "src/hooks/useStudUser";
 import buildpath from "../../Utils/buildpath";
 
 // component imports
-import EventCard from "./EventCard";
+import EventCards from "./EventCard";
 import { Event } from "src/types/eventTypes";
 import { useEffect } from "react";
 import { GetEventsRequest } from "src/types/apiRequestBodies";
@@ -24,9 +24,21 @@ function EventList(props: EventListProps): JSX.Element
 			schoolID: props.studUser.universityID
 		};
 
-		// add the rso of the user if they are part of an RSO
-		if (props.studUser.rsoID !== undefined || -1)
+		console.log(props.studUser);
+		console.log(typeof props.studUser.universityID);
+		console.log(typeof props.studUser.rsoID);
+
+		// hard code safety value (will remove when app is operational)
+		if (props.studUser.universityID === undefined || props.studUser.universityID !== "")
 		{
+			console.warn("schoolID safety value triggered");
+			payload.schoolID = 1;
+		}
+
+		// add the rso of the user if they are part of an RSO
+		if (props.studUser.rsoID !== undefined || props.studUser.rsoID !== "")
+		{
+			console.log("Populating rsoID");
 			payload.rsoID = props.studUser.rsoID;
 		}
 
@@ -56,9 +68,7 @@ function EventList(props: EventListProps): JSX.Element
 	useEffect(() => {fetchEvents();}, []);
 
 	return (
-		<>
-			{events.map(EventCard)}
-		</>
+		<EventCards events={events} />
 	);
 }
 
