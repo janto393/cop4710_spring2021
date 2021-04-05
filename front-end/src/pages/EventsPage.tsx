@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useState } from "react";
 import { Accordion } from "react-bootstrap";
 
@@ -23,10 +24,12 @@ interface GetEventsResponse
 const EventsPage = () =>
 {
 	const [events, setEvents] = useState<Array<EventInfo>>([]);
-	const [eventsFetched, setEventsFetched] = useState<boolean>(false);
 
-	if (!eventsFetched)
-	{
+	useEffect(() => {
+		fetchEvents();
+	}, []);
+
+	const fetchEvents = async () =>	{
 		// TODO Implement dynamic selection of payload values
 		let payload: GetEventsPayload = {
 			schoolID: 1,
@@ -41,20 +44,7 @@ const EventsPage = () =>
 			}
 		};
 
-		fetch(buildpath("/api/getEvents"), request)
-			.then((response: Response) => {
-				return response.json();
-			})
-			.then((data: GetEventsResponse) => {
-				if (!data.success)
-				{
-					console.log(data.error);
-					return;
-				}
-
-				setEvents(data.events);
-				setEventsFetched(true);
-			});
+		setEvents((await (await fetch(buildpath("/api/getEvents"), request)).json()).events);
 	};
 
 	return (

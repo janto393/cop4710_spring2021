@@ -6,7 +6,7 @@ export interface Event
 	university: University,
 	address: string,
 	city: string,
-	stateID: string,
+	stateID: number,
 	zip: string,
 	rsoID: number,
 	meetingTypeID: number,
@@ -19,15 +19,17 @@ export interface Event
 	eventPictures: Array<Buffer>
 }
 
-/**
- * 
- */
+export interface EventFormData extends NewEvent
+{
+	eventID?: number
+}
+
 export interface NewEvent
 {
 	schoolID: number,
 	address: string,
 	city: string,
-	stateID: string,
+	stateID: number,
 	zip: string,
 	rsoID: number,
 	meetingTypeID: number,
