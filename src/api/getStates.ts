@@ -60,7 +60,7 @@ export async function getStates(request: Request, response: Response, next: Call
 			for (i = 0; i < rows.length; i++)
 			{
 				let state: State = {
-					stateID: rows[i].ID,
+					ID: rows[i].ID,
 					name: rows[i].name,
 					abbreviation: rows[i].acronym
 				}

@@ -75,10 +75,10 @@ function CreateEvent(props: ManipulateEventProps): JSX.Element
 	const [RSOs, setRSOs] = useState<Array<RSO>>([]);
 	const [states, setStates] = useState<Array<State>>([]);
 	const [universities, setUniversities] = useState<Array<University>>([]);
-	const [meetingTypeNames, setMeetingTypeNames] = useState<Array<string>>([""]);
-	const [rsoNames, setRsoNames] = useState<Array<string>>([""]);
-	const [stateNames, setStateNames] = useState<Array<string>>([""]);
-	const [universityNames, setUniversityNames] = useState<Array<string>>([""]);
+	const [meetingTypeNames, setMeetingTypeNames] = useState<Array<string>>([]);
+	const [rsoNames, setRsoNames] = useState<Array<string>>([]);
+	const [stateNames, setStateNames] = useState<Array<string>>([]);
+	const [universityNames, setUniversityNames] = useState<Array<string>>([]);
 
 	const changeEventAddress = (e: React.ChangeEvent<{value: string}>) => {
 		setEvent({
@@ -176,7 +176,7 @@ function CreateEvent(props: ManipulateEventProps): JSX.Element
 				setEvent({
 					...event,
 					stateID: state.ID
-				})
+				});
 				return;
 			}
 		}
@@ -213,7 +213,7 @@ function CreateEvent(props: ManipulateEventProps): JSX.Element
 	};
 
 	const extractMeetingTypeNames = (): void => {
-		let names: Array<string> = [""];
+		let names: Array<string> = [];
 
 		for (let mt of meetingTypes)
 		{
@@ -224,7 +224,7 @@ function CreateEvent(props: ManipulateEventProps): JSX.Element
 	};
 
 	const extractStateNames = (): void => {
-		let stateNames: Array<string> = [""];
+		let stateNames: Array<string> = [];
 
 		for (let state of states)
 		{
@@ -235,7 +235,7 @@ function CreateEvent(props: ManipulateEventProps): JSX.Element
 	};
 
 	const extractRsoNames = (): void => {
-		let names: Array<string> = [""]
+		let names: Array<string> = []
 
 		for (let rso of RSOs)
 		{
@@ -246,7 +246,7 @@ function CreateEvent(props: ManipulateEventProps): JSX.Element
 	};
 
 	const extractUniversityNames = (): void => {
-		let names: Array<string> = [""];
+		let names: Array<string> = [];
 
 		for (let university of universities)
 		{
@@ -461,8 +461,8 @@ function CreateEvent(props: ManipulateEventProps): JSX.Element
 		<StudForm
 			title="Create Event"
 			textFields={formFields}
-			buttonText="Create Event"
-			handleClick={() => console.log("TODO: implement creation")}
+			buttonText={(props.event === undefined) ? "Create Event" : "Update Event"}
+			handleClick={() => console.log(event)}
 		/>
 	)
 }
