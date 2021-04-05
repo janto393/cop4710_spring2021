@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { UserInfoType } from "src/hooks/useStudUser";
-import { Accordion, AccordionSummary, AccordionDetails, Typography} from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/expandMore";
 
 // util imports
 import buildpath from "../../Utils/buildpath";
@@ -58,14 +56,9 @@ function EventList(props: EventListProps): JSX.Element
 	useEffect(() => {fetchEvents();}, []);
 
 	return (
-		<Accordion TransitionProps={{}}>
-			<AccordionSummary
-				expandIcon={<ExpandMoreIcon />}
-			>
-				<Typeography className="EventTitle"></Typeography>
-			</AccordionSummary>
+		<>
 			{events.map(EventCard)}
-		</Accordion>
+		</>
 	);
 }
 

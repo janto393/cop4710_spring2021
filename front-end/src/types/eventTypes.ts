@@ -8,7 +8,10 @@ export interface Event
 	city: string,
 	stateID: number,
 	zip: string,
-	rsoID: number,
+	rso: {
+		ID: number,
+		name: string
+	},
 	meetingTypeID: number,
 	name: string,
 	description: string,

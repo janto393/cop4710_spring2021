@@ -56,7 +56,7 @@ function EventForm(props: ManipulateEventProps): JSX.Element
 			city: props.event.city,
 			stateID: props.event.stateID,
 			zip: props.event.zip,
-			rsoID: props.event.rsoID,
+			rsoID: props.event.rso.ID,
 			meetingTypeID: props.event.meetingTypeID,
 			name: props.event.name,
 			description: props.event.description,
