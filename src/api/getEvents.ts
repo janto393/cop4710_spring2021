@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import * as mysql from "mysql";
-import geocoder, { Entry } from "node-geocoder"
-import node_geocoder from "node-geocoder";
+import getLattitudeAndLongitude, { Coordinates } from "../util/fetchCoordinates";
 
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
@@ -99,12 +98,6 @@ interface Event
 	longitude: number
 }
 
-interface Coordinates
-{
-	longitude: number,
-	lattitude: number
-}
-
 interface EndpointInput
 {
 	schoolID: number,
@@ -116,47 +109,6 @@ interface EndpointReturn
 	success: boolean,
 	error: string,
 	events: Array<Event>
-}
-
-// used to get the lattitude from an address 
-// async function getLattitudeAndLongitude(location: geocoder.Query): Promise<geocoder.Location>
-async function getLattitudeAndLongitude(address: string, city: string, state: string, zip: string): Promise<Coordinates>
-{
-	let coordinates: Coordinates = {
-		lattitude: 0,
-		longitude: 0
-	}
-
-	if (process.env.TOMTOM_KEY === undefined)
-	{
-		console.warn("TOM TOM api key not set");
-		return coordinates;
-	}
-
-	const options: geocoder.GenericOptions = {
-		provider: "tomtom",
-		apiKey: process.env.TOMTOM_KEY
-	};
-
-	const geocoder: geocoder.Geocoder = node_geocoder(options);
-
-	let locations: Array<Entry> = await geocoder.geocode(address + " " + city + " " + state + " " + zip);
-
-	// parse the data of the first match
-	if (locations.length > 0)
-	{
-		if (locations[0].latitude !== undefined)
-		{
-			coordinates.lattitude = locations[0].latitude;
-		}
-
-		if (locations[0].longitude !== undefined)
-		{
-			coordinates.longitude = locations[0].longitude;
-		}
-	}
-
-	return coordinates;
 }
 
 /**

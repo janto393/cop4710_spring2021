@@ -3,6 +3,7 @@ import * as mysql from "mysql";
 
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
+import getLattitudeAndLongitude, { Coordinates } from "../util/fetchCoordinates";
 
 // type imports
 import { CampusPicture, University } from "src/commonTypes/universityTypes";
@@ -112,7 +113,7 @@ export async function getUniversities(request: Request, response: Response, next
 	{
 		let queryString: string = createUniversityQuery(input);
 
-		connection.query(queryString, (error: mysql.MysqlError, rows: Array<SqlUniversity>) => {
+		connection.query(queryString, async (error: mysql.MysqlError, rows: Array<SqlUniversity>) => {
 			if (error)
 			{
 				connection.end();
@@ -175,8 +176,16 @@ export async function getUniversities(request: Request, response: Response, next
 						phoneNumber: rawData.phoneNumber,
 						numStudents: rawData.numStudents,
 						email: rawData.email,
-						campusPictures: [picture]
+						campusPictures: [picture],
+						// set coordinates to zero (we will fetch them later)
+						lattitude: 0,
+						longitude: 0
 					};
+
+					// fetch the coordinates of the university
+					let universityCoordinates: Coordinates = await getLattitudeAndLongitude(university.address.address, university.address.city, university.address.state.name, university.address.zip);
+					university.lattitude = universityCoordinates.lattitude;
+					university.longitude = university.longitude;
 
 					returnPackage.universities.push(university);
 				}
