@@ -1,7 +1,8 @@
-import { MeetingType, RSO, State } from "./dropDownTypes";
+import { MeetingType, RSO, State, University } from "./dropDownTypes";
 import { Event } from "./eventTypes";
 import { MysqlError } from "mysql";
 import { UserDataWithoutPassword } from "./userTypes";
+import { University } from "../types/universityTypes";
 
 /**
  * Default fields that are always returned with any ApiEndpoint
@@ -44,6 +45,11 @@ export interface GetRsoResponse extends DefaultApiResponse
 export interface GetStatesResponse extends DefaultApiResponse
 {
 	readonly states: Array<State>
+}
+
+export interface GetUniversitiesResponse extends DefaultApiResponse
+{
+	readonly universities: Array<University>
 }
 
 export interface LoginResponse extends DefaultApiResponse

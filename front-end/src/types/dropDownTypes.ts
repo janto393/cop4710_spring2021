@@ -43,5 +43,6 @@ export interface University
 	numStudents: number,
 	email: string,
 	campusPictures: Array<Buffer>,
-	coordinates: Coordinate
+	lattitude: number,
+	longitude: number
 }

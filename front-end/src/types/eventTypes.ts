@@ -16,7 +16,9 @@ export interface Event
 	rating: number,
 	isPublic: boolean,
 	capacity: number,
-	eventPictures: Array<Buffer>
+	eventPictures: Array<Buffer>,
+	lattitude: number,
+	longitude: number
 }
 
 /**
