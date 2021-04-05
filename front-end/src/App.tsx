@@ -9,7 +9,7 @@ import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
 import { useStudUser } from "./hooks/useStudUser";
 import EventsPage from "./pages/EventsPage";
-import CreateEvent from "./components/CreateEventForm";
+import EventForm from "./components/EventForm";
 
 const App = () => {
   const {
@@ -50,7 +50,7 @@ const App = () => {
 				</Route>
 
 				<Route path="/createEvent" exact>
-					<CreateEvent
+					<EventForm
 						studUser={studUser}
 					/>
 				</Route>

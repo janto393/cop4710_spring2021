@@ -21,7 +21,7 @@ export type ManipulateEventProps = {
 	studUser: UserInfoType
 }
 
-function CreateEvent(props: ManipulateEventProps): JSX.Element
+function EventForm(props: ManipulateEventProps): JSX.Element
 {
 	const isNewEvent: boolean = (props.event === undefined);
 	let initialState: EventFormData;
@@ -467,4 +467,4 @@ function CreateEvent(props: ManipulateEventProps): JSX.Element
 	)
 }
 
-export default CreateEvent;
+export default EventForm;
