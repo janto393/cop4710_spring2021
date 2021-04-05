@@ -14,7 +14,6 @@ import { Event, EventFormData } from "../../types/eventTypes";
 import { FormFieldType } from "../StudForm";
 import { useEffect } from "react";
 import { UserInfoType } from "src/hooks/useStudUser";
-import { Input } from "@material-ui/core";
 
 export type ManipulateEventProps = {
 	event?: Event,
