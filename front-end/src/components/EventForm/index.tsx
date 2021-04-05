@@ -479,7 +479,7 @@ function EventForm(props: ManipulateEventProps): JSX.Element
 
 	// extract university names once they are fetched
 	useEffect(() => {
-			extractRsoNames();
+			extractUniversityNames();
 		},
 		[universities]
 	);
