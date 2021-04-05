@@ -85,7 +85,7 @@ export async function getRso(request: Request, response: Response, next: Callabl
 			{
 				let rawRso: SqlRso = rows[i];
 				let parsedRso: RSO = {
-					rsoID: rawRso.ID,
+					ID: rawRso.ID,
 					name: rawRso.name,
 					universityID: rawRso.universityID
 				};
