@@ -8,13 +8,13 @@ import buildpath from "../../Utils/buildpath";
 import StudForm from "../StudForm/index";
 
 // type imports
-import { GetRsoRequest } from "../../types/apiRequestBodies";
-import { GetMeetingTypesResponse, GetRsoResponse, GetStatesResponse } from "../../types/apiResponseBodies";
+import { GetRsoRequest, GetUniversitiesRequest } from "../../types/apiRequestBodies";
+import { GetMeetingTypesResponse, GetRsoResponse, GetStatesResponse, GetUniversitiesResponse } from "../../types/apiResponseBodies";
 import { MeetingType, RSO, State, University } from "../../types/dropDownTypes";
 import { Event, EventFormData, NewEvent } from "../../types/eventTypes";
 import { FormFieldType } from "../StudForm";
 import { useEffect } from "react";
-import { UserInfoType } from "src/hooks/useStudUser";
+import { UserInfoType, useStudUser } from "src/hooks/useStudUser";
 
 export type ManipulateEventProps = {
 	event?: Event,
@@ -341,16 +341,45 @@ function EventForm(props: ManipulateEventProps): JSX.Element
 		};
 	
 		const fetchUniversityData = (): void => {
-			// let payload: GetUniversityRequest = {
-	
-			// }
+			let payload: GetUniversitiesRequest = {};
+
+			if (typeof props.studUser.universityID === "string")
+			{
+				console.warn("Stud User university ID is not specified");
+			}
+			else
+			{
+				payload.schoolID = props.studUser.universityID;
+			}
+
+			let request: Object = {
+				method: "POST",
+				body: JSON.stringify(payload),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			};
+
+			fetch(buildpath("/api/getUniversities"), request)
+			.then((response: Response): Promise<GetUniversitiesResponse> => {
+				return response.json();
+			})
+			.then((data: GetUniversitiesResponse): void => {
+				if (!data.success)
+				{
+					console.error(data.error)
+					return;
+				}
+
+				setUniversities(data.universities);
+			});
 		};
 
 		// fetch data from the api
 		fetchStates();
 		fetchAllRSOs(props.studUser.universityID);
 		fetchMeetingTypes();
-		// fetchUniversityData(userData.universityID);
+		fetchUniversityData();
 	};
 
 	let formFields: Array<FormFieldType> = [
@@ -387,7 +416,7 @@ function EventForm(props: ManipulateEventProps): JSX.Element
 			handleOnChange: changeEventAddress
 		},
 		{
-			label: "city",
+			label: "City",
 			fieldType: "textField",
 			handleOnChange: changeEventCity
 		},
