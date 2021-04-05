@@ -1,15 +1,10 @@
 import { Request, Response } from "express";
 import * as mysql from "mysql";
+import geocoder, { Entry } from "node-geocoder"
+import node_geocoder from "node-geocoder";
 
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
-let nodeGeocoder = require('node-geocoder');
-let options = {
-	provider: 'openstreetmap'
-};
-
-let geoCoder = nodeGeocoder(options);
-
 
 interface SqlEvent
 {
@@ -57,7 +52,7 @@ interface EventPicture
 
 interface Event
 {
-	schoolID: {
+	university: {
 		ID: number,
 		state: {
 			ID: number,
@@ -72,7 +67,9 @@ interface Event
 		// not sure what to make phone number
 		phonenumber: string,
 		numStudents: number,
-		email: string
+		email: string,
+		lattitude: number,
+		longitude: number
 	},
 	address: string,
 	city: string,
@@ -98,10 +95,14 @@ interface Event
 	numAttendees: number,
 	capacity: number,
 	eventPictures: Array<EventPicture>,
-	eventLat: number,			 	// find this
-	eventLong: number, 		 	// find this 
-	schoolLat: number, 			// find this
-	schoolLong: number 			// find this
+	lattitude: number,			 	// find this
+	longitude: number
+}
+
+interface Coordinates
+{
+	longitude: number,
+	lattitude: number
 }
 
 interface EndpointInput
@@ -118,17 +119,44 @@ interface EndpointReturn
 }
 
 // used to get the lattitude from an address 
-async function getlat(location: string): Promise<number>
+// async function getLattitudeAndLongitude(location: geocoder.Query): Promise<geocoder.Location>
+async function getLattitudeAndLongitude(address: string, city: string, state: string, zip: string): Promise<Coordinates>
 {
-	let lattitude: number = (await geoCoder.geocode('location')).lattitude;
-	return lattitude;
-}
+	let coordinates: Coordinates = {
+		lattitude: 0,
+		longitude: 0
+	}
 
-// used to get the longitude from an address
-async function getlong(location: string): Promise<number>
-{
-	let longitude: number = (await geoCoder.geocode('location')).longitude;
-	return longitude;
+	if (process.env.TOMTOM_KEY === undefined)
+	{
+		console.warn("TOM TOM api key not set");
+		return coordinates;
+	}
+
+	const options: geocoder.GenericOptions = {
+		provider: "tomtom",
+		apiKey: process.env.TOMTOM_KEY
+	};
+
+	const geocoder: geocoder.Geocoder = node_geocoder(options);
+
+	let locations: Array<Entry> = await geocoder.geocode(address + " " + city + " " + state + " " + zip);
+
+	// parse the data of the first match
+	if (locations.length > 0)
+	{
+		if (locations[0].latitude !== undefined)
+		{
+			coordinates.lattitude = locations[0].latitude;
+		}
+
+		if (locations[0].longitude !== undefined)
+		{
+			coordinates.longitude = locations[0].longitude;
+		}
+	}
+
+	return coordinates;
 }
 
 /**
@@ -270,7 +298,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 
 
 					let event: Event = {
-						schoolID: {
+						university: {
 							ID: rawData.schoolID,
 							state: {
 								ID: rawData.schoolStateID,
@@ -284,7 +312,10 @@ export async function getEvents(request: Request, response: Response, next: Call
 							description: rawData.schoolDescription,
 							phonenumber: rawData.schoolPhonenumber,
 							numStudents: rawData.schoolNumStudents,
-							email: rawData.schoolEmail
+							email: rawData.schoolEmail,
+							// set coordinates to zero (we will fetch them later)
+							lattitude: 0,
+							longitude: 0
 						},
 						address: rawData.eventAddress,
 						city: rawData.eventCity,
@@ -316,13 +347,20 @@ export async function getEvents(request: Request, response: Response, next: Call
 								position: rawData.eventPicturePosition
 							}
 						],
-						// concating strings to be in the form of address, city, state zip code ex:
-						// 4000 central Florida Blvd, Orlando, FL 32816 
-						eventLat: await getlat(String(rawData.eventAddress) + String(rawData.eventCity) + String(rawData.stateName) + String(rawData.eventZip)),
-						eventLong: await getlong(String(rawData.eventAddress) + String(rawData.eventCity) + String(rawData.stateName) + String(rawData.eventZip)),
-						schoolLat: await getlat(String(rawData.schoolAddress) + String(rawData.schoolCity) + String(rawData.schoolStateName) + String(rawData.schoolZip)),
-						schoolLong: await getlong(String(rawData.schoolAddress) + String(rawData.schoolCity) + String(rawData.schoolStateName) + String(rawData.schoolZip))
+						// set coordinates to zero (will calculate after event creation)
+						lattitude: 0,
+						longitude: 0
 					};
+
+					// get event Coordinates
+					let eventCoords: Coordinates = await getLattitudeAndLongitude(event.address, event.city, event.state.name, event.zip);
+					event.lattitude = eventCoords.lattitude;
+					event.longitude = eventCoords.longitude;
+
+					// get school Coordinates
+					let schoolCoords: Coordinates = await getLattitudeAndLongitude(event.university.address, event.university.city, event.university.state.name, event.university.zip);
+					event.university.lattitude = schoolCoords.lattitude;
+					event.university.longitude = schoolCoords.longitude;
 					
 					returnPackage.events.push(event);
 				}

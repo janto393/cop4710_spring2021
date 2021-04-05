@@ -1,7 +1,3 @@
-/**
- * Interfaces related to states
- */
-
 export interface Address
 {
 	address: string,
