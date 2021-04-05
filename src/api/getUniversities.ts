@@ -51,7 +51,7 @@ function createUniversityQuery(info: EndpointInput): string
 	const optionalJoin: string = "INNER JOIN Universities AS UN1 ON (UN1.ID=" + String(info.schoolID) + ")\n";
 
 	const joinStatements: Array<string> = [
-		"LEFT JOIN States AS ST ON (ST.ID=UN.ID)\n",
+		"LEFT JOIN States AS ST ON (ST.ID=UN.stateID)\n",
 		"LEFT JOIN Campus_Pictures AS CP ON (CP.universityID=UN.ID)\n"
 	];
 
