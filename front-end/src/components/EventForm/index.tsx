@@ -555,11 +555,6 @@ function EventForm(props: ManipulateEventProps): JSX.Element
 				buttonText={(props.event === undefined) ? "Create Event" : "Update Event"}
 				handleClick={() => console.log(event)}
 			/>
-			<Input
-				type="file"
-				onChange={changeEventImage}
-				inputProps={{multiple: true, accept: "image/png, image/jpeg"}}
-			/>
 		</>
 	)
 }
