@@ -118,36 +118,16 @@ interface EndpointReturn
 }
 
 // used to get the lattitude from an address 
-function getlat(location: string): number
+async function getlat(location: string): Promise<number>
 {
-	let lattitude: number = 0;
-
-	geoCoder.geocode('location')
-		.then((res: any) => {
-			console.log(res);
-			lattitude = res.lattitude;
-		})
-		.catch((err: any) => {
-			console.log(err);
-			return err;
-		})
+	let lattitude: number = (await geoCoder.geocode('location')).lattitude;
 	return lattitude;
 }
 
 // used to get the longitude from an address
-function getlong(location: string)
+async function getlong(location: string): Promise<number>
 {
-	let longitude: number = 0;
-
-	geoCoder.geocode('location')
-		.then((res: any) => {
-			console.log(res);
-			longitude = res.longitude;
-		})
-		.catch((err: any) => {
-			console.log(err);
-			return err;
-		})
+	let longitude: number = (await geoCoder.geocode('location')).longitude;
 	return longitude;
 }
 
@@ -247,7 +227,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 	{
 		let queryString: string = createEventQuery(input);
 
-		connection.query(queryString, (error: string, rows: Array<SqlEvent>) => {
+		connection.query(queryString, async (error: string, rows: Array<SqlEvent>): Promise<void> => {
 			if (error)
 			{
 				connection.end();
@@ -338,10 +318,10 @@ export async function getEvents(request: Request, response: Response, next: Call
 						],
 						// concating strings to be in the form of address, city, state zip code ex:
 						// 4000 central Florida Blvd, Orlando, FL 32816 
-						eventLat: getlat(String(rawData.eventAddress) + String(rawData.eventCity) + String(rawData.stateName) + String(rawData.eventZip)),
-						eventLong: getlong(String(rawData.eventAddress) + String(rawData.eventCity) + String(rawData.stateName) + String(rawData.eventZip)),
-						schoolLat: getlat(String(rawData.schoolAddress) + String(rawData.schoolCity) + String(rawData.schoolStateName) + String(rawData.schoolZip)),
-						schoolLong: getlong(String(rawData.schoolAddress) + String(rawData.schoolCity) + String(rawData.schoolStateName) + String(rawData.schoolZip))
+						eventLat: await getlat(String(rawData.eventAddress) + String(rawData.eventCity) + String(rawData.stateName) + String(rawData.eventZip)),
+						eventLong: await getlong(String(rawData.eventAddress) + String(rawData.eventCity) + String(rawData.stateName) + String(rawData.eventZip)),
+						schoolLat: await getlat(String(rawData.schoolAddress) + String(rawData.schoolCity) + String(rawData.schoolStateName) + String(rawData.schoolZip)),
+						schoolLong: await getlong(String(rawData.schoolAddress) + String(rawData.schoolCity) + String(rawData.schoolStateName) + String(rawData.schoolZip))
 					};
 					
 					returnPackage.events.push(event);
