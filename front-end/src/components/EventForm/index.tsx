@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { readFile } from "fs";
 
 // util imports
 import buildpath from "../../Utils/buildpath";
@@ -21,6 +20,8 @@ export type ManipulateEventProps = {
 	event?: Event,
 	studUser: UserInfoType
 }
+
+const MAXIMUM_EVENT_PICTURES: number = 2;
 
 function EventForm(props: ManipulateEventProps): JSX.Element
 {
@@ -187,9 +188,63 @@ function EventForm(props: ManipulateEventProps): JSX.Element
 		console.error("State drop-down item did not match a state ID");
 	};
 
-	const changeEventImage = (e: React.ChangeEvent<{value: string}>) => {
-		readFile(e.target.value, null, (err: any, data: any) => {
-		});
+	const changeEventImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
+		if (e.target.files !== null)
+		{
+			if (e.target.files.length > 0)
+			{
+				let picturesArray: Array<Buffer> = event.eventPictures;
+				let startIndex: number;
+
+				// if we don't have enough space left to insert the new pictures without overwriting
+				// additional files, then adjust the index to fit the selected image
+				if (e.target.files.length + event.eventPictures.length > MAXIMUM_EVENT_PICTURES)
+				{
+					// we selected more files than the maximum allowed, so we will only write until
+					// we hit the maximum
+					if (MAXIMUM_EVENT_PICTURES - e.target.files.length < 0)
+					{
+						startIndex = 0;
+					}
+					else
+					{
+						startIndex = event.eventPictures.length - e.target.files.length - 1;
+					}
+				}
+				else
+				{
+					startIndex = event.eventPictures.length;
+				}
+
+				/**
+				 * write all the files that were selected until we reach the max number of pictures,
+				 * or we write all the files selected, whichever comes first. If we selected more
+				 * pictures than we currently have space in the array, the selected files will
+				 * overwrite the files from front-to-back of the needed partition as needed
+				 */
+				for (let i: number = startIndex, pictureIndex: number = 0; (i < MAXIMUM_EVENT_PICTURES) && (pictureIndex < e.target.files.length); i++, pictureIndex++)
+				{
+					// if we are on an index that already has a file, then overwrite it
+					if (i < event.eventPictures.length)
+					{
+						console.log("Overwriting picture at index " + String(i) + " with file " + String(pictureIndex));
+						picturesArray[i] = Buffer.from(await e.target.files[pictureIndex].text(), "base64");
+					}
+
+					// we need to push a picture to the array
+					else
+					{
+						console.log("Pushing file " + String(pictureIndex));
+						picturesArray.push(Buffer.from(await e.target.files[pictureIndex].text(), "base64"));
+					}
+				}
+
+				setEvent({
+					...event,
+					eventPictures: picturesArray
+				});
+			}
+		}
 	};
 
 	const changeEventUniversity = (e: React.ChangeEvent<{value: string}>) => {
@@ -503,6 +558,7 @@ function EventForm(props: ManipulateEventProps): JSX.Element
 			<Input
 				type="file"
 				onChange={changeEventImage}
+				inputProps={{multiple: true, accept: "image/png, image/jpeg"}}
 			/>
 		</>
 	)
