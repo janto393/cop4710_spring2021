@@ -3,6 +3,13 @@ import * as mysql from "mysql";
 
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
+let nodeGeocoder = require('node-geocoder');
+let options = {
+	provider: 'openstreetmap'
+};
+
+let geoCoder = nodeGeocoder(options);
+
 
 interface SqlEvent
 {
@@ -27,7 +34,18 @@ interface SqlEvent
 	eventCapacity: number,
 	eventPictureID: number,
 	eventPicture: mysql.Types.MEDIUM_BLOB,
-	eventPicturePosition: number
+	eventPicturePosition: number,
+	schoolName: string,
+	schoolAddress: string,
+	schoolCity: string,
+	schoolZip: string,
+	schoolDescription: string,
+	schoolPhonenumber: string,
+	schoolNumStudents: number,
+	schoolEmail: string,
+	schoolStateID: number,
+	schoolStateName: string,
+	schoolStateAcronym: string
 }
 
 interface EventPicture
@@ -39,7 +57,23 @@ interface EventPicture
 
 interface Event
 {
-	schoolID: number,
+	schoolID: {
+		ID: number,
+		state: {
+			ID: number,
+			name: string,
+			acronym: string
+		},
+		name: string,
+		address: string,
+		city: string,
+		zip: string,
+		description: string,
+		// not sure what to make phone number
+		phonenumber: string,
+		numStudents: number,
+		email: string
+	},
 	address: string,
 	city: string,
 	state: {
@@ -63,7 +97,11 @@ interface Event
 	isPublic: boolean,
 	numAttendees: number,
 	capacity: number,
-	eventPictures: Array<EventPicture>
+	eventPictures: Array<EventPicture>,
+	eventLat: number,			 	// find this
+	eventLong: number, 		 	// find this 
+	schoolLat: number, 			// find this
+	schoolLong: number 			// find this
 }
 
 interface EndpointInput
@@ -77,6 +115,40 @@ interface EndpointReturn
 	success: boolean,
 	error: string,
 	events: Array<Event>
+}
+
+// used to get the lattitude from an address 
+function getlat(location: string): number
+{
+	let lattitude: number = 0;
+
+	geoCoder.geocode('location')
+		.then((res: any) => {
+			console.log(res);
+			lattitude = res.lattitude;
+		})
+		.catch((err: any) => {
+			console.log(err);
+			return err;
+		})
+	return lattitude;
+}
+
+// used to get the longitude from an address
+function getlong(location: string)
+{
+	let longitude: number = 0;
+
+	geoCoder.geocode('location')
+		.then((res: any) => {
+			console.log(res);
+			longitude = res.longitude;
+		})
+		.catch((err: any) => {
+			console.log(err);
+			return err;
+		})
+	return longitude;
 }
 
 /**
@@ -216,8 +288,24 @@ export async function getEvents(request: Request, response: Response, next: Call
 					// store the index at which the event will be stored
 					parsedEventIndexes.set(rawData.eventID, returnPackage.events.length);
 
+
 					let event: Event = {
-						schoolID: rawData.schoolID,
+						schoolID: {
+							ID: rawData.schoolID,
+							state: {
+								ID: rawData.schoolStateID,
+								name: rawData.schoolStateName,
+								acronym: rawData.schoolStateAcronym
+							},
+							name: rawData.schoolName,
+							address: rawData.schoolAddress,
+							city: rawData.schoolCity,
+							zip: rawData.schoolZip,
+							description: rawData.schoolDescription,
+							phonenumber: rawData.schoolPhonenumber,
+							numStudents: rawData.schoolNumStudents,
+							email: rawData.schoolEmail
+						},
 						address: rawData.eventAddress,
 						city: rawData.eventCity,
 						state: {
@@ -247,9 +335,15 @@ export async function getEvents(request: Request, response: Response, next: Call
 								picture: rawData.eventPicture,
 								position: rawData.eventPicturePosition
 							}
-						]
+						],
+						// concating strings to be in the form of address, city, state zip code ex:
+						// 4000 central Florida Blvd, Orlando, FL 32816 
+						eventLat: getlat(String(rawData.eventAddress) + String(rawData.eventCity) + String(rawData.stateName) + String(rawData.eventZip)),
+						eventLong: getlong(String(rawData.eventAddress) + String(rawData.eventCity) + String(rawData.stateName) + String(rawData.eventZip)),
+						schoolLat: getlat(String(rawData.schoolAddress) + String(rawData.schoolCity) + String(rawData.schoolStateName) + String(rawData.schoolZip)),
+						schoolLong: getlong(String(rawData.schoolAddress) + String(rawData.schoolCity) + String(rawData.schoolStateName) + String(rawData.schoolZip))
 					};
-
+					
 					returnPackage.events.push(event);
 				}
 
