@@ -3,21 +3,19 @@
  */
 
 import { Address } from "./addressTypes";
+import { State } from "./addressTypes";
 import * as mysql from "mysql";
 
 export interface CampusPicture
 {
-	pictureID: number,
-	universityID: number,
-	filename: string,
-	picture: mysql.Types.MEDIUM_BLOB,
+	ID: number,
+	picture: Buffer,
 	position: number
 }
 
 export interface University
 {
 	universityID: number,
-	stateID: number,
 	name: string,
 	address: Address
 	description: string,
