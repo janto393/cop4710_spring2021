@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { UserDataWithoutPassword } from "src/types/userTypes";
+import { readFile } from "fs";
 
 // util imports
 import buildpath from "../../Utils/buildpath";
@@ -11,10 +11,11 @@ import StudForm from "../StudForm/index";
 import { GetRsoRequest, GetUniversitiesRequest } from "../../types/apiRequestBodies";
 import { GetMeetingTypesResponse, GetRsoResponse, GetStatesResponse, GetUniversitiesResponse } from "../../types/apiResponseBodies";
 import { MeetingType, RSO, State, University } from "../../types/dropDownTypes";
-import { Event, EventFormData, NewEvent } from "../../types/eventTypes";
+import { Event, EventFormData } from "../../types/eventTypes";
 import { FormFieldType } from "../StudForm";
 import { useEffect } from "react";
-import { UserInfoType, useStudUser } from "src/hooks/useStudUser";
+import { UserInfoType } from "src/hooks/useStudUser";
+import { Input } from "@material-ui/core";
 
 export type ManipulateEventProps = {
 	event?: Event,
@@ -44,7 +45,7 @@ function EventForm(props: ManipulateEventProps): JSX.Element
 			isPublic: false,
 			capacity: 0,
 			eventPictures: []
-		}
+		};
 	}
 	else
 	{
@@ -184,6 +185,11 @@ function EventForm(props: ManipulateEventProps): JSX.Element
 		// if we get here, a drop-down item doesn't match a state, which means
 		// something is very wrong
 		console.error("State drop-down item did not match a state ID");
+	};
+
+	const changeEventImage = (e: React.ChangeEvent<{value: string}>) => {
+		readFile(e.target.value, null, (err: any, data: any) => {
+		});
 	};
 
 	const changeEventUniversity = (e: React.ChangeEvent<{value: string}>) => {
@@ -487,12 +493,18 @@ function EventForm(props: ManipulateEventProps): JSX.Element
 
 
 	return (
-		<StudForm
-			title="Create Event"
-			textFields={formFields}
-			buttonText={(props.event === undefined) ? "Create Event" : "Update Event"}
-			handleClick={() => console.log(event)}
-		/>
+		<>
+			<StudForm
+				title="Create Event"
+				textFields={formFields}
+				buttonText={(props.event === undefined) ? "Create Event" : "Update Event"}
+				handleClick={() => console.log(event)}
+			/>
+			<Input
+				type="file"
+				onChange={changeEventImage}
+			/>
+		</>
 	)
 }
 
