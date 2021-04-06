@@ -22,7 +22,7 @@ export type FormFieldType = {
   inputType?: string;
   fieldType: string;
   selectItems?: Array<string>;
-  handleOnChange?: Function;
+  handleOnChange: Function;
 };
 
 // fields that should be passed into component
@@ -91,8 +91,8 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
                     handleOnChange={() => handleOnChange}
                   />
                 );
-              case "imageUpload":
-                return <ImageUpload setStudEvent={() => null} />;
+              case "imageUploader":
+                return <ImageUpload handleOnChange={handleOnChange} />;
               default:
                 console.log(
                   "textfield not available: create component and add to switch statement"
