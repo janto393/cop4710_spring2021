@@ -2,6 +2,7 @@ import "./index.css";
 
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
+import HomeContainer from "./containers/HomeContainer";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
@@ -41,7 +42,9 @@ const App = () => {
         </Route>
 
         {/* rest of the app will go below */}
-        <Route path="/home" exact></Route>
+        <Route path="/home" exact>
+          <HomeContainer />
+        </Route>
       </Switch>
     </Router>
   );

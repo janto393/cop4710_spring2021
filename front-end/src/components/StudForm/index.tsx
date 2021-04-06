@@ -38,11 +38,9 @@ export type FormPropsType = {
 
 const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
   const { title, textFields, buttonText, handleClick = () => null } = props;
-
-  // used to redirect to a different route
   const history = useHistory();
   const { location } = history;
-
+  const isLoginOrRegisterForm = title === "Login" || title === "Register";
   const redirectButtonText: string =
     title === "Login"
       ? "Don't have an account? Sign up!"
@@ -116,17 +114,19 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
       </CardContent>
 
       {/* login/register page redirect */}
-      <Grid container className="button-container">
-        <Grid item xs={12} className="button-redirect-item">
-          <Button
-            variant="text"
-            className="button-redirect"
-            onClick={handleRedirect}
-          >
-            {redirectButtonText}
-          </Button>
+      {isLoginOrRegisterForm && (
+        <Grid container className="button-container">
+          <Grid item xs={12} className="button-redirect-item">
+            <Button
+              variant="text"
+              className="button-redirect"
+              onClick={handleRedirect}
+            >
+              {redirectButtonText}
+            </Button>
+          </Grid>
         </Grid>
-      </Grid>
+      )}
     </Card>
   );
 };
