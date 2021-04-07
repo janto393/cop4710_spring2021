@@ -2,12 +2,20 @@ import "./index.css";
 
 import { Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
 
-import { FormFieldType } from "../../types/formTypes";
 import ImageUpload from "../ImageUpload";
 import React from "react";
 import StudSelect from "../StudSelect";
 import StudTextField from "../StudTextField";
 import { useHistory } from "react-router-dom";
+
+// fields that should be passed into formField
+export type FormFieldType = {
+  fieldTitle: string;
+  fieldType: "textField" | "dropDown" | "imageUploader";
+  handleOnChange: Function;
+  isPasswordField?: boolean;
+  selectItems?: Array<string>;
+};
 
 // fields that should be passed into component
 export type FormPropsType = {

@@ -1,7 +1,7 @@
+import StudForm, { FormFieldType } from "../StudForm";
+
 import { FieldType } from "../../Utils/formUtils";
-import { FormFieldType } from "../../types/formTypes";
 import React from "react";
-import StudForm from "../StudForm";
 import { UserInfoType } from "../../hooks/useStudUser";
 import axios from "axios";
 import { baseUrl } from "../../Utils/apiUtils";
@@ -39,7 +39,7 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
   };
 
   // formFields for login form
-  const loginTextFields: Array<FormFieldType> = [
+  const getLoginTextFields: Array<FormFieldType> = [
     {
       fieldTitle: "email",
       fieldType: FieldType.TEXT_FIELD,
@@ -64,7 +64,7 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
   return (
     <StudForm
       title="Login"
-      textFields={loginTextFields}
+      textFields={getLoginTextFields}
       buttonText="Sign in"
       handleClick={() => logIn(username, password, history)}
     />

@@ -2,10 +2,12 @@ import "./index.css";
 
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
+import { FieldType } from "./Utils/formUtils";
 import HomeContainer from "./containers/HomeContainer";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
+import StudForm from "./components/StudForm";
 import { useState } from "react";
 import { useStudUser } from "./hooks/useStudUser";
 
@@ -39,7 +41,19 @@ const App = () => {
 
         {/* rest of the app will go below */}
         <Route path="/home" exact>
-          <HomeContainer></HomeContainer>
+          <HomeContainer>
+            <StudForm
+              title="Test"
+              textFields={[
+                {
+                  fieldTitle: "Test Field",
+                  fieldType: FieldType.IMAGE_UPLOAD,
+                  handleOnChange: () => null,
+                },
+              ]}
+              buttonText="Nothing"
+            />
+          </HomeContainer>
         </Route>
       </Switch>
     </Router>
