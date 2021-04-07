@@ -53,7 +53,7 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
     },
     {
       fieldTitle: "password",
-      inputTypePassword: true,
+      isPasswordField: true,
       fieldType: FieldType.TEXT_FIELD,
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({ ...studUser, password: e.target.value });

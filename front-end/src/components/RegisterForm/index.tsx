@@ -96,7 +96,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     },
     {
       fieldTitle: "password",
-      inputTypePassword: true,
+      isPasswordField: true,
       fieldType: FieldType.TEXT_FIELD,
       handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         setStudUser({ ...studUser, password: e.target.value });
@@ -104,7 +104,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     },
     {
       fieldTitle: "confirm password",
-      inputTypePassword: true,
+      isPasswordField: true,
       fieldType: FieldType.TEXT_FIELD,
       handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         null;

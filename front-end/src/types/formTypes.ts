@@ -3,6 +3,6 @@ export type FormFieldType = {
   fieldTitle: string;
   fieldType: "textField" | "dropDown" | "imageUploader";
   handleOnChange: Function;
-  inputTypePassword?: boolean;
+  isPasswordField?: boolean;
   selectItems?: Array<string>;
 };

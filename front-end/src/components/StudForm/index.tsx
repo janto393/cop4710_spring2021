@@ -43,7 +43,7 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
     return textFields.map((field) => {
       const {
         fieldTitle: label = "",
-        inputTypePassword = false,
+        isPasswordField: inputTypePassword = false,
         fieldType,
         selectItems = [],
         handleOnChange = () => null,
