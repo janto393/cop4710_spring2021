@@ -46,19 +46,7 @@ const App = () => {
 
         {/* rest of the app will go below */}
         <Route path="/home" exact>
-          <HomeContainer>
-            <StudForm
-              title="Test form"
-              textFields={[
-                {
-                  fieldTitle: "Test",
-                  fieldType: "imageUploader",
-                  handleOnChange: () => null,
-                },
-              ]}
-              buttonText="submit"
-            />
-          </HomeContainer>
+          <HomeContainer></HomeContainer>
         </Route>
       </Switch>
     </Router>
