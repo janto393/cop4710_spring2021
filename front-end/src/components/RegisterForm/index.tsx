@@ -127,8 +127,6 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     <StudForm
       title="Register"
       textFields={getFormFields()}
-      studUser={studUser}
-      setStudUser={setStudUser}
       buttonText={buttonText}
       handleClick={registerUser}
     />

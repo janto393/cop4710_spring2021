@@ -7,7 +7,6 @@ import ImageUpload from "../ImageUpload";
 import React from "react";
 import StudSelect from "../StudSelect";
 import StudTextField from "../StudTextField";
-import { UserInfoType } from "../../hooks/useStudUser";
 import { useHistory } from "react-router-dom";
 
 // fields that should be passed into component
@@ -15,10 +14,7 @@ export type FormPropsType = {
   title: string;
   textFields: Array<FormFieldType>;
   buttonText: string;
-  studUser?: UserInfoType;
   handleClick?: Function;
-  handleBackClick?: Function;
-  setStudUser?: Function;
 };
 
 const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
