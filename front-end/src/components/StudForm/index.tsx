@@ -1,13 +1,6 @@
 import "./index.css";
 
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Grid,
-  Typography,
-} from "@material-ui/core";
+import { Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
 
 import ImageUpload from "../ImageUpload";
 import React from "react";
@@ -18,11 +11,11 @@ import { useHistory } from "react-router-dom";
 
 // fields that should be passed into formField
 export type FormFieldType = {
-  label?: string;
-  inputType?: string;
-  fieldType: string;
-  selectItems?: Array<string>;
+  fieldTitle: string;
+  fieldType: "textField" | "dropDown" | "imageUploader";
   handleOnChange: Function;
+  inputTypePassword?: boolean;
+  selectItems?: Array<string>;
 };
 
 // fields that should be passed into component
@@ -64,8 +57,8 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
           {/* renders all of the fields */}
           {textFields.map((field) => {
             const {
-              label = "",
-              inputType = "email",
+              fieldTitle: label = "",
+              inputTypePassword = false,
               fieldType,
               selectItems = [],
               handleOnChange = () => null,
@@ -77,7 +70,7 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
                 return (
                   <StudTextField
                     label={label}
-                    type={inputType}
+                    inputType={inputTypePassword ? "password" : "email"}
                     handleOnChange={() => handleOnChange}
                   />
                 );

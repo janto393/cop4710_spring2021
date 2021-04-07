@@ -1,9 +1,13 @@
-.login-container .login-card-container {
+.login-container .content-container {
   margin: 50px;
 }
 
-.login-card-container .login-card {
+.content-container .login-card {
   background-color: #97979794;
+}
+.MuiGrid-root .content-container .login-card {
+  max-width: 500px;
+  min-width: 500px;
 }
 
 .login-card .button-container .button-submit-item {

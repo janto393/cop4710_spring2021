@@ -6,14 +6,14 @@ import React from "react";
 
 export type StudTextFieldProps = {
   label: string;
-  type?: string;
+  inputType?: "password" | "email";
   handleOnChange?: Function;
 };
 
 const StudTextField: React.FC<StudTextFieldProps> = (
   props: StudTextFieldProps
 ) => {
-  const { label, type, handleOnChange = () => null } = props;
+  const { label, inputType: type, handleOnChange = () => null } = props;
 
   return (
     <Grid item xs={12} className="input-field-item">

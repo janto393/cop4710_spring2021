@@ -23,7 +23,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
 
   const selectAccountTypeField: Array<FormFieldType> = [
     {
-      label: "Select account type",
+      fieldTitle: "Select account type",
       fieldType: "dropDown",
       selectItems: ["University (Super admin)", "Student"],
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
@@ -37,7 +37,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
 
   const selectUniveristyField: Array<FormFieldType> = [
     {
-      label: "Select your University",
+      fieldTitle: "Select your University",
       fieldType: "dropDown",
       selectItems: [
         "University of Central Florida",
@@ -55,21 +55,21 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
 
   const nameEmailPasswordFields: Array<FormFieldType> = [
     {
-      label: "first name",
+      fieldTitle: "first name",
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({ ...studUser, firstname: e.target.value });
       },
     },
     {
-      label: "last name",
+      fieldTitle: "last name",
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({ ...studUser, lastname: e.target.value });
       },
     },
     {
-      label: "email",
+      fieldTitle: "email",
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({
@@ -80,16 +80,16 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       },
     },
     {
-      label: "password",
-      inputType: "password",
+      fieldTitle: "password",
+      inputTypePassword: true,
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({ ...studUser, password: e.target.value });
       },
     },
     {
-      label: "confirm password",
-      inputType: "password",
+      fieldTitle: "confirm password",
+      inputTypePassword: true,
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({ ...studUser, rePassword: e.target.value });

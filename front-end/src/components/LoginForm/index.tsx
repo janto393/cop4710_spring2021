@@ -2,7 +2,6 @@ import StudForm, { FormFieldType } from "../StudForm";
 
 import React from "react";
 import { UserInfoType } from "../../hooks/useStudUser";
-import { getEventImages } from "../../Utils/formUtils";
 import { useHistory } from "react-router";
 
 export type LoginFormProps = {
@@ -19,7 +18,7 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
   // formFields for login form
   const loginTextFields: Array<FormFieldType> = [
     {
-      label: "email",
+      fieldTitle: "email",
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({
@@ -30,8 +29,8 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
       },
     },
     {
-      label: "password",
-      inputType: "password",
+      fieldTitle: "password",
+      inputTypePassword: true,
       fieldType: "textField",
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({ ...studUser, password: e.target.value });
