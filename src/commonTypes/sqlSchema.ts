@@ -82,8 +82,10 @@ export interface SqlState
 
 export interface SqlUniversity
 {
-	ID: number,
+	universityID: number,
 	stateID: number,
+	stateName: string,
+	stateAcronym: string,
 	name: string,
 	address: string,
 	city: string,
@@ -91,7 +93,10 @@ export interface SqlUniversity
 	description: string,
 	phoneNumber: string,
 	numStudents: number,
-	email: string
+	email: string,
+	pictureID: number,
+	picture: mysql.Types.MEDIUM_BLOB,
+	picturePosition: number
 }
 
 export interface SqlUser

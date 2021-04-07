@@ -1,6 +1,6 @@
 import bodyParser from "body-parser";
 import * as dotenv from "dotenv";
-import express from "express";
+import express, { Request, Response } from "express";
 
 // Endpoint imports
 import { createAttendee } from "./api/createAttendee";
@@ -14,6 +14,7 @@ import { getEvents } from "./api/getEvents";
 import { getMeetingTypes } from "./api/getMeetingTypes";
 import { getRso } from "./api/getRso";
 import { getStates } from "./api/getStates";
+import { getUniversities } from "./api/getUniversities";
 import { login } from "./api/login";
 import { register } from "./api/register";
 import { updateEvent } from "./api/updateEvent";
@@ -28,6 +29,21 @@ const PORT = process.env.PORT || 5000;
 // bodyParser configuration
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Access Control Logic
+app.use((request: Request, response: Response, next: CallableFunction) => 
+{
+  response.setHeader('Access-Control-Allow-Origin', '*');
+  response.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-requestuested-With, Content-Type, Accept, Authorization'
+  );
+  response.setHeader(
+    'Access-Control-Allow-Methods',
+    'GET, POST, PATCH, DELETE, OPTIONS'
+  );
+  next();
+}); 
 
 app.get('/', (_, res) => {
 	res.status(200).send();
@@ -44,6 +60,7 @@ app.post("/api/getEvents", getEvents);
 app.post("/api/getMeetingTypes", getMeetingTypes);
 app.post("/api/getRso", getRso);
 app.post("/api/getStates", getStates);
+app.post("/api/getUniversities", getUniversities);
 app.post("/api/login", login);
 app.post("/api/register", register);
 app.post("/api/updateEvent", updateEvent);
