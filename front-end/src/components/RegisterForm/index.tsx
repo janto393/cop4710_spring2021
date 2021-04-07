@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
-import StudForm, { FormFieldType } from "../StudForm";
 
+import { FormFieldType } from "../../types/formTypes";
+import StudForm from "../StudForm";
 import { UserInfoType } from "../../hooks/useStudUser";
 
 export type RegisterProps = {

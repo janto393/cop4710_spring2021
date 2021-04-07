@@ -2,23 +2,19 @@
   margin: 50px;
 }
 
-.content-container .login-card {
+.content-container .form-card {
   background-color: #97979794;
 }
-.MuiGrid-root .content-container .login-card {
+.MuiGrid-root .content-container .form-card {
   max-width: 500px;
   min-width: 500px;
 }
 
-.login-card .button-container .button-submit-item {
+.form-card .button-container .button-submit-item {
   padding: 10px 10px;
 }
 
-.login-card .button-container .button-submit-item {
-  padding: 10px 10px;
-}
-
-.login-card .button-container .button-submit-item .button-submit {
+.form-card .button-container .button-submit-item .button-submit {
   width: 100%;
   height: 45px;
   background-color: rgba(0, 0, 0, 0.671);
@@ -27,7 +23,7 @@
   font-size: 20px;
 }
 
-.login-card .button-container .button-submit-item .button-submit:hover {
+.form-card .button-container .button-submit-item .button-submit:hover {
   background-color: rgba(255, 217, 0, 0.788);
   color: white;
 }

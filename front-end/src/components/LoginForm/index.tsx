@@ -1,6 +1,6 @@
-import StudForm, { FormFieldType } from "../StudForm";
-
+import { FormFieldType } from "../../types/formTypes";
 import React from "react";
+import StudForm from "../StudForm";
 import { UserInfoType } from "../../hooks/useStudUser";
 import { useHistory } from "react-router";
 
