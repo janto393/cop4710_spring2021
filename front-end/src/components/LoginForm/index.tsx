@@ -1,8 +1,10 @@
+import { FieldType } from "../../Utils/formUtils";
 import { FormFieldType } from "../../types/formTypes";
 import React from "react";
 import StudForm from "../StudForm";
 import { UserInfoType } from "../../hooks/useStudUser";
 import axios from "axios";
+import { baseUrl } from "../../Utils/apiUtils";
 import { useHistory } from "react-router";
 
 export type LoginFormProps = {
@@ -20,7 +22,7 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
     setIsLoading(true);
 
     // TODO: IMPLEMENT FORM ERROR CHECKING HERE
-    const response = await axios.post("http://localhost:5000/api/login", {
+    const response = await axios.post(`${baseUrl}/login`, {
       username: username,
       password: password,
     });
@@ -40,7 +42,7 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
   const loginTextFields: Array<FormFieldType> = [
     {
       fieldTitle: "email",
-      fieldType: "textField",
+      fieldType: FieldType.TEXT_FIELD,
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({
           ...studUser,
@@ -52,7 +54,7 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
     {
       fieldTitle: "password",
       inputTypePassword: true,
-      fieldType: "textField",
+      fieldType: FieldType.TEXT_FIELD,
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({ ...studUser, password: e.target.value });
       },

@@ -1,9 +1,17 @@
-import React, { useEffect } from "react";
+import {
+  ACCOUNT_TYPE_DROPDOWN,
+  AccountTypes,
+  FieldType,
+  UNIVERSITY_DROPDOWN,
+  universityIdMap,
+} from "../../Utils/formUtils";
 
 import { FormFieldType } from "../../types/formTypes";
+import React from "react";
 import StudForm from "../StudForm";
 import { UserInfoType } from "../../hooks/useStudUser";
 import axios from "axios";
+import { baseUrl } from "../../Utils/apiUtils";
 
 export type RegisterProps = {
   studUser: UserInfoType;
@@ -13,26 +21,16 @@ export type RegisterProps = {
 
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
   const { studUser, setStudUser, setIsLoading } = props;
-  const buttonText = "Submit";
-
-  const universityIdMap = new Map<string, number>();
-  universityIdMap.set("University of Central Florida", 1);
-  universityIdMap.set("University of Florida", 2);
-  universityIdMap.set("Florida State University", 3);
 
   const registerUser = async () => {
     setIsLoading(true);
-
     // TODO: IMPLEMENT FORM ERROR CHECKING HERE
-    // call to regiser account
-    const response = await axios.post("http://localhost:5000/api/register", {
+    const response = await axios.post(`${baseUrl}/register`, {
       ...studUser,
       profilePicture: undefined,
     });
 
     const { data } = response;
-
-    console.log(data);
 
     // temp response alert
     data.success === true
@@ -45,12 +43,12 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
   const selectAccountTypeField: Array<FormFieldType> = [
     {
       fieldTitle: "Select account type",
-      fieldType: "dropDown",
-      selectItems: ["University (Super admin)", "Student"],
+      fieldType: FieldType.DROP_DOWN,
+      selectItems: ACCOUNT_TYPE_DROPDOWN,
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({
           ...studUser,
-          role: e.target.value === "University (Super admin)" ? 2 : 1,
+          role: e.target.value === AccountTypes.SUPER_ADMIN ? 2 : 1,
         });
       },
     },
@@ -59,12 +57,8 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
   const selectUniveristyField: Array<FormFieldType> = [
     {
       fieldTitle: "Select your University",
-      fieldType: "dropDown",
-      selectItems: [
-        "University of Central Florida",
-        "University of Florida",
-        "Florida State University",
-      ],
+      fieldType: FieldType.DROP_DOWN,
+      selectItems: UNIVERSITY_DROPDOWN,
       handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         setStudUser({
           ...studUser,
@@ -77,21 +71,21 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
   const nameEmailPasswordFields: Array<FormFieldType> = [
     {
       fieldTitle: "first name",
-      fieldType: "textField",
+      fieldType: FieldType.TEXT_FIELD,
       handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         setStudUser({ ...studUser, firstname: e.target.value });
       },
     },
     {
       fieldTitle: "last name",
-      fieldType: "textField",
+      fieldType: FieldType.TEXT_FIELD,
       handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         setStudUser({ ...studUser, lastname: e.target.value });
       },
     },
     {
       fieldTitle: "email",
-      fieldType: "textField",
+      fieldType: FieldType.TEXT_FIELD,
       handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         setStudUser({
           ...studUser,
@@ -103,7 +97,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     {
       fieldTitle: "password",
       inputTypePassword: true,
-      fieldType: "textField",
+      fieldType: FieldType.TEXT_FIELD,
       handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         setStudUser({ ...studUser, password: e.target.value });
       },
@@ -111,25 +105,13 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     {
       fieldTitle: "confirm password",
       inputTypePassword: true,
-      fieldType: "textField",
+      fieldType: FieldType.TEXT_FIELD,
       handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         null;
       },
     },
   ];
 
-  /*
-	- each array above is full individual formFields
-	- this fn maps through each of the arrays above
-    and pushes the individual fields inside the comprehensive
-    formFields array and returns that to our studForm
-
-	- our studForm will know how to render each field to the screen
-	in sequence
-
-  - we seperated them in individual related arrays incase we wanted some form fields
-   to appear only after a dropdown selection. Modularity scales well
-  */
   const getFormFields = (): Array<FormFieldType> => {
     const formFields: Array<FormFieldType> = [];
 
@@ -147,7 +129,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     <StudForm
       title="Register"
       textFields={getFormFields()}
-      buttonText={buttonText}
+      buttonText={"Submit"}
       handleClick={registerUser}
     />
   );
