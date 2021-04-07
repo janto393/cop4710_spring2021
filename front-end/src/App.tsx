@@ -6,16 +6,12 @@ import HomeContainer from "./containers/HomeContainer";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
+import { useState } from "react";
 import { useStudUser } from "./hooks/useStudUser";
 
 const App = () => {
-  const {
-    studUser,
-    setStudUser,
-    submitUserRegistration,
-    logIn,
-    isLoading,
-  } = useStudUser();
+  const [isLoading, setIsLoading] = useState(false);
+  const { studUser, setStudUser } = useStudUser();
 
   return (
     <Router>
@@ -26,7 +22,7 @@ const App = () => {
             <LoginForm
               studUser={studUser}
               setStudUser={setStudUser}
-              logIn={logIn}
+              setIsLoading={setIsLoading}
             />
           </LoginPageContainer>
         </Route>
@@ -36,7 +32,7 @@ const App = () => {
             <RegisterForm
               studUser={studUser}
               setStudUser={setStudUser}
-              registerUser={submitUserRegistration}
+              setIsLoading={setIsLoading}
             />
           </LoginPageContainer>
         </Route>

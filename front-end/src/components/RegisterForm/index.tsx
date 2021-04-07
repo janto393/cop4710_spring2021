@@ -3,24 +3,44 @@ import React, { useEffect } from "react";
 import { FormFieldType } from "../../types/formTypes";
 import StudForm from "../StudForm";
 import { UserInfoType } from "../../hooks/useStudUser";
+import axios from "axios";
 
 export type RegisterProps = {
   studUser: UserInfoType;
   setStudUser: Function;
-  registerUser: Function;
+  setIsLoading: Function;
 };
 
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
-  const { studUser, setStudUser, registerUser } = props;
+  const { studUser, setStudUser, setIsLoading } = props;
   const buttonText = "Submit";
 
-  // when we change account type we want to reset universityID
-  useEffect(() => {
-    setStudUser({
+  const universityIdMap = new Map<string, number>();
+  universityIdMap.set("University of Central Florida", 1);
+  universityIdMap.set("University of Florida", 2);
+  universityIdMap.set("Florida State University", 3);
+
+  const registerUser = async () => {
+    setIsLoading(true);
+
+    // TODO: IMPLEMENT FORM ERROR CHECKING HERE
+    // call to regiser account
+    const response = await axios.post("http://localhost:5000/api/register", {
       ...studUser,
-      universityID: studUser.role === "Student" ? "" : studUser.universityID,
+      profilePicture: undefined,
     });
-  }, [studUser.role]);
+
+    const { data } = response;
+
+    console.log(data);
+
+    // temp response alert
+    data.success === true
+      ? alert("Account successfully created!")
+      : alert("Error creating account!");
+
+    setIsLoading(false);
+  };
 
   const selectAccountTypeField: Array<FormFieldType> = [
     {
@@ -30,7 +50,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({
           ...studUser,
-          rsoID: e.target.value === "University (Super admin)" ? 1 : 2,
+          role: e.target.value === "University (Super admin)" ? 2 : 1,
         });
       },
     },
@@ -45,10 +65,10 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
         "University of Florida",
         "Florida State University",
       ],
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
+      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         setStudUser({
           ...studUser,
-          universityID: e.target.value,
+          universityID: universityIdMap.get(e.target.value),
         });
       },
     },
@@ -58,21 +78,21 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     {
       fieldTitle: "first name",
       fieldType: "textField",
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
+      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         setStudUser({ ...studUser, firstname: e.target.value });
       },
     },
     {
       fieldTitle: "last name",
       fieldType: "textField",
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
+      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         setStudUser({ ...studUser, lastname: e.target.value });
       },
     },
     {
       fieldTitle: "email",
       fieldType: "textField",
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
+      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         setStudUser({
           ...studUser,
           email: e.target.value,
@@ -84,7 +104,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       fieldTitle: "password",
       inputTypePassword: true,
       fieldType: "textField",
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
+      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
         setStudUser({ ...studUser, password: e.target.value });
       },
     },
@@ -92,8 +112,8 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       fieldTitle: "confirm password",
       inputTypePassword: true,
       fieldType: "textField",
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setStudUser({ ...studUser, rePassword: e.target.value });
+      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
+        null;
       },
     },
   ];

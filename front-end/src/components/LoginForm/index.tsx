@@ -2,18 +2,39 @@ import { FormFieldType } from "../../types/formTypes";
 import React from "react";
 import StudForm from "../StudForm";
 import { UserInfoType } from "../../hooks/useStudUser";
+import axios from "axios";
 import { useHistory } from "react-router";
 
 export type LoginFormProps = {
   studUser: UserInfoType;
   setStudUser: Function;
-  logIn: Function;
+  setIsLoading: Function;
 };
 
 const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
-  const { studUser, setStudUser, logIn } = props;
+  const { studUser, setStudUser, setIsLoading } = props;
   const { username, password } = studUser;
   const history = useHistory();
+
+  const logIn = async (username: string, password: string, history: any) => {
+    setIsLoading(true);
+
+    // TODO: IMPLEMENT FORM ERROR CHECKING HERE
+    const response = await axios.post("http://localhost:5000/api/login", {
+      username: username,
+      password: password,
+    });
+
+    const { data } = response;
+    setStudUser(data.userData);
+
+    // if successful login, forward user to home page
+    data.success === false
+      ? alert("Username and/or password incorrect.")
+      : history.push("/home");
+
+    setIsLoading(false);
+  };
 
   // formFields for login form
   const loginTextFields: Array<FormFieldType> = [
