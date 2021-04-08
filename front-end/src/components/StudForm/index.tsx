@@ -9,6 +9,7 @@ import {
   Typography,
 } from "@material-ui/core";
 
+import ImageUpload from "../ImageUpload";
 import React from "react";
 import StudSelect from "../StudSelect";
 import StudTextField from "../StudTextField";
@@ -17,7 +18,7 @@ import { useHistory } from "react-router-dom";
 
 // fields that should be passed into formField
 export type FormFieldType = {
-  label: string;
+  label?: string;
   inputType?: string;
   fieldType: string;
   selectItems?: Array<string>;
@@ -65,7 +66,7 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
           {/* renders all of the fields */}
           {textFields.map((field) => {
             const {
-              label,
+              label = "",
               inputType = "email",
               fieldType,
               selectItems = [],
@@ -90,6 +91,8 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
                     handleOnChange={() => handleOnChange}
                   />
                 );
+              case "imageUploader":
+                return <ImageUpload handleOnChange={handleOnChange} />;
               default:
                 console.log(
                   "textfield not available: create component and add to switch statement"

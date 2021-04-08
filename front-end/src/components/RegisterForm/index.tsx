@@ -29,7 +29,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
         setStudUser({
           ...studUser,
-          role: e.target.value === "University (Super admin)" ? 1 : 2,
+          rsoID: e.target.value === "University (Super admin)" ? 1 : 2,
         });
       },
     },
