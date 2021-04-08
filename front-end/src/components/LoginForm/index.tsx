@@ -9,7 +9,6 @@ import produce from "immer";
 import { useHistory } from "react-router";
 
 export type LoginFormProps = {
-  studUser: UserInfoType;
   setStudUser: Function;
   setIsLoading: Function;
 };

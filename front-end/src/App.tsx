@@ -6,6 +6,7 @@ import HomeContainer from "./containers/HomeContainer";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
+import StudForm from "./components/StudForm";
 import { useState } from "react";
 import { useStudUser } from "./hooks/useStudUser";
 
@@ -19,18 +20,13 @@ const App = () => {
         {/* splash page routes */}
         <Route path="/" exact>
           <LoginPageContainer isLoading={isLoading}>
-            <LoginForm
-              studUser={studUser}
-              setStudUser={setStudUser}
-              setIsLoading={setIsLoading}
-            />
+            <LoginForm setStudUser={setStudUser} setIsLoading={setIsLoading} />
           </LoginPageContainer>
         </Route>
 
         <Route path="/register" exact>
           <LoginPageContainer isLoading={isLoading}>
             <RegisterForm
-              studUser={studUser}
               setStudUser={setStudUser}
               setIsLoading={setIsLoading}
             />

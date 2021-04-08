@@ -15,7 +15,6 @@ import { baseUrl } from "../../Utils/apiUtils";
 import produce from "immer";
 
 export type RegisterProps = {
-  studUser: UserInfoType;
   setStudUser: Function;
   setIsLoading: Function;
 };
@@ -52,7 +51,7 @@ const INITIAL_FORM_STATE = {
 };
 
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
-  const { setIsLoading, studUser } = props;
+  const { setIsLoading } = props;
   const [form, setForm] = useState(INITIAL_FORM_STATE);
 
   const registerUser = async () => {
@@ -68,7 +67,6 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     } = form;
 
     const { data } = await axios.post(`${baseUrl}/register`, {
-      ...studUser,
       username: email.value,
       password: password.value,
       firstname: firstname.value,
