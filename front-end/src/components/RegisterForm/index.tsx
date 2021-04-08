@@ -13,6 +13,7 @@ import { UserInfoType } from "../../hooks/useStudUser";
 import axios from "axios";
 import { baseUrl } from "../../Utils/apiUtils";
 import produce from "immer";
+import { useHistory } from "react-router";
 
 export type RegisterProps = {
   setStudUser: Function;
@@ -53,6 +54,7 @@ const INITIAL_FORM_STATE = {
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
   const { setIsLoading } = props;
   const [form, setForm] = useState(INITIAL_FORM_STATE);
+  const history = useHistory();
 
   const registerUser = async () => {
     setIsLoading(true);
@@ -78,7 +80,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
 
     // temp response alert
     data.success === true
-      ? alert("Account successfully created!")
+      ? history.push("/home")
       : alert("Error creating account!");
 
     setIsLoading(false);

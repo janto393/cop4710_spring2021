@@ -6,7 +6,6 @@ import HomeContainer from "./containers/HomeContainer";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
-import StudForm from "./components/StudForm";
 import { useState } from "react";
 import { useStudUser } from "./hooks/useStudUser";
 

@@ -1,11 +1,14 @@
 import "./index.css";
 
 import { AppBar, Grid, LinearProgress, Toolbar } from "@material-ui/core";
-import React, { useState } from "react";
+import React, { useEffect } from "react";
 
 import StudMenu from "../../components/StudMenu";
 
 const HomeContainer: React.FC<any> = ({ children, isLoading }) => {
+  // setLoading to true, fetch user, set user
+  useEffect(() => {}, []);
+
   return (
     <Grid container className="home-container">
       <Grid item xs={12} className="top-nav-item">

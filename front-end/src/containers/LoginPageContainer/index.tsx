@@ -27,7 +27,7 @@ const LoginPageContainer: React.FC<LoginPageProps> = ({
       </Grid>
 
       <Grid container className="content-container" justify="center">
-        <Grid item xs={4}>
+        <Grid item xs={4} className="content-item">
           {isLoading && <LinearProgress />}
           {children}
         </Grid>
