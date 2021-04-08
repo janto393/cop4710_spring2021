@@ -15,6 +15,13 @@ const StudTextField: React.FC<StudTextFieldProps> = (
 ) => {
   const { label, inputType: type, handleOnChange = () => null } = props;
 
+  const onChange = (event: any) => {
+    handleOnChange(label, {
+      value: event.target.value,
+      isValid: false,
+    });
+  };
+
   return (
     <Grid item xs={12} className="input-field-item">
       <TextField
@@ -24,7 +31,7 @@ const StudTextField: React.FC<StudTextFieldProps> = (
         className="input"
         label={label}
         type={type}
-        onChange={handleOnChange()}
+        onChange={onChange}
       />
     </Grid>
   );

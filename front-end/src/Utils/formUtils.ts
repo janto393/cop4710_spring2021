@@ -6,8 +6,8 @@ export const getEventImages = (files: File[], pictures: string[]): string[] => {
 
 export const universityIdMap = new Map<string, number>();
 universityIdMap.set("University of Central Florida", 1);
-universityIdMap.set("University of Florida", 2);
-universityIdMap.set("Florida State University", 3);
+universityIdMap.set("University of Florida", 1);
+universityIdMap.set("Florida State University", 1);
 
 export const ACCOUNT_TYPE_DROPDOWN = ["Super Admin", "Student"];
 
@@ -27,3 +27,12 @@ export enum FieldType {
   TEXT_FIELD = "textField",
   IMAGE_UPLOAD = "imageUploader",
 }
+
+export const formMap = new Map<string, string>();
+formMap.set("Select account type", "accountType");
+formMap.set("Select your University", "university");
+formMap.set("First name", "firstname");
+formMap.set("Last name", "lastname");
+formMap.set("Email", "email");
+formMap.set("Password", "password");
+formMap.set("Confirm password", "confirmPassword");

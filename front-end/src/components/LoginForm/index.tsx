@@ -1,10 +1,11 @@
+import React, { useState } from "react";
 import StudForm, { FormFieldType } from "../StudForm";
 
 import { FieldType } from "../../Utils/formUtils";
-import React from "react";
 import { UserInfoType } from "../../hooks/useStudUser";
 import axios from "axios";
 import { baseUrl } from "../../Utils/apiUtils";
+import produce from "immer";
 import { useHistory } from "react-router";
 
 export type LoginFormProps = {
@@ -13,21 +14,37 @@ export type LoginFormProps = {
   setIsLoading: Function;
 };
 
+export type FormInputType = {
+  value: string;
+  isValid: boolean;
+};
+
+const INITIAL_FORM_STATE = {
+  email: {
+    value: "",
+    isValid: null,
+  },
+  password: {
+    value: "",
+    isValid: null,
+  },
+};
+
 const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
-  const { studUser, setStudUser, setIsLoading } = props;
-  const { username, password } = studUser;
+  const { setStudUser, setIsLoading } = props;
+  const [form, setForm] = useState(INITIAL_FORM_STATE);
   const history = useHistory();
 
-  const logIn = async (username: string, password: string, history: any) => {
+  const logIn = async () => {
     setIsLoading(true);
 
-    // TODO: IMPLEMENT FORM ERROR CHECKING HERE
-    const response = await axios.post(`${baseUrl}/login`, {
-      username: username,
-      password: password,
+    const { email, password } = form;
+
+    const { data } = await axios.post(`${baseUrl}/login`, {
+      username: email.value,
+      password: password.value,
     });
 
-    const { data } = response;
     setStudUser(data.userData);
 
     // if successful login, forward user to home page
@@ -38,35 +55,32 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
     setIsLoading(false);
   };
 
-  // formFields for login form
-  const getLoginTextFields: Array<FormFieldType> = [
+  const handleChange = (field: string, update: FormInputType) => {
+    const updatedForm = produce((form) => {
+      form[field] = update;
+    });
+    setForm(updatedForm);
+  };
+
+  const formFields: Array<FormFieldType> = [
     {
       fieldTitle: "email",
       fieldType: FieldType.TEXT_FIELD,
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setStudUser({
-          ...studUser,
-          email: e.target.value,
-          username: e.target.value,
-        });
-      },
     },
     {
       fieldTitle: "password",
       isPasswordField: true,
       fieldType: FieldType.TEXT_FIELD,
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setStudUser({ ...studUser, password: e.target.value });
-      },
     },
   ];
 
   return (
     <StudForm
       title="Login"
-      textFields={getLoginTextFields}
+      formFields={formFields}
       buttonText="Sign in"
-      handleClick={() => logIn(username, password, history)}
+      handleClick={logIn}
+      handleChange={handleChange}
     />
   );
 };

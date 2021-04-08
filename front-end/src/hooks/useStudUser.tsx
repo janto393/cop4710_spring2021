@@ -1,4 +1,3 @@
-import axios from "axios";
 import { useState } from "react";
 
 export type UserInfoType = {
@@ -19,10 +18,9 @@ const INITIAL_VALUE: UserInfoType = {
   firstname: "",
   lastname: "",
   email: "",
-  universityID: 0,
-  rsoID: 0,
-  role: 0,
-  profilePicture: undefined,
+  universityID: 1,
+  rsoID: 1,
+  role: 1,
 };
 
 export const useStudUser = () => {

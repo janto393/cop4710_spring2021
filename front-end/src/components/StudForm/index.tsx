@@ -12,7 +12,6 @@ import { useHistory } from "react-router-dom";
 export type FormFieldType = {
   fieldTitle: string;
   fieldType: "textField" | "dropDown" | "imageUploader";
-  handleOnChange: Function;
   isPasswordField?: boolean;
   selectItems?: Array<string>;
 };
@@ -20,13 +19,14 @@ export type FormFieldType = {
 // fields that should be passed into component
 export type FormPropsType = {
   title: string;
-  textFields: Array<FormFieldType>;
+  formFields: Array<FormFieldType>;
   buttonText: string;
-  handleClick?: Function;
+  handleChange: Function;
+  handleClick: Function;
 };
 
 const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
-  const { title, textFields, buttonText, handleClick = () => null } = props;
+  const { title, formFields, buttonText, handleClick, handleChange } = props;
   const history = useHistory();
   const { location } = history;
 
@@ -54,7 +54,6 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
         isPasswordField: inputTypePassword = false,
         fieldType,
         selectItems = [],
-        handleOnChange = () => null,
       } = field;
 
       // only supports text and select fields. can add more below in switch
@@ -64,7 +63,7 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
             <StudTextField
               label={label}
               inputType={inputTypePassword ? "password" : "email"}
-              handleOnChange={() => handleOnChange}
+              handleOnChange={handleChange}
             />
           );
         case "dropDown":
@@ -72,11 +71,11 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
             <StudSelect
               label={label}
               selectItems={selectItems}
-              handleOnChange={() => handleOnChange}
+              handleOnChange={handleChange}
             />
           );
         case "imageUploader":
-          return <ImageUpload handleOnChange={handleOnChange} />;
+          return <ImageUpload handleOnChange={handleChange} />;
         default:
           console.log(
             "textfield not available: create component and add to switch statement"
@@ -121,7 +120,7 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
           {getFormTitle}
 
           {/* form fields */}
-          {getFormFields(textFields)}
+          {getFormFields(formFields)}
         </Grid>
 
         {/* submit button */}

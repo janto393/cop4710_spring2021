@@ -1,16 +1,18 @@
 import {
   ACCOUNT_TYPE_DROPDOWN,
-  AccountTypes,
   FieldType,
   UNIVERSITY_DROPDOWN,
+  formMap,
   universityIdMap,
 } from "../../Utils/formUtils";
+import React, { useState } from "react";
 import StudForm, { FormFieldType } from "../StudForm";
 
-import React from "react";
+import { FormInputType } from "../LoginForm";
 import { UserInfoType } from "../../hooks/useStudUser";
 import axios from "axios";
 import { baseUrl } from "../../Utils/apiUtils";
+import produce from "immer";
 
 export type RegisterProps = {
   studUser: UserInfoType;
@@ -18,18 +20,63 @@ export type RegisterProps = {
   setIsLoading: Function;
 };
 
+const INITIAL_FORM_STATE = {
+  accountType: {
+    value: "",
+    isValid: null,
+  },
+  university: {
+    value: "",
+    isValid: null,
+  },
+  firstname: {
+    value: "",
+    isValid: null,
+  },
+  lastname: {
+    value: "",
+    isValid: null,
+  },
+  email: {
+    value: "",
+    isValid: null,
+  },
+  password: {
+    value: "",
+    isValid: null,
+  },
+  confirmPassword: {
+    value: "",
+    isValid: null,
+  },
+};
+
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
-  const { studUser, setStudUser, setIsLoading } = props;
+  const { setIsLoading, studUser } = props;
+  const [form, setForm] = useState(INITIAL_FORM_STATE);
 
   const registerUser = async () => {
     setIsLoading(true);
-    // TODO: IMPLEMENT FORM ERROR CHECKING HERE
-    const response = await axios.post(`${baseUrl}/register`, {
-      ...studUser,
-      profilePicture: undefined,
-    });
 
-    const { data } = response;
+    const {
+      accountType,
+      university,
+      firstname,
+      lastname,
+      email,
+      password,
+    } = form;
+
+    const { data } = await axios.post(`${baseUrl}/register`, {
+      ...studUser,
+      username: email.value,
+      password: password.value,
+      firstname: firstname.value,
+      lastname: lastname.value,
+      email: email.value,
+      universityID: universityIdMap.get(university.value),
+      role: accountType.value === "Student" ? 1 : 1,
+    });
 
     // temp response alert
     data.success === true
@@ -39,97 +86,57 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     setIsLoading(false);
   };
 
-  const selectAccountTypeField: Array<FormFieldType> = [
+  const handleChange = (field: string, update: FormInputType) => {
+    const mappedField: any = formMap.get(field);
+
+    const updatedForm = produce((form) => {
+      form[mappedField] = update;
+    });
+    setForm(updatedForm);
+  };
+
+  const formFields: Array<FormFieldType> = [
     {
       fieldTitle: "Select account type",
       fieldType: FieldType.DROP_DOWN,
       selectItems: ACCOUNT_TYPE_DROPDOWN,
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setStudUser({
-          ...studUser,
-          role: e.target.value === AccountTypes.SUPER_ADMIN ? 2 : 1,
-        });
-      },
     },
-  ];
-
-  const selectUniveristyField: Array<FormFieldType> = [
     {
       fieldTitle: "Select your University",
       fieldType: FieldType.DROP_DOWN,
       selectItems: UNIVERSITY_DROPDOWN,
-      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
-        setStudUser({
-          ...studUser,
-          universityID: universityIdMap.get(e.target.value),
-        });
-      },
     },
-  ];
-
-  const nameEmailPasswordFields: Array<FormFieldType> = [
     {
-      fieldTitle: "first name",
+      fieldTitle: "First name",
       fieldType: FieldType.TEXT_FIELD,
-      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
-        setStudUser({ ...studUser, firstname: e.target.value });
-      },
     },
     {
-      fieldTitle: "last name",
+      fieldTitle: "Last name",
       fieldType: FieldType.TEXT_FIELD,
-      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
-        setStudUser({ ...studUser, lastname: e.target.value });
-      },
     },
     {
-      fieldTitle: "email",
+      fieldTitle: "Email",
       fieldType: FieldType.TEXT_FIELD,
-      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
-        setStudUser({
-          ...studUser,
-          email: e.target.value,
-          username: e.target.value,
-        });
-      },
     },
     {
-      fieldTitle: "password",
+      fieldTitle: "Password",
       isPasswordField: true,
       fieldType: FieldType.TEXT_FIELD,
-      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
-        setStudUser({ ...studUser, password: e.target.value });
-      },
     },
     {
-      fieldTitle: "confirm password",
+      fieldTitle: "Confirm password",
       isPasswordField: true,
       fieldType: FieldType.TEXT_FIELD,
-      handleOnChange: (e: React.ChangeEvent<{ value: string }>) => {
-        null;
-      },
     },
   ];
-
-  const getFormFields = (): Array<FormFieldType> => {
-    const formFields: Array<FormFieldType> = [];
-
-    formFields.push(selectAccountTypeField?.[0]);
-
-    formFields.push(selectUniveristyField?.[0]);
-
-    nameEmailPasswordFields.forEach((field: FormFieldType) =>
-      formFields.push(field)
-    );
-    return formFields;
-  };
 
   const getSelectAccountType = (
     <StudForm
       title="Register"
-      textFields={getFormFields()}
+      formFields={formFields}
       buttonText={"Submit"}
       handleClick={registerUser}
+      handleChange={handleChange}
     />
   );
 
