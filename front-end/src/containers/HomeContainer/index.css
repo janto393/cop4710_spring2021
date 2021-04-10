@@ -1,0 +1,9 @@
+/* top nav bar styles */
+
+.home-container .MuiPaper-root .MuiToolbar-root {
+  background-color: rgb(82, 82, 82);
+}
+
+.home-container .content-container {
+  margin: 30px 200px;
+}

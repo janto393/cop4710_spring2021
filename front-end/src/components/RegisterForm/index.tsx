@@ -1,135 +1,142 @@
-import React, { useEffect } from "react";
+import {
+  ACCOUNT_TYPE_DROPDOWN,
+  FieldType,
+  UNIVERSITY_DROPDOWN,
+  formMap,
+  universityIdMap,
+} from "../../Utils/formUtils";
+import React, { useState } from "react";
 import StudForm, { FormFieldType } from "../StudForm";
 
-import { UserInfoType } from "../../hooks/useStudUser";
+import { FormInputType } from "../LoginForm";
+import { StudUser } from "../../hooks/useStudUser";
+import axios from "axios";
+import { baseUrl } from "../../Utils/apiUtils";
+import produce from "immer";
+import { useHistory } from "react-router";
 
 export type RegisterProps = {
-  studUser: UserInfoType;
   setStudUser: Function;
-  registerUser: Function;
+  setIsLoading: Function;
+};
+
+const INITIAL_FORM_STATE = {
+  accountType: {
+    value: "",
+    isValid: null,
+  },
+  university: {
+    value: "",
+    isValid: null,
+  },
+  firstname: {
+    value: "",
+    isValid: null,
+  },
+  lastname: {
+    value: "",
+    isValid: null,
+  },
+  email: {
+    value: "",
+    isValid: null,
+  },
+  password: {
+    value: "",
+    isValid: null,
+  },
+  confirmPassword: {
+    value: "",
+    isValid: null,
+  },
 };
 
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
-  const { studUser, setStudUser, registerUser } = props;
-  const buttonText = "Submit";
+  const { setIsLoading } = props;
+  const [form, setForm] = useState(INITIAL_FORM_STATE);
+  const history = useHistory();
 
-  // when we change account type we want to reset universityID
-  useEffect(() => {
-    setStudUser({
-      ...studUser,
-      universityID: studUser.role === "Student" ? "" : studUser.universityID,
+  const registerUser = async () => {
+    setIsLoading(true);
+
+    const {
+      accountType,
+      university,
+      firstname,
+      lastname,
+      email,
+      password,
+    } = form;
+
+    const { data } = await axios.post(`${baseUrl}/register`, {
+      username: email.value,
+      password: password.value,
+      firstname: firstname.value,
+      lastname: lastname.value,
+      email: email.value,
+      universityID: universityIdMap.get(university.value),
+      role: accountType.value === "Student" ? 1 : 1,
     });
-  }, [studUser.role]);
 
-  const selectAccountTypeField: Array<FormFieldType> = [
-    {
-      label: "Select account type",
-      fieldType: "dropDown",
-      selectItems: ["University (Super admin)", "Student"],
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setStudUser({
-          ...studUser,
-          role: e.target.value === "University (Super admin)" ? 1 : 2,
-        });
-      },
-    },
-  ];
+    // temp response alert
+    data.success === true
+      ? history.push("/home")
+      : alert("Error creating account!");
 
-  const selectUniveristyField: Array<FormFieldType> = [
-    {
-      label: "Select your University",
-      fieldType: "dropDown",
-      selectItems: [
-        "University of Central Florida",
-        "University of Florida",
-        "Florida State University",
-      ],
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setStudUser({
-          ...studUser,
-          universityID: e.target.value,
-        });
-      },
-    },
-  ];
-
-  const nameEmailPasswordFields: Array<FormFieldType> = [
-    {
-      label: "first name",
-      fieldType: "textField",
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setStudUser({ ...studUser, firstname: e.target.value });
-      },
-    },
-    {
-      label: "last name",
-      fieldType: "textField",
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setStudUser({ ...studUser, lastname: e.target.value });
-      },
-    },
-    {
-      label: "email",
-      fieldType: "textField",
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setStudUser({
-          ...studUser,
-          email: e.target.value,
-          username: e.target.value,
-        });
-      },
-    },
-    {
-      label: "password",
-      inputType: "password",
-      fieldType: "textField",
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setStudUser({ ...studUser, password: e.target.value });
-      },
-    },
-    {
-      label: "confirm password",
-      inputType: "password",
-      fieldType: "textField",
-      handleOnChange: (e: React.ChangeEvent<{ value: unknown }>) => {
-        setStudUser({ ...studUser, rePassword: e.target.value });
-      },
-    },
-  ];
-
-  /*
-	- each array above is full individual formFields
-	- this fn maps through each of the arrays above
-    and pushes the individual fields inside the comprehensive
-    formFields array and returns that to our studForm
-
-	- our studForm will know how to render each field to the screen
-	in sequence
-
-  - we seperated them in individual related arrays incase we wanted some form fields
-   to appear only after a dropdown selection. Modularity scales well
-  */
-  const getFormFields = (): Array<FormFieldType> => {
-    const formFields: Array<FormFieldType> = [];
-
-    formFields.push(selectAccountTypeField?.[0]);
-
-    formFields.push(selectUniveristyField?.[0]);
-
-    nameEmailPasswordFields.forEach((field: FormFieldType) =>
-      formFields.push(field)
-    );
-    return formFields;
+    setIsLoading(false);
   };
+
+  const handleChange = (field: string, update: FormInputType) => {
+    const mappedField: any = formMap.get(field);
+
+    const updatedForm = produce((form) => {
+      form[mappedField] = update;
+    });
+    setForm(updatedForm);
+  };
+
+  const formFields: Array<FormFieldType> = [
+    {
+      fieldTitle: "Select account type",
+      fieldType: FieldType.DROP_DOWN,
+      selectItems: ACCOUNT_TYPE_DROPDOWN,
+    },
+    {
+      fieldTitle: "Select your University",
+      fieldType: FieldType.DROP_DOWN,
+      selectItems: UNIVERSITY_DROPDOWN,
+    },
+    {
+      fieldTitle: "First name",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Last name",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Email",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Password",
+      isPasswordField: true,
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Confirm password",
+      isPasswordField: true,
+      fieldType: FieldType.TEXT_FIELD,
+    },
+  ];
 
   const getSelectAccountType = (
     <StudForm
       title="Register"
-      textFields={getFormFields()}
-      studUser={studUser}
-      setStudUser={setStudUser}
-      buttonText={buttonText}
+      formFields={formFields}
+      buttonText={"Submit"}
       handleClick={registerUser}
+      handleChange={handleChange}
     />
   );
 

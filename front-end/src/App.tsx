@@ -1,24 +1,19 @@
-// React imports
-
 import "./index.css";
 
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
+import EventForm from "./components/EventForm";
+import EventsList from "./components/EventList";
+import HomeContainer from "./containers/HomeContainer";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
+import { useState } from "react";
 import { useStudUser } from "./hooks/useStudUser";
-import EventsList from "./components/EventList";
-import EventForm from "./components/EventForm";
 
 const App = () => {
-  const {
-    studUser,
-    setStudUser,
-    submitUserRegistration,
-    logIn,
-    isLoading,
-  } = useStudUser();
+  const [isLoading, setIsLoading] = useState(false);
+  const { studUser, setStudUser } = useStudUser();
 
   return (
     <Router>
@@ -26,41 +21,34 @@ const App = () => {
         {/* splash page routes */}
         <Route path="/" exact>
           <LoginPageContainer isLoading={isLoading}>
-            <LoginForm
-              studUser={studUser}
-              setStudUser={setStudUser}
-              logIn={logIn}
-            />
+            <LoginForm setStudUser={setStudUser} setIsLoading={setIsLoading} />
           </LoginPageContainer>
         </Route>
 
         <Route path="/register" exact>
           <LoginPageContainer isLoading={isLoading}>
             <RegisterForm
-              studUser={studUser}
               setStudUser={setStudUser}
-              registerUser={submitUserRegistration}
+              setIsLoading={setIsLoading}
             />
           </LoginPageContainer>
         </Route>
 
         {/* rest of the app will go below */}
         <Route path="/home" exact>
-					<EventsList
-						studUser={studUser}
-					/>
-				</Route>
+          <HomeContainer>
+            <EventsList studUser={studUser} />
+          </HomeContainer>
+        </Route>
 
-				<Route path="/createEvent" exact>
-					<EventForm
-						studUser={studUser}
-					/>
-				</Route>
-				<Route path="/modifyEvent" exact>
-					<EventForm
-						studUser={studUser}
-					/>
-				</Route>
+        <Route path="/createEvent" exact>
+          <HomeContainer>
+            <EventForm studUser={studUser} />
+          </HomeContainer>
+        </Route>
+        <Route path="/modifyEvent" exact>
+          <EventForm studUser={studUser} />
+        </Route>
       </Switch>
     </Router>
   );

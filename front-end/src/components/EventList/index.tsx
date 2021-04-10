@@ -1,75 +1,76 @@
+import { Event } from "src/types/eventTypes";
+import EventCards from "./EventCard";
+import { GetEventResponse } from "src/types/apiResponseBodies";
+import { GetEventsRequest } from "src/types/apiRequestBodies";
+import { StudUser } from "src/hooks/useStudUser";
+import buildpath from "../../Utils/buildpath";
+import { useEffect } from "react";
 import { useState } from "react";
-import { UserInfoType } from "src/hooks/useStudUser";
 
 // util imports
-import buildpath from "../../Utils/buildpath";
 
 // component imports
-import EventCards from "./EventCard";
-import { Event } from "src/types/eventTypes";
-import { useEffect } from "react";
-import { GetEventsRequest } from "src/types/apiRequestBodies";
-import { GetEventResponse } from "src/types/apiResponseBodies";
 
 export type EventListProps = {
-	studUser: UserInfoType
-}
+  studUser: StudUser;
+};
 
-function EventList(props: EventListProps): JSX.Element
-{
-	const [events, setEvents] = useState<Array<Event>>([]);
+function EventList(props: EventListProps): JSX.Element {
+  const { studUser } = props;
+  const { universityID, rsoID } = studUser;
 
-	const fetchEvents = (): void => {
-		let payload: GetEventsRequest = {
-			schoolID: props.studUser.universityID
-		};
+  const [events, setEvents] = useState<Array<Event>>([]);
 
-		console.log(props.studUser);
-		console.log(typeof props.studUser.universityID);
-		console.log(typeof props.studUser.rsoID);
+  const fetchEvents = (): void => {
+    let payload: GetEventsRequest = {
+      schoolID: universityID,
+    };
 
-		// hard code safety value (will remove when app is operational)
-		if (props.studUser.universityID === undefined || props.studUser.universityID !== "")
-		{
-			console.warn("schoolID safety value triggered");
-			payload.schoolID = 1;
-		}
+    console.log(studUser);
+    console.log(typeof universityID);
+    console.log(typeof rsoID);
 
-		// add the rso of the user if they are part of an RSO
-		if (props.studUser.rsoID !== undefined || props.studUser.rsoID !== "")
-		{
-			console.log("Populating rsoID");
-			payload.rsoID = props.studUser.rsoID;
-		}
+    // hard code safety value (will remove when app is operational)
+    if (universityID === undefined) {
+      console.warn("schoolID safety value triggered");
+      payload.schoolID = 1;
+    }
 
-		let request: Object = {
-			method: "POST",
-			body: JSON.stringify(payload),
-			headers: {
-				"Content-Type": "application/json"
-			}
-		};
+    // add the rso of the user if they are part of an RSO
+    if (rsoID !== undefined) {
+      console.log("Populating rsoID");
+      payload.rsoID = rsoID;
+    }
 
-		fetch(buildpath("/api/getEvents"), request)
-		.then((response: Response): Promise<GetEventResponse> => {
-			return response.json();
-		})
-		.then((data: GetEventResponse): void => {
-			if (!data.success)
-			{
-				console.error(data.error);
-				return;
-			}
+    let request: Object = {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
-			setEvents(data.events);
-		});
-	};
+    fetch(buildpath("/api/getEvents"), request)
+      .then(
+        (response: Response): Promise<GetEventResponse> => {
+          return response.json();
+        }
+      )
+      .then((data: GetEventResponse): void => {
+        if (!data.success) {
+          console.error(data.error);
+          return;
+        }
 
-	useEffect(() => {fetchEvents();}, []);
+        setEvents(data.events);
+      });
+  };
 
-	return (
-		<EventCards events={events} />
-	);
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  return <EventCards events={events} />;
 }
 
 export default EventList;
