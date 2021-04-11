@@ -19,9 +19,6 @@ export interface Event
 	eventPictures: Array<Buffer>
 }
 
-/**
- * 
- */
 export interface NewEvent
 {
 	schoolID: number,
