@@ -1,8 +1,7 @@
 import { IconButton, Menu, MenuItem } from "@material-ui/core";
 import React, { useState } from "react";
 
-import MenuIcon from "@material-ui/icons/Menu";
-import { menuItems } from "../../Utils/menuUtils";
+import { AccountCircle } from "@material-ui/icons";
 
 export type MenuProps = {};
 
@@ -21,7 +20,7 @@ const StudMenu: React.FC<MenuProps> = (props: MenuProps) => {
           setAnchorEl(e.currentTarget)
         }
       >
-        <MenuIcon />
+        <AccountCircle />
       </IconButton>
       <Menu
         id="menu-appbar"
@@ -38,11 +37,7 @@ const StudMenu: React.FC<MenuProps> = (props: MenuProps) => {
         open={open}
         onClose={() => setAnchorEl(null)}
       >
-        {/* options will depend on user auth */}
-        {menuItems.map((menuItem) => {
-          const { onClick, title } = menuItem;
-          return <MenuItem onClick={onClick}>{title}</MenuItem>;
-        })}
+        <MenuItem onClick={() => null}>Logout</MenuItem>
       </Menu>
     </>
   );

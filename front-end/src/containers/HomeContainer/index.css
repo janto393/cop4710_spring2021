@@ -7,3 +7,14 @@
 .home-container .content-container {
   margin: 30px 200px;
 }
+
+.home-container .top-nav-item .links-container .links-item .link {
+  color: white;
+  text-transform: none;
+}
+
+.home-container .top-nav-item .links-container .links-item .link:hover {
+  color: white;
+  text-transform: none;
+  text-decoration: underline;
+}
