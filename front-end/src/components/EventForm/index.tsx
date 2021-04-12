@@ -18,7 +18,6 @@ import {
 
 import { Event } from "../../types/eventTypes";
 import { FieldType, UNIVERSITY_DROPDOWN, formMap } from "src/Utils/formUtils";
-import { MeetingType, RSO, State, University } from "../../types/dropDownTypes";
 import { FormFieldType } from "../StudForm";
 import { FormInputType } from "../LoginForm";
 import StudForm from "../StudForm/index";
@@ -37,7 +36,6 @@ const EventForm: React.FC<ManipulateEventProps> = (
   const isNewEvent: boolean = (props.event === undefined);
   const [form, setForm] = useState<FormState>(INITIAL_FORM_STATE);
 
-  // 2. create handleChange fn with produce()
   const handleChange = (field: string, update: FormInputType) => {
     const mappedField: any = formMap.get(field);
 
@@ -52,10 +50,6 @@ const EventForm: React.FC<ManipulateEventProps> = (
 	const [RSOs, setRSOs] = useState<Map<string, number>>(new Map<string, number>());
 	const [states, setStates] = useState<Map<string, number>>(new Map<string, number>());
 	const [universities, setUniversities] = useState<Map<string, number>>(new Map<string, number>());
-
-  // 3. pass that to studForms
-
-  // 4. use form state as body of api request
 
   const FORM_FIELDS: Array<FormFieldType> = [
     {
@@ -123,13 +117,21 @@ const EventForm: React.FC<ManipulateEventProps> = (
 		});
   }, []);
 
+	// package the drop down hooks to be passed to the submit functions
+	let dropDownMaps: DropDownData = {
+		universities: universities,
+		states: states,
+		RSOs: RSOs,
+		meetingTypes: meetingTypes
+	};
+
   return (
     <StudForm
       title="Create Event"
       formFields={FORM_FIELDS}
       buttonText={(props.event === undefined) ? "Create Event" : "Update Event"}
       handleChange={handleChange}
-      handleClick={(isNewEvent) ? () => {createEvent(form)} : () => {updateEvent(form, props.event)}}
+      handleClick={(isNewEvent) ? () => {createEvent(form, dropDownMaps)} : () => {updateEvent(form, dropDownMaps, props.event)}}
     />
   );
 };
