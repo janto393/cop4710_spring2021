@@ -4,3 +4,7 @@ body {
   height: 100%;
   background-color: #1a1919b0;
 }
+
+#root {
+  height: inherit;
+}

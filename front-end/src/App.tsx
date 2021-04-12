@@ -37,6 +37,7 @@ const App = () => {
         <Route path="/home" exact>
           <HomeContainer>
             {/* Events list will go here */}
+            <h1>Hello</h1>
           </HomeContainer>
         </Route>
 
