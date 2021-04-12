@@ -11,9 +11,16 @@ import {
 import React, { useEffect } from "react";
 
 import StudMenu from "src/components/StudMenu";
-import { menuItems } from "src/Utils/menuUtils";
+import { useHistory } from "react-router";
 
 const HomeContainer: React.FC<any> = ({ children, isLoading }) => {
+  const history = useHistory();
+  const menuItems = [
+    { title: "View Events", onClick: () => history.push("/events") },
+    { title: "Create Event", onClick: () => history.push("/createEvent") },
+    { title: "Register RSO", onClick: () => history.push("/registerRso") },
+    { title: "View Requests", onClick: () => history.push("/viewRequests") },
+  ];
   // setLoading to true, fetch user, set user
   useEffect(() => {}, []);
 
@@ -31,7 +38,11 @@ const HomeContainer: React.FC<any> = ({ children, isLoading }) => {
               {menuItems.map((item) => {
                 return (
                   <Grid item xs={1} className="links-item">
-                    <Button variant="text" disableFocusRipple>
+                    <Button
+                      variant="text"
+                      disableFocusRipple
+                      onClick={item.onClick}
+                    >
                       <Typography variant="body1" className="link">
                         {item.title}
                       </Typography>
