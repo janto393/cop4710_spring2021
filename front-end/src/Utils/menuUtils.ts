@@ -1,6 +1,6 @@
 export const menuItems = [
+  { title: "View Events", onClick: () => null },
   { title: "Create Event", onClick: () => null },
-  { title: "Search Events", onClick: () => null },
-  { title: "Apply for RSO", onClick: () => null },
-  { title: "RSO Requests", onClick: () => null },
+  { title: "Register RSO", onClick: () => null },
+  { title: "View Requests", onClick: () => null },
 ];
