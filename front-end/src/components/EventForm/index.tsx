@@ -17,7 +17,7 @@ import {
 } from "./componentSetup";
 
 import { Event } from "../../types/eventTypes";
-import { FieldType, UNIVERSITY_DROPDOWN, formMap } from "src/Utils/formUtils";
+import { FieldType, formMap } from "src/Utils/formUtils";
 import { FormFieldType } from "../StudForm";
 import { FormInputType } from "../LoginForm";
 import StudForm from "../StudForm/index";
