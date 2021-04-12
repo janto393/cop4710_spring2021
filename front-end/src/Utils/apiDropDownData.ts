@@ -5,10 +5,8 @@ import {
 	GetUniversitiesResponse
 } from "../types/apiResponseBodies";
 import {
-	CreateEventRequest,
 	GetRsoRequest,
 	GetUniversitiesRequest,
-	UpdateEventRequest
 } from "../types/apiRequestBodies";
 
 // util imports
@@ -42,7 +40,7 @@ export const fetchStates = async (): Promise<Map<string, number>> => {
 
 export const fetchAllRSOs = async (universityID: number): Promise<Map<string, number>> => {
 	if (typeof universityID === "string") {
-		console.warn("UniversityID is not numeric");
+		console.error("UniversityID is not numeric");
 	}
 
 	let payload: GetRsoRequest = {
@@ -102,9 +100,12 @@ export const fetchMeetingTypes = async (): Promise<Map<string, number>> => {
 export const fetchUniversityData = async (universityID: number): Promise<Map<string, number>> => {
 	let payload: GetUniversitiesRequest = {};
 
-	if (typeof universityID === "string") {
-		console.warn("Stud User university ID is not specified");
-	} else {
+	if (typeof universityID === "string")
+	{
+		console.error("Stud User university ID is not specified");
+	}
+	else
+	{
 		payload.schoolID = universityID;
 	}
 

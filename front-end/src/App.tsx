@@ -47,7 +47,9 @@ const App = () => {
           </HomeContainer>
         </Route>
         <Route path="/modifyEvent" exact>
-          <EventForm studUser={studUser} />
+					<HomeContainer>
+						<EventForm studUser={studUser} />
+					</HomeContainer>
         </Route>
       </Switch>
     </Router>

@@ -159,7 +159,7 @@ export async function getUniversities(request: Request, response: Response, next
 					};
 
 					let university: University = {
-						universityID: rawData.universityID,
+						ID: rawData.universityID,
 						address: {
 							address: rawData.address,
 							city: rawData.city,

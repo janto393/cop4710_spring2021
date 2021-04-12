@@ -86,7 +86,7 @@ export const createEvent = async (data: FormState, dropDownMaps: DropDownData): 
 		description: data.eventDescription.value,
 		room: data.room.value,
 		rating: 0,
-		isPublic: !Boolean(data.isPrivateEvent.value),
+		isPublic: (data.isPrivateEvent.value === "Public") ? true : false,
 		numAttendees: 0,
 		capacity: Number(data.capacity.value),
 		eventPictures: [] // TODO: Implement pictures
@@ -146,7 +146,7 @@ export const updateEvent = async (data: FormState, dropDownMaps: DropDownData, e
 		city: (data.city.value === "") ? undefined : data.city.value,
 		zip: (data.zip.value === "") ? undefined : data.zip.value,
 		stateID: (data.zip.value === "") ? undefined : parsedStateID,
-		isPublic: (data.isPrivateEvent.value === "") ? undefined : !Boolean(data.isPrivateEvent.value),
+		isPublic: (data.isPrivateEvent.value === "") ? undefined : ((data.isPrivateEvent.value === "Public") ? true : false),
 		capacity: (data.capacity.value === "") ? undefined : Number(data.capacity.value),
 		meetingType: (data.meetingType.value === "") ? undefined : parsedMeetingType
 	};
