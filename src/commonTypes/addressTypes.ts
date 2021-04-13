@@ -8,7 +8,7 @@ export interface Address
 
 export interface State
 {
-	stateID: number,
+	ID: number,
 	name: string,
 	abbreviation: string
 }

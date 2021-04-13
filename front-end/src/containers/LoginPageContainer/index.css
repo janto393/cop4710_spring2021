@@ -1,3 +1,7 @@
 .login-container .login-img-item {
-  margin: 50px 50px;
+  margin: 35px 50px;
+}
+
+.content-container .content-item {
+  max-width: 450px;
 }

@@ -1,47 +1,36 @@
 import "./index.css";
 
-import {
-  Button,
-  Card,
-  CardActions,
-  CardContent,
-  Grid,
-  Typography,
-} from "@material-ui/core";
+import { Button, Card, CardContent, Grid, Typography } from "@material-ui/core";
 
+import ImageUpload from "../ImageUpload";
 import React from "react";
 import StudSelect from "../StudSelect";
 import StudTextField from "../StudTextField";
-import { UserInfoType } from "../../hooks/useStudUser";
 import { useHistory } from "react-router-dom";
 
 // fields that should be passed into formField
 export type FormFieldType = {
-  label: string;
-  inputType?: string;
-  fieldType: string;
+  fieldTitle: string;
+  fieldType: "textField" | "dropDown" | "imageUploader";
+  isPasswordField?: boolean;
   selectItems?: Array<string>;
-  handleOnChange: Function;
 };
 
 // fields that should be passed into component
 export type FormPropsType = {
   title: string;
-  textFields: Array<FormFieldType>;
+  formFields: Array<FormFieldType>;
   buttonText: string;
-  studUser?: UserInfoType;
-  handleClick?: Function;
-  handleBackClick?: Function;
-  setStudUser?: Function;
+  handleChange: Function;
+  handleClick: Function;
 };
 
 const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
-  const { title, textFields, buttonText, handleClick = () => null } = props;
-
-  // used to redirect to a different route
+  const { title, formFields, buttonText, handleClick, handleChange } = props;
   const history = useHistory();
   const { location } = history;
 
+  const isLoginOrRegisterForm = title === "Login" || title === "Register";
   const redirectButtonText: string =
     title === "Login"
       ? "Don't have an account? Sign up!"
@@ -49,81 +38,97 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
 
   // routes to login/signup
   const handleRedirect = () => {
-    // checks current path and redirects to the either register or login
     location.pathname === "/" ? history.push("/register") : history.push("/");
   };
 
+  const getFormTitle = (
+    <Typography variant="h4" className="form-title">
+      {title}
+    </Typography>
+  );
+
+  const getFormFields = (textFields: Array<FormFieldType>) => {
+    return textFields.map((field) => {
+      const {
+        fieldTitle: label = "",
+        isPasswordField: inputTypePassword = false,
+        fieldType,
+        selectItems = [],
+      } = field;
+
+      // only supports text and select fields. can add more below in switch
+      switch (fieldType) {
+        case "textField":
+          return (
+            <StudTextField
+              label={label}
+              inputType={inputTypePassword ? "password" : "email"}
+              handleOnChange={handleChange}
+            />
+          );
+        case "dropDown":
+          return (
+            <StudSelect
+              label={label}
+              selectItems={selectItems}
+              handleOnChange={handleChange}
+            />
+          );
+        case "imageUploader":
+          return <ImageUpload handleOnChange={handleChange} />;
+        default:
+          console.log(
+            "textfield not available: create component and add to switch statement"
+          );
+      }
+    });
+  };
+
+  const getFormActionButton = (
+    <Grid container className="button-container">
+      <Grid item xs={12} className="button-submit-item">
+        <Button
+          variant="contained"
+          className="button-submit"
+          onClick={() => handleClick()}
+        >
+          {buttonText}
+        </Button>
+      </Grid>
+    </Grid>
+  );
+
+  const getRedirectButton = (
+    <Grid container className="button-container">
+      <Grid item xs={12} className="button-redirect-item">
+        <Button
+          variant="text"
+          className="button-redirect"
+          onClick={handleRedirect}
+        >
+          {redirectButtonText}
+        </Button>
+      </Grid>
+    </Grid>
+  );
+
   return (
-    <Card className="login-card" variant="elevation">
+    <Card className="form-card" variant="elevation" raised>
       <CardContent>
         <Grid container direction="row" className="input-field-container">
           {/* form title */}
-          <Typography variant="h4" className="form-title">
-            {title}
-          </Typography>
+          {getFormTitle}
 
-          {/* renders all of the fields */}
-          {textFields.map((field) => {
-            const {
-              label,
-              inputType = "email",
-              fieldType,
-              selectItems = [],
-              handleOnChange = () => null,
-            } = field;
-
-            // only supports text and select fields. can add more below in switch
-            switch (fieldType) {
-              case "textField":
-                return (
-                  <StudTextField
-                    label={label}
-                    type={inputType}
-                    handleOnChange={() => handleOnChange}
-                  />
-                );
-              case "dropDown":
-                return (
-                  <StudSelect
-                    label={label}
-                    selectItems={selectItems}
-                    handleOnChange={() => handleOnChange}
-                  />
-                );
-              default:
-                console.log(
-                  "textfield not available: create component and add to switch statement"
-                );
-            }
-          })}
+          {/* form fields */}
+          {getFormFields(formFields)}
         </Grid>
 
-        {/* buttons */}
-        <Grid container className="button-container">
-          <Grid item xs={12} className="button-submit-item">
-            <Button
-              variant="contained"
-              className="button-submit"
-              onClick={() => handleClick()}
-            >
-              {buttonText}
-            </Button>
-          </Grid>
-        </Grid>
+        {/* submit button */}
+        {getFormActionButton}
       </CardContent>
 
       {/* login/register page redirect */}
-      <Grid container className="button-container">
-        <Grid item xs={12} className="button-redirect-item">
-          <Button
-            variant="text"
-            className="button-redirect"
-            onClick={handleRedirect}
-          >
-            {redirectButtonText}
-          </Button>
-        </Grid>
-      </Grid>
+      {isLoginOrRegisterForm && getRedirectButton}
     </Card>
   );
 };

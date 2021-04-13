@@ -1,13 +1,13 @@
-.input-field-container .select-field-item  {
-	margin: 0 10px;
-	padding: 10px 0;
+.input-field-container .select-field-item {
+  margin: 0 10px;
+  padding: 10px 0;
 }
 
 .input-field-container .select-field-item .MuiFormControl-root {
-	width: -webkit-fill-available;
+  width: -webkit-fill-available;
 }
 
 .input-field-container .select-field-item .select-field {
-	min-width: 340px;
-	background-color: white;
+  min-width: 340px;
+  background-color: white;
 }

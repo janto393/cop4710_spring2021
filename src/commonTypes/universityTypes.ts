@@ -13,7 +13,7 @@ export interface CampusPicture
 
 export interface University
 {
-	universityID: number,
+	ID: number,
 	name: string,
 	address: Address
 	description: string,

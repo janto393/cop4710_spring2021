@@ -1,0 +1,7 @@
+.image-upload-item {
+  padding: 0px 9px;
+}
+
+.image-upload-item .fileContainer .uploadPictureContainer {
+  width: 15%;
+}

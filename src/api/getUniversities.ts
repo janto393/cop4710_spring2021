@@ -160,12 +160,12 @@ export async function getUniversities(request: Request, response: Response, next
 					};
 
 					let university: University = {
-						universityID: rawData.universityID,
+						ID: rawData.universityID,
 						address: {
 							address: rawData.address,
 							city: rawData.city,
 							state: {
-								stateID: rawData.stateID,
+								ID: rawData.stateID,
 								name: rawData.stateName,
 								abbreviation: rawData.stateAcronym
 							},
@@ -212,6 +212,7 @@ export async function getUniversities(request: Request, response: Response, next
 			}
 
 			connection.end();
+			returnPackage.success = true;
 			response.json(returnPackage);
 			response.status(200);
 			response.send();
