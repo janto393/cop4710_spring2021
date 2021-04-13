@@ -3,8 +3,6 @@
  */
 
 import { Address } from "./addressTypes";
-import { State } from "./addressTypes";
-import * as mysql from "mysql";
 
 export interface CampusPicture
 {
@@ -15,7 +13,7 @@ export interface CampusPicture
 
 export interface University
 {
-	universityID: number,
+	ID: number,
 	name: string,
 	address: Address
 	description: string,

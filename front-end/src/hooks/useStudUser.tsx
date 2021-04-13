@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export type UserInfoType = {
+export type StudUser = {
   username: string;
   password: string;
   firstname: string;
@@ -12,7 +12,7 @@ export type UserInfoType = {
   profilePicture?: any;
 };
 
-const INITIAL_VALUE: UserInfoType = {
+const INITIAL_VALUE: StudUser = {
   username: "",
   password: "",
   firstname: "",

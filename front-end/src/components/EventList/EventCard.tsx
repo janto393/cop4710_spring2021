@@ -42,7 +42,7 @@ function EventCards(props: EventCardsProps): JSX.Element
 		<>
 			{
 				events.map((event: Event, index: number) => {
-					const { name, rsoID, university } = event;
+					const { name, rso, university } = event;
 
 					return (
 						<Accordion expanded={expanded === ("panel_" + String(index))} onChange={handleExpand("panel_" + String(index))}>
@@ -51,7 +51,7 @@ function EventCards(props: EventCardsProps): JSX.Element
 							id={"card_" + String(index)}
 						>
 							<Typography className={classes.heading}>{name}</Typography>
-							<Typography className={classes.secondaryHeading}>{rsoID}</Typography>
+							<Typography className={classes.secondaryHeading}>{rso.ID}</Typography>
 						</AccordionSummary>
 						<AccordionDetails>
 							<Typography className={classes.heading}>

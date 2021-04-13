@@ -16,7 +16,7 @@ interface EndpointInput
 interface EndpointReturn
 {
 	success: boolean,
-	error: string
+	error: string | mysql.MysqlError
 }
 
 export async function createAttendee(request: Request, response: Response, next: CallableFunction): Promise<void>
@@ -77,11 +77,24 @@ export async function createAttendee(request: Request, response: Response, next:
 			queryString = "INSERT INTO Attendees (eventID, userID) VALUES (" + String(input.eventID) + ", " + String(input.userID) + ");";
 
 			// insert the attendee into the database
-			connection.query(queryString, (error: string, rows: Array<any>) => {
+			connection.query(queryString, (error: mysql.MysqlError, rows: Array<any>) => {
 				if (error)
 				{
+					/**
+					 * Endpoint with "throw" an error if an event is full. The trigger in the
+					 * mysql database will set a field to null if there is no room for the new
+					 * attendee.
+					 */
+					if ((error.errno === 1048) && (error.sqlMessage == "Column 'eventID' cannot be null"))
+					{
+						returnPackage.error = "Event is full"
+					}
+					else
+					{
+						returnPackage.error = error;
+					}
+
 					connection.end();
-					returnPackage.error = error;
 					response.json(returnPackage);
 					response.status(500);
 					response.send();

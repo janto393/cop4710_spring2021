@@ -68,6 +68,11 @@ export interface GetRsoRequest
 	universityID: number
 }
 
+export interface GetUniversitiesRequest
+{
+	schoolID?: number
+}
+
 export interface LoginRequest
 {
 	username: string,

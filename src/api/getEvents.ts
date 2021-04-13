@@ -33,7 +33,7 @@ interface SqlEvent
 interface EventPicture
 {
 	ID: number,
-	picture: mysql.Types.MEDIUM_BLOB,
+	picture: Buffer,
 	position: number
 }
 
@@ -112,8 +112,19 @@ function createEventQuery(info: EndpointInput): string
 
 	const fromStatement: string = "FROM Events\n";
 
+	let conditionalJoin: string;
+
+	if (info.rsoID === undefined)
+	{
+		conditionalJoin = "INNER JOIN Events AS E1 ON (Events.ID=E1.ID AND (Events.isPublic<>false))\n"
+	}
+	else
+	{
+		conditionalJoin = "INNER JOIN Events AS E1 ON (Events.ID=E1.ID AND ((Events.schoolID=" + info.schoolID + " AND Events.rsoID=" + info.rsoID + " AND Events.isPublic=false) OR (Events.schoolID=" + info.schoolID + " AND Events.isPublic=true)))\n";
+	}
+
 	const joinStatements: Array<string> = [
-		"INNER JOIN Events AS E1 ON (Events.ID=E1.ID AND ((Events.schoolID=" + info.schoolID + " AND Events.rsoID=" + info.rsoID + " AND Events.isPublic=false) OR (Events.schoolID=" + info.schoolID + " AND Events.isPublic=true)))\n",
+		conditionalJoin,
 		"LEFT JOIN Registered_Student_Organizations AS RSO ON (RSO.ID=Events.rsoID AND RSO.universityID=Events.schoolID)\n",
 		"LEFT JOIN Event_Pictures AS EP ON (Events.ID=EP.eventID)\n", // creates separate event records for each picture
 		"LEFT JOIN Meeting_Types AS MT ON (Events.meetingType=MT.ID)\n",
@@ -244,7 +255,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 						eventPictures: [
 							{
 								ID: rawData.eventPictureID,
-								picture: rawData.eventPicture,
+								picture: Buffer.from(rawData.eventPicture.toString(), "base64"),
 								position: rawData.eventPicturePosition
 							}
 						]
@@ -269,7 +280,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 
 					let parsedPicture: EventPicture = {
 						ID: rawData.eventPictureID,
-						picture: rawData.eventPicture,
+						picture: Buffer.from(rawData.eventPicture.toString(), "base64"),
 						position: rawData.eventPicturePosition
 					};
 

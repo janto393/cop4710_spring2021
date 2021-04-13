@@ -113,7 +113,7 @@ const StudForm: React.FC<FormPropsType> = (props: FormPropsType) => {
   );
 
   return (
-    <Card className="form-card" variant="elevation">
+    <Card className="form-card" variant="elevation" raised>
       <CardContent>
         <Grid container direction="row" className="input-field-container">
           {/* form title */}

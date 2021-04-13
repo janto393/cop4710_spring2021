@@ -2,7 +2,7 @@ import { Event } from "../../types/eventTypes";
 import EventCards from "./EventCard";
 import { GetEventResponse } from "../../types/apiResponseBodies";
 import { GetEventsRequest } from "../../types/apiRequestBodies";
-import { UserInfoType } from "../../hooks/useStudUser";
+import { StudUser } from "../../hooks/useStudUser";
 import buildpath from "../../Utils/buildpath";
 import { useEffect } from "react";
 import { useState } from "react";
@@ -12,7 +12,7 @@ import { useState } from "react";
 // component imports
 
 export type EventListProps = {
-  studUser: UserInfoType;
+  studUser: StudUser
 };
 
 function EventList(props: EventListProps): JSX.Element {

@@ -3,10 +3,12 @@ import "./index.css";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
 import EventsList from "./components/EventList/index";
+import EventForm from "./components/EventForm";
 import HomeContainer from "./containers/HomeContainer";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
+import RegisterRsoForm from "./components/RegisterRsoForm";
 import { useState } from "react";
 import { useStudUser } from "./hooks/useStudUser";
 
@@ -38,6 +40,18 @@ const App = () => {
           <HomeContainer>
 						<EventsList studUser={studUser} />
 					</HomeContainer>
+        </Route>
+
+        <Route path="/createEvent" exact>
+          <HomeContainer>
+            <EventForm studUser={studUser} />
+          </HomeContainer>
+        </Route>
+
+        <Route path="/registerRso" exact>
+          <HomeContainer>
+            <RegisterRsoForm />
+          </HomeContainer>
         </Route>
       </Switch>
     </Router>

@@ -10,11 +10,6 @@ interface EndpointReturn
 	error: string
 }
 
-interface NewEventPicture
-{
-	picture: mysql.Types.MEDIUM_BLOB
-}
-
 interface NewEvent
 {
 	schoolID: number,
@@ -31,7 +26,7 @@ interface NewEvent
 	isPublic: boolean,
 	numAttendees: number,
 	capacity: number,
-	eventPictures: Array<NewEventPicture>
+	eventPictures: Array<mysql.Types.MEDIUM_BLOB>
 }
 
 function generateNewEventQuery(input: NewEvent): string
@@ -86,7 +81,7 @@ function generateNewEventQuery(input: NewEvent): string
 	return s;
 }
 
-function generateEventPictureQuery(pictures: Array<NewEventPicture>, eventID: number): string
+function generateEventPictureQuery(pictures: Array<mysql.Types.MEDIUM_BLOB>, eventID: number): string
 {
 	const MAX_EVENT_PICTURES: number = 7;
 	let query: string = "INSERT INTO Event_Pictures (\neventID,\npicture,\nposition)\nVALUES\n";

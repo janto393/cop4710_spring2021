@@ -3,7 +3,7 @@
  */
 export interface RSO
 {
-	rsoID: number,
+	ID: number,
 	name: string,
 	universityID: number
 }

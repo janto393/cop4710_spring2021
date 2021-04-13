@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import StudForm, { FormFieldType } from "../StudForm";
 
 import { FieldType } from "../../Utils/formUtils";
-import { UserInfoType } from "../../hooks/useStudUser";
+import { StudUser } from "../../hooks/useStudUser";
 import axios from "axios";
 import { baseUrl } from "../../Utils/apiUtils";
 import produce from "immer";
