@@ -7,6 +7,7 @@ import HomeContainer from "./containers/HomeContainer";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
+import RegisterRsoForm from "./components/RegisterRsoForm";
 import { useState } from "react";
 import { useStudUser } from "./hooks/useStudUser";
 
@@ -47,6 +48,12 @@ const App = () => {
         <Route path="/modifyEvent" exact>
           <HomeContainer>
             <EventForm studUser={studUser} />
+          </HomeContainer>
+        </Route>
+
+        <Route path="/registerRso" exact>
+          <HomeContainer>
+            <RegisterRsoForm />
           </HomeContainer>
         </Route>
       </Switch>

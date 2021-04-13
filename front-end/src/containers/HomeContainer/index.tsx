@@ -12,9 +12,11 @@ import React, { useEffect } from "react";
 
 import StudMenu from "src/components/StudMenu";
 import { useHistory } from "react-router";
+import { useEventToModify } from "../../hooks/useEventToModify";
 
 const HomeContainer: React.FC<any> = ({ children, isLoading }) => {
   const history = useHistory();
+	const { eventToModify, setEventToModify } = useEventToModify();
   const menuItems = [
     { title: "Create Event", onClick: () => history.push("/createEvent") },
     { title: "Register RSO", onClick: () => history.push("/registerRso") },
