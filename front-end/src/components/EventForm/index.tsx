@@ -17,11 +17,11 @@ import {
 } from "./componentSetup";
 
 import { Event } from "../../types/eventTypes";
-import { FieldType, formMap } from "src/Utils/formUtils";
+import { FieldType, formMap } from "../../Utils/formUtils";
 import { FormFieldType } from "../StudForm";
 import { FormInputType } from "../LoginForm";
 import StudForm from "../StudForm/index";
-import { StudUser } from "src/hooks/useStudUser";
+import { StudUser } from "../../hooks/useStudUser";
 import produce from "immer";
 
 export type ManipulateEventProps = {

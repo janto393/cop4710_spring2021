@@ -8,14 +8,12 @@ import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
 import RegisterRsoForm from "./components/RegisterRsoForm";
-import { useEvent } from "./hooks/useEvent";
 import { useState } from "react";
 import { useStudUser } from "./hooks/useStudUser";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { studUser, setStudUser } = useStudUser();
-  const { event, setEvent } = useEvent();
 
   return (
     <Router>
@@ -38,16 +36,12 @@ const App = () => {
 
         {/* rest of the app will go below */}
         <Route path="/home" exact>
-          <HomeContainer>{/* Events list will go here */}</HomeContainer>
+          <HomeContainer>
+						{/* Events list will go here */}
+					</HomeContainer>
         </Route>
 
         <Route path="/createEvent" exact>
-          <HomeContainer>
-            <EventForm studUser={studUser} />
-          </HomeContainer>
-        </Route>
-
-        <Route path="/modifyEvent" exact>
           <HomeContainer>
             <EventForm studUser={studUser} />
           </HomeContainer>

@@ -1,6 +1,6 @@
 import StudForm, { FormFieldType } from "../StudForm";
 
-import { FieldType } from "src/Utils/formUtils";
+import { FieldType } from "../../Utils/formUtils";
 
 export type RegisterRsoFormType = {};
 

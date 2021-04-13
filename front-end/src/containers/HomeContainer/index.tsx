@@ -10,7 +10,7 @@ import {
 } from "@material-ui/core";
 import React, { useEffect } from "react";
 
-import StudMenu from "src/components/StudMenu";
+import StudMenu from "../../components/StudMenu";
 import { useHistory } from "react-router";
 
 const HomeContainer: React.FC<any> = ({ children, isLoading }) => {
