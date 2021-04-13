@@ -11,7 +11,7 @@ import { SqlUniversity } from "src/commonTypes/sqlSchema";
 
 interface EndpointInput
 {
-	schoolID?: number
+	universityID?: number
 }
 
 interface EndpointReturn
@@ -48,7 +48,7 @@ function createUniversityQuery(info: EndpointInput): string
 	const fromStatement: string = "FROM Universities AS UN\n";
 
 	// only used when only selecting a specific university
-	const optionalJoin: string = "INNER JOIN Universities AS UN1 ON (UN1.ID=" + String(info.schoolID) + ")\n";
+	const optionalJoin: string = "INNER JOIN Universities AS UN1 ON (UN1.ID=" + String(info.universityID) + ")\n";
 
 	const joinStatements: Array<string> = [
 		"LEFT JOIN States AS ST ON (ST.ID=UN.stateID)\n",
@@ -66,7 +66,7 @@ function createUniversityQuery(info: EndpointInput): string
 
 	query = query.concat(fromStatement);
 
-	if (info.schoolID !== undefined)
+	if (info.universityID !== undefined)
 	{
 		query = query.concat(optionalJoin);
 	}
@@ -84,7 +84,7 @@ function createUniversityQuery(info: EndpointInput): string
 export async function getUniversities(request: Request, response: Response, next: CallableFunction): Promise<void>
 {
 	let input: EndpointInput = {
-		schoolID: request.body.schoolID
+		universityID: request.body.universityID
 	};
 
 	let returnPackage: EndpointReturn = {
@@ -177,15 +177,13 @@ export async function getUniversities(request: Request, response: Response, next
 						numStudents: rawData.numStudents,
 						email: rawData.email,
 						campusPictures: [picture],
-						// set coordinates to zero (we will fetch them later)
-						lattitude: 0,
-						longitude: 0
+						coordinates: {}
 					};
 
 					// fetch the coordinates of the university
 					let universityCoordinates: Coordinates = await getLattitudeAndLongitude(university.address.address, university.address.city, university.address.state.name, university.address.zip);
-					university.lattitude = universityCoordinates.lattitude;
-					university.longitude = university.longitude;
+					university.coordinates.latitude = universityCoordinates.latitude;
+					university.coordinates.longitude = universityCoordinates.longitude;
 
 					returnPackage.universities.push(university);
 				}

@@ -106,7 +106,7 @@ export const fetchUniversityData = async (universityID: number): Promise<Map<str
 	}
 	else
 	{
-		payload.schoolID = universityID;
+		payload.universityID = universityID;
 	}
 
 	let request: Object = {

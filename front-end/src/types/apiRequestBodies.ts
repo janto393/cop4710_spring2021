@@ -57,7 +57,7 @@ export interface DeleteRsoRequest
 
 export interface GetEventsRequest
 {
-	schoolID: number,
+	universityID: number,
 	rsoID?: number
 }
 

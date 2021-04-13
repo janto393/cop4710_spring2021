@@ -2,6 +2,7 @@
  * Interfaces relating to Universities
  */
 
+import { Coordinates } from "src/util/fetchCoordinates";
 import { Address } from "./addressTypes";
 
 export interface CampusPicture
@@ -21,6 +22,5 @@ export interface University
 	numStudents: number,
 	email: string,
 	campusPictures: Array<CampusPicture>,
-	lattitude: number,
-	longitude: number
+	coordinates: Coordinates
 }

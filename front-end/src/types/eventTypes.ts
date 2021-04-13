@@ -1,4 +1,4 @@
-import { University } from "./dropDownTypes";
+import { Coordinates, University } from "./dropDownTypes";
 
 export interface Event
 {
@@ -20,8 +20,7 @@ export interface Event
 	isPublic: boolean,
 	capacity: number,
 	eventPictures: Array<Buffer>,
-	lattitude: number,
-	longitude: number
+	coordinates: Coordinates
 }
 
 export interface EventFormData extends NewEvent

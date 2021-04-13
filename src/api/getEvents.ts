@@ -63,12 +63,10 @@ interface Event
 		city: string,
 		zip: string,
 		description: string,
-		// not sure what to make phone number
 		phonenumber: string,
 		numStudents: number,
 		email: string,
-		lattitude: number,
-		longitude: number
+		coordinates: Coordinates
 	},
 	address: string,
 	city: string,
@@ -94,13 +92,12 @@ interface Event
 	numAttendees: number,
 	capacity: number,
 	eventPictures: Array<EventPicture>,
-	lattitude: number,			 	// find this
-	longitude: number
+	coordinates: Coordinates
 }
 
 interface EndpointInput
 {
-	schoolID: number,
+	universityID: number,
 	rsoID: number | undefined
 }
 
@@ -152,7 +149,7 @@ function createEventQuery(info: EndpointInput): string
 	}
 	else
 	{
-		conditionalJoin = "INNER JOIN Events AS E1 ON (Events.ID=E1.ID AND ((Events.schoolID=" + info.schoolID + " AND Events.rsoID=" + info.rsoID + " AND Events.isPublic=false) OR (Events.schoolID=" + info.schoolID + " AND Events.isPublic=true)))\n";
+		conditionalJoin = "INNER JOIN Events AS E1 ON (Events.ID=E1.ID AND ((Events.schoolID=" + info.universityID + " AND Events.rsoID=" + info.rsoID + " AND Events.isPublic=false) OR (Events.schoolID=" + info.universityID + " AND Events.isPublic=true)))\n";
 	}
 
 	const joinStatements: Array<string> = [
@@ -188,7 +185,7 @@ function createEventQuery(info: EndpointInput): string
 export async function getEvents(request: Request, response: Response, next: CallableFunction): Promise<void>
 {
 	let input: EndpointInput = {
-		schoolID: request.body.schoolID,
+		universityID: request.body.universityID,
 		rsoID: request.body.rsoID
 	};
 
@@ -276,9 +273,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 							phonenumber: rawData.schoolPhonenumber,
 							numStudents: rawData.schoolNumStudents,
 							email: rawData.schoolEmail,
-							// set coordinates to zero (we will fetch them later)
-							lattitude: 0,
-							longitude: 0
+							coordinates: {}
 						},
 						address: rawData.eventAddress,
 						city: rawData.eventCity,
@@ -310,20 +305,18 @@ export async function getEvents(request: Request, response: Response, next: Call
 								position: rawData.eventPicturePosition
 							}
 						],
-						// set coordinates to zero (will calculate after event creation)
-						lattitude: 0,
-						longitude: 0
+						coordinates: {}
 					};
 
 					// get event Coordinates
 					let eventCoords: Coordinates = await getLattitudeAndLongitude(event.address, event.city, event.state.name, event.zip);
-					event.lattitude = eventCoords.lattitude;
-					event.longitude = eventCoords.longitude;
+					event.coordinates.latitude = eventCoords.latitude;
+					event.coordinates.longitude = eventCoords.longitude;
 
 					// get school Coordinates
 					let schoolCoords: Coordinates = await getLattitudeAndLongitude(event.university.address, event.university.city, event.university.state.name, event.university.zip);
-					event.university.lattitude = schoolCoords.lattitude;
-					event.university.longitude = schoolCoords.longitude;
+					event.university.coordinates.latitude = schoolCoords.latitude;
+					event.university.coordinates.longitude = schoolCoords.longitude;
 					
 					returnPackage.events.push(event);
 				}

@@ -3,8 +3,8 @@ import node_geocoder from "node-geocoder";
 
 export interface Coordinates
 {
-	longitude: number,
-	lattitude: number
+	longitude?: number,
+	latitude?: number
 }
 
 /**
@@ -13,10 +13,7 @@ export interface Coordinates
  */
 async function getLattitudeAndLongitude(address: string, city: string, state: string, zip: string): Promise<Coordinates>
 {
-	let coordinates: Coordinates = {
-		lattitude: 0,
-		longitude: 0
-	}
+	let coordinates: Coordinates = {}
 
 	if (process.env.TOMTOM_KEY === undefined)
 	{
@@ -38,7 +35,7 @@ async function getLattitudeAndLongitude(address: string, city: string, state: st
 	{
 		if (locations[0].latitude !== undefined)
 		{
-			coordinates.lattitude = locations[0].latitude;
+			coordinates.latitude = locations[0].latitude;
 		}
 
 		if (locations[0].longitude !== undefined)

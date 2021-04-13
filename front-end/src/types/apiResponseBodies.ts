@@ -2,7 +2,6 @@ import { MeetingType, RSO, State, University } from "./dropDownTypes";
 import { Event } from "./eventTypes";
 import { MysqlError } from "mysql";
 import { UserDataWithoutPassword } from "./userTypes";
-import { University } from "../types/universityTypes";
 
 /**
  * Default fields that are always returned with any ApiEndpoint
