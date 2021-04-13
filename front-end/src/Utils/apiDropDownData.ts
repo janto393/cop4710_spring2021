@@ -11,6 +11,7 @@ import {
 
 // util imports
 import buildpath from "../Utils/buildpath";
+import { University } from "src/types/dropDownTypes";
 
 export const fetchStates = async (): Promise<Map<string, number>> => {
 
@@ -97,8 +98,10 @@ export const fetchMeetingTypes = async (): Promise<Map<string, number>> => {
 	return mappedTypes;
 };
 
-export const fetchUniversityData = async (universityID: number): Promise<Map<string, number>> => {
-	let payload: GetUniversitiesRequest = {};
+export const fetchUniversityNames = async (universityID?: number): Promise<Map<string, number>> => {
+	let payload: GetUniversitiesRequest = {
+		schoolID: universityID
+	};
 
 	if (typeof universityID === "string")
 	{
@@ -128,6 +131,44 @@ export const fetchUniversityData = async (universityID: number): Promise<Map<str
 	for (let university of response.universities)
 	{
 		mappedUniversities.set(university.name, university.ID);
+	}
+
+	return mappedUniversities;
+};
+
+export const fetchUniversities = async (universityID?: number): Promise<Map<number, University>> => {
+	let payload: GetUniversitiesRequest = {
+		schoolID: universityID
+	};
+
+	if (typeof universityID === "string")
+	{
+		console.error("Stud User university ID is not specified");
+	}
+	else
+	{
+		payload.schoolID = universityID;
+	}
+
+	let request: Object = {
+		method: "POST",
+		body: JSON.stringify(payload),
+		headers: {
+			"Content-Type": "application/json",
+		},
+	};
+
+	let response: GetUniversitiesResponse = await (await fetch(buildpath("/api/getUniversities"), request)).json();
+	let mappedUniversities: Map<number, University> = new Map<number, University>();
+
+	if (!response.success)
+	{
+		console.error(response.error);
+	}
+
+	for (let university of response.universities)
+	{
+		mappedUniversities.set(university.ID, university);
 	}
 
 	return mappedUniversities;

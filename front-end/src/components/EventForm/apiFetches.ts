@@ -12,7 +12,7 @@ import {
 	fetchStates,
 	fetchAllRSOs,
 	fetchMeetingTypes,
-	fetchUniversityData,
+	fetchUniversityNames,
 } from "../../Utils/apiDropDownData";
 
 export interface DropDownData
@@ -35,7 +35,7 @@ export const fetchDropDownData = async (universityID: number): Promise<DropDownD
 	data.states = await fetchStates();
 	data.RSOs = await fetchAllRSOs(universityID);
 	data.meetingTypes = await fetchMeetingTypes();
-	data.universities = await fetchUniversityData(universityID);
+	data.universities = await fetchUniversityNames(universityID);
 
 	return data;
 };

@@ -1,13 +1,24 @@
-import { Accordion, AccordionSummary, AccordionDetails, Typography} from "@material-ui/core";
+import {
+	useState,
+	useEffect
+} from "react";
+import {
+	Accordion,
+	AccordionSummary,
+	AccordionDetails,
+	Typography
+} from "@material-ui/core";
+import { Image } from "react-bootstrap";
 import { createStyles, makeStyles, Theme } from "@material-ui/core/styles";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { useState } from "react";
+import { University } from "src/types/dropDownTypes";
 
 // type imports
 import { Event } from "../../types/eventTypes";
 
 // CSS imports
 import "./EventCard.css";
+import { fetchUniversities } from "src/Utils/apiDropDownData";
 
 type EventCardsProps = {
 	events: Array<Event>
@@ -34,6 +45,7 @@ function EventCards(props: EventCardsProps): JSX.Element
 {
 	const { events } = props;
 	const [expanded, setExpanded] = useState<string | false>(false);
+	const [universities, setUniversities] = useState<Map<number, University>>(new Map<number, University>());
 
 	const handleExpand = (panel: string) => (event: React.ChangeEvent<{}>, isExpanded: boolean) => {
 		setExpanded(isExpanded ? panel : false);
@@ -41,11 +53,19 @@ function EventCards(props: EventCardsProps): JSX.Element
 
 	const classes = useStyles();
 
+	useEffect(() => {
+		fetchUniversities()
+		.then((mappedUniversities: Map<number, University>) => {
+			setUniversities(mappedUniversities)
+			})
+		}, []);
+
 	return (
 		<>
 			{
 				events.map((event: Event, index: number) => {
-					const { rso, university, state } = event;
+					const { rso, state } = event;
+					const university: University | undefined = universities.get(event.schoolID);
 
 					return (
 						<div className="EventList">
@@ -57,16 +77,39 @@ function EventCards(props: EventCardsProps): JSX.Element
 									expandIcon={<ExpandMoreIcon />}
 									id={"card_" + String(index)}
 								>
-									<Typography className={classes.heading}>{event.name}</Typography>
-									<Typography className={classes.secondaryHeading}>{rso.name}</Typography>
+									<Typography className={classes.heading}>
+										{event.name}
+									</Typography>
+									<Typography className={classes.secondaryHeading}>
+										{(university === undefined) ? "University Name" : university.name}
+									</Typography>
 								</AccordionSummary>
 								<AccordionDetails>
 									<Typography className={classes.heading}>
-										University
+										{rso.name}
 									</Typography>
 									<Typography>
-										{university?.name}
+										<Typography>
+											{event.address}
+										</Typography>
+										<Typography>
+											{state.name}
+										</Typography>
+										<Typography>
+											{event.zip}
+										</Typography>
+										<Typography>
+											{event.room}
+										</Typography>
 									</Typography>
+									<div className="EventPictures">
+										{event.eventPictures.map((picture: string, index: number) => {
+											console.log(picture);
+											return (
+												<Image src={picture} />
+											)
+										})}
+									</div>
 							</AccordionDetails>
 						</Accordion>
 					</div>

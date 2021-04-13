@@ -3,7 +3,7 @@ import { University } from "./dropDownTypes";
 export interface Event
 {
 	ID: number
-	university: University,
+	schoolID: number,
 	address: string,
 	city: string,
 	state: {
@@ -23,7 +23,7 @@ export interface Event
 	rating: number,
 	isPublic: boolean,
 	capacity: number,
-	eventPictures: Array<Buffer>
+	eventPictures: Array<string>
 }
 
 export interface EventFormData extends NewEvent
@@ -46,5 +46,5 @@ export interface NewEvent
 	rating: number,
 	isPublic: boolean,
 	capacity: number,
-	eventPictures: Array<Buffer>
+	eventPictures: Array<string>
 }

@@ -106,7 +106,7 @@ export function initializeEventState(event?: Event): EventFormData
 	// currently defined in the event
 	if (event !== undefined)
 	{
-		formState.schoolID = event.university.ID;
+		formState.schoolID = event.schoolID;
 		formState.address = event.address;
 		formState.city = event.city;
 		formState.stateID = event.state.ID;
