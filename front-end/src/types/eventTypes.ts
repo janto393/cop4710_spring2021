@@ -6,7 +6,11 @@ export interface Event
 	university: University,
 	address: string,
 	city: string,
-	stateID: number,
+	state: {
+		ID: number,
+		name: string,
+		acronym: string
+	},
 	zip: string,
 	rso: {
 		ID: number,

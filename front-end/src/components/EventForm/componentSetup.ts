@@ -109,7 +109,7 @@ export function initializeEventState(event?: Event): EventFormData
 		formState.schoolID = event.university.ID;
 		formState.address = event.address;
 		formState.city = event.city;
-		formState.stateID = event.stateID;
+		formState.stateID = event.state.ID;
 		formState.zip = event.zip;
 		formState.rsoID = event.rso.ID;
 		formState.meetingTypeID = event.meetingTypeID;

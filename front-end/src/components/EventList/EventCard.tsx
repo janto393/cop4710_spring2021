@@ -6,6 +6,9 @@ import { useState } from "react";
 // type imports
 import { Event } from "../../types/eventTypes";
 
+// CSS imports
+import "./EventCard.css";
+
 type EventCardsProps = {
 	events: Array<Event>
 }
@@ -42,26 +45,31 @@ function EventCards(props: EventCardsProps): JSX.Element
 		<>
 			{
 				events.map((event: Event, index: number) => {
-					const { name, rso, university } = event;
+					const { rso, university, state } = event;
 
 					return (
-						<Accordion expanded={expanded === ("panel_" + String(index))} onChange={handleExpand("panel_" + String(index))}>
-						<AccordionSummary
-							expandIcon={<ExpandMoreIcon />}
-							id={"card_" + String(index)}
-						>
-							<Typography className={classes.heading}>{name}</Typography>
-							<Typography className={classes.secondaryHeading}>{rso.ID}</Typography>
-						</AccordionSummary>
-						<AccordionDetails>
-							<Typography className={classes.heading}>
-								University
-							</Typography>
-							<Typography>
-								{university?.name}
-							</Typography>
-						</AccordionDetails>
-					</Accordion>
+						<div className="EventList">
+							<Accordion
+								expanded={expanded === ("panel_" + String(index))}
+								onChange={handleExpand("panel_" + String(index))}
+								>
+								<AccordionSummary
+									expandIcon={<ExpandMoreIcon />}
+									id={"card_" + String(index)}
+								>
+									<Typography className={classes.heading}>{event.name}</Typography>
+									<Typography className={classes.secondaryHeading}>{rso.name}</Typography>
+								</AccordionSummary>
+								<AccordionDetails>
+									<Typography className={classes.heading}>
+										University
+									</Typography>
+									<Typography>
+										{university?.name}
+									</Typography>
+							</AccordionDetails>
+						</Accordion>
+					</div>
 					);
 				})
 			}
