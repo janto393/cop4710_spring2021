@@ -35,10 +35,7 @@ const App = () => {
 
         {/* rest of the app will go below */}
         <Route path="/home" exact>
-          <HomeContainer>
-            {/* Events list will go here */}
-            <h1>Hello</h1>
-          </HomeContainer>
+          <HomeContainer>{/* Events list will go here */}</HomeContainer>
         </Route>
 
         <Route path="/createEvent" exact>
@@ -46,8 +43,11 @@ const App = () => {
             <EventForm studUser={studUser} />
           </HomeContainer>
         </Route>
+
         <Route path="/modifyEvent" exact>
-          <EventForm studUser={studUser} />
+          <HomeContainer>
+            <EventForm studUser={studUser} />
+          </HomeContainer>
         </Route>
       </Switch>
     </Router>

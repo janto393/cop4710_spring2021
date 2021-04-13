@@ -16,7 +16,6 @@ import { useHistory } from "react-router";
 const HomeContainer: React.FC<any> = ({ children, isLoading }) => {
   const history = useHistory();
   const menuItems = [
-    { title: "View Events", onClick: () => history.push("/events") },
     { title: "Create Event", onClick: () => history.push("/createEvent") },
     { title: "Register RSO", onClick: () => history.push("/registerRso") },
     { title: "View Requests", onClick: () => history.push("/viewRequests") },
