@@ -8,12 +8,14 @@ import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
 import RegisterForm from "./components/RegisterForm";
 import RegisterRsoForm from "./components/RegisterRsoForm";
+import { useEvent } from "./hooks/useEvent";
 import { useState } from "react";
 import { useStudUser } from "./hooks/useStudUser";
 
 const App = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { studUser, setStudUser } = useStudUser();
+  const { event, setEvent } = useEvent();
 
   return (
     <Router>

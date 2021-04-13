@@ -11,18 +11,18 @@ import {
 import React, { useEffect } from "react";
 
 import StudMenu from "src/components/StudMenu";
-import { useEventToModify } from "../../hooks/useEventToModify";
 import { useHistory } from "react-router";
 
 const HomeContainer: React.FC<any> = ({ children, isLoading }) => {
   const history = useHistory();
-  const { eventToModify, setEventToModify } = useEventToModify();
+
   const menuItems = [
     { title: "Home", onClick: () => history.push("/home") },
     { title: "Create Event", onClick: () => history.push("/createEvent") },
     { title: "Register RSO", onClick: () => history.push("/registerRso") },
     { title: "View Requests", onClick: () => history.push("/viewRequests") },
   ];
+
   // setLoading to true, fetch user, set user
   useEffect(() => {}, []);
 
