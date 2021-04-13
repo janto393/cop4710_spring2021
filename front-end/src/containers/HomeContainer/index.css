@@ -10,7 +10,11 @@
 }
 
 .home-container .content-container {
-  margin: 10% 25%;
+  margin: 5% 25%;
+}
+
+.home-container .top-nav-item .links-container .links-item {
+  text-align: center;
 }
 
 .home-container .top-nav-item .links-container .links-item .link {
