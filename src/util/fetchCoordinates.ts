@@ -27,21 +27,15 @@ async function getLattitudeAndLongitude(address: string, city: string, state: st
 	};
 
 	const geocoder: geocoder.Geocoder = node_geocoder(options);
-
 	let locations: Array<Entry> = await geocoder.geocode(address + " " + city + " " + state + " " + zip);
 
 	// parse the data of the first match
-	if (locations.length > 0)
+	if ((locations !== undefined) && (locations.length > 0))
 	{
-		if (locations[0].latitude !== undefined)
-		{
-			coordinates.latitude = locations[0].latitude;
-		}
+		const { latitude, longitude } = locations[0];
 
-		if (locations[0].longitude !== undefined)
-		{
-			coordinates.longitude = locations[0].longitude;
-		}
+		coordinates.latitude = latitude;
+		coordinates.longitude = longitude;
 	}
 
 	return coordinates;
