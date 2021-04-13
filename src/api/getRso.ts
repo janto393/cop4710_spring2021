@@ -74,7 +74,7 @@ export async function getRso(request: Request, response: Response, next: Callabl
 				connection.end();
 				returnPackage.error = error.toString();
 				response.json(returnPackage);
-				response.send(500);
+				response.status(500);
 				response.send();
 				return;
 			}
@@ -85,7 +85,7 @@ export async function getRso(request: Request, response: Response, next: Callabl
 			{
 				let rawRso: SqlRso = rows[i];
 				let parsedRso: RSO = {
-					rsoID: rawRso.ID,
+					ID: rawRso.ID,
 					name: rawRso.name,
 					universityID: rawRso.universityID
 				};

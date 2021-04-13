@@ -32,7 +32,7 @@ export async function createRso(request: Request, response: Response, next: Call
 		success: false,
 		error: "",
 		rsoData: {
-			rsoID: -1,
+			ID: -1,
 			name: "",
 			universityID: -1
 		}
@@ -151,7 +151,7 @@ export async function createRso(request: Request, response: Response, next: Call
 
 						let newRso: SqlRso = rows[0];
 
-						returnPackage.rsoData.rsoID = newRso.ID;
+						returnPackage.rsoData.ID = newRso.ID;
 						returnPackage.rsoData.name = newRso.name;
 						returnPackage.rsoData.universityID = newRso.universityID;
 

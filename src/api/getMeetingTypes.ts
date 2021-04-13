@@ -9,7 +9,7 @@ import { SqlMeetingType } from "../commonTypes/sqlSchema";
 
 interface MeetingType
 {
-	meetingTypeID: number,
+	ID: number,
 	name: string
 }
 
@@ -65,7 +65,7 @@ export async function getMeetingTypes(request: Request, response: Response, next
 			{
 				let rawData: SqlMeetingType = rows[i];
 				let parsedData: MeetingType = {
-					meetingTypeID: rawData.ID,
+					ID: rawData.ID,
 					name: rawData.name
 				};
 
