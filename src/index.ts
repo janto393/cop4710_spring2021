@@ -5,6 +5,7 @@ import express, { Request, Response } from "express";
 // Endpoint imports
 import { createAttendee } from "./api/createAttendee";
 import { createEvent } from "./api/createEvent";
+import { createEventComment } from "./api/createEventComment";
 import { createMeetingType } from "./api/createMeetingType";
 import { createRso } from "./api/createRso";
 import { deleteAttendee } from "./api/deleteAttendee";
@@ -51,6 +52,7 @@ app.get('/', (_, res) => {
 
 app.post("/api/createAttendee", createAttendee);
 app.post("/api/createEvent", createEvent);
+app.post("/api/createEventComment", createEventComment);
 app.post("/api/createMeetingType", createMeetingType);
 app.post("/api/createRso", createRso);
 app.post("/api/deleteAttendee", deleteAttendee);
