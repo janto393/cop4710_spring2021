@@ -1,9 +1,11 @@
-.EventList
-{
-	
-}
-
-.EventPictures
+.EventCard
 {
 	display: block;
+	width: 100%;
+}
+
+.EventInfo
+{
+	display: block;
+	width: 100%;
 }

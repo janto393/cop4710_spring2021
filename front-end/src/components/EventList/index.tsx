@@ -26,10 +26,6 @@ function EventList(props: EventListProps): JSX.Element {
       schoolID: universityID,
     };
 
-    console.log(studUser);
-    console.log(typeof universityID);
-    console.log(typeof rsoID);
-
     // hard code safety value (will remove when app is operational)
     if (universityID === undefined) {
       console.warn("schoolID safety value triggered");
