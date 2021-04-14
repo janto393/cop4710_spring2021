@@ -33,12 +33,17 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
     },
     heading: {
-      fontSize: theme.typography.pxToRem(15),
+      fontSize: theme.typography.pxToRem(20),
       flexBasis: '33.33%',
       flexShrink: 0,
     },
+		rsoName: {
+			fontSize: theme.typography.pxToRem(17),
+			flexBasis: '33.33%',
+      flexShrink: 0,
+		},
     secondaryHeading: {
-      fontSize: theme.typography.pxToRem(15),
+      fontSize: theme.typography.pxToRem(17),
       color: theme.palette.text.secondary,
     },
 		container: {
@@ -46,13 +51,17 @@ const useStyles = makeStyles((theme: Theme) =>
 			gridTemplateColumns: ("repeat(" + String(NUM_PICTURES_PER_ROW) + ", 1fr)"),
 			gridGap: theme.spacing(3),
 		},
+		gridList:
+		{
+			width: 100
+		},
   }),
 );
 
 function renderPicture(picture: string, index: number): JSX.Element
 {
 	return (
-		<Grid item xs={1}>
+		<Grid className="EventPicture" item xs={1}>
 			<Image src={picture} />
 		</Grid>
 	);
@@ -116,7 +125,7 @@ function EventCards(props: EventCardsProps): JSX.Element
 												item
 												xs
 											>
-												<Typography className={classes.heading}>
+												<Typography className={classes.rsoName}>
 													{rso.name}
 												</Typography>
 												<Typography className={classes.secondaryHeading}>
