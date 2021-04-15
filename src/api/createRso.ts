@@ -5,7 +5,6 @@ import * as mysql from "mysql";
 import configureSqlConnection from "../util/configureSqlConnection";
 
 // type imports
-import { RSO } from "../commonTypes/rsoTypes";
 import { SqlRso, SqlUniversity } from "src/commonTypes/sqlSchema";
 
 interface CreateRsoInput
@@ -17,8 +16,7 @@ interface CreateRsoInput
 interface CreateRsoReturn
 {
 	success: boolean,
-	error: string,
-	rsoData: RSO
+	error: string | mysql.MysqlError
 }
 
 export async function createRso(request: Request, response: Response, next: CallableFunction): Promise<void>
@@ -30,12 +28,7 @@ export async function createRso(request: Request, response: Response, next: Call
 
 	let returnPackage: CreateRsoReturn = {
 		success: false,
-		error: "",
-		rsoData: {
-			ID: -1,
-			name: "",
-			universityID: -1
-		}
+		error: ""
 	};
 
 	const connectionData: mysql.ConnectionConfig = configureSqlConnection();
@@ -60,7 +53,7 @@ export async function createRso(request: Request, response: Response, next: Call
 		// rso to exists
 		let queryString: string = "SELECT * FROM Universities WHERE Universities.ID=" + input.universityID + ";";
 
-		connection.query(queryString, (error: string, rows: Array<SqlUniversity>) => {
+		connection.query(queryString, (error: mysql.MysqlError, rows: Array<SqlUniversity>) => {
 			if (error)
 			{
 				connection.end();
@@ -88,7 +81,7 @@ export async function createRso(request: Request, response: Response, next: Call
 			queryString = queryString.concat("Registered_Student_Organizations.name like \'" + input.name + "' ");
 			queryString = queryString.concat("AND Registered_Student_Organizations.universityID=" + input.universityID + ";");
 
-			connection.query(queryString, (error: string, rows: Array<SqlRso>) => {
+			connection.query(queryString, (error: mysql.MysqlError, rows: Array<SqlRso>) => {
 				if (error)
 				{
 					connection.end();
@@ -110,11 +103,11 @@ export async function createRso(request: Request, response: Response, next: Call
 				}
 
 				// formulate query string to insert the new RSO
-				queryString = "INSERT INTO Registered_Student_Organizations (name, universityID)\n";
-				queryString = queryString.concat("VALUES ('" + input.name + "', " + input.universityID + ");")
+				queryString = "INSERT INTO Registered_Student_Organizations (name, universityID, isApproved)\n";
+				queryString = queryString.concat("VALUES ('" + input.name + "', " + input.universityID + ", false);")
 
 				// add the rso to the university
-				connection.query(queryString, (error: string, rows: Array<SqlRso>) => {
+				connection.query(queryString, (error: mysql.MysqlError, rows: Array<SqlRso>) => {
 					if (error)
 					{
 						connection.end();
@@ -125,43 +118,12 @@ export async function createRso(request: Request, response: Response, next: Call
 						return;
 					}
 
-					// formulate query where we get the info from the new rso
-					queryString = "SELECT * FROM Registered_Student_Organizations AS rso WHERE rso.name='" + input.name + "' AND rso.universityID=" + input.universityID + ";";
-
-					connection.query(queryString, (error: string, rows: Array<SqlRso>) => {
-						if (error)
-						{
-							connection.end();
-							returnPackage.error = error.toString();
-							response.json(returnPackage);
-							response.send(500);
-							response.send();
-							return;
-						}
-
-						if (rows.length < 1)
-						{
-							connection.end();
-							returnPackage.error = "Failed to create RSO";
-							response.json(returnPackage);
-							response.status(500);
-							response.send();
-							return;
-						}
-
-						let newRso: SqlRso = rows[0];
-
-						returnPackage.rsoData.ID = newRso.ID;
-						returnPackage.rsoData.name = newRso.name;
-						returnPackage.rsoData.universityID = newRso.universityID;
-
-						connection.end();
-						returnPackage.success = true;
-						response.json(returnPackage);
-						response.status(200);
-						response.send();
-						return;
-					});
+					connection.end();
+					returnPackage.success = true;
+					response.json(returnPackage);
+					response.status(200);
+					response.send();
+					return;
 				});
 			});
 		});
