@@ -119,19 +119,16 @@ function createEventQuery(info: EndpointInput): string
 
 	if (info.rsoID !== undefined)
 	{
-		console.log("RSO events");
 		// Include private and rso events. If a student is part of an RSO, then it is implied that they are part of the university
 		conditionalJoin = "INNER JOIN Events AS E1 ON ((Events.ID=E1.ID) AND (E1.schoolID=" + String(info.universityID) + "))";
 	}
 	else if (info.includePrivate === true)
 	{
-		console.log("Private events");
 		// the way the if statements are structured, we know to only include private, non-rso events
 		conditionalJoin = "INNER JOIN Events AS E1 ON ((Events.ID=E1.ID) AND (E1.schoolID=" + String(info.universityID) + ") AND (E1.rsoID is NULL))";
 	}
 	else
 	{
-		console.log("public events");
 		// only include public events at the university
 		conditionalJoin = "INNER JOIN Events AS E1 ON ((Events.ID=E1.ID) AND (E1.schoolID=" + info.universityID + ") AND (E1.isPublic=true))";
 	}
