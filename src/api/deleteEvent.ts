@@ -51,7 +51,7 @@ export async function deleteEvent(request: Request, response: Response, next: Ca
 		let queryString: string = "DELETE FROM Attendees WHERE eventID=" + input.eventID + ";";
 
 		// delete the attendee records of the event
-		connection.query(queryString, (error: string, rows: any) => {
+		connection.query(queryString, (error: string) => {
 			if (error)
 			{
 				connection.end();
@@ -62,10 +62,10 @@ export async function deleteEvent(request: Request, response: Response, next: Ca
 				return;
 			}
 
-			queryString = "DELETE FROM Event_Pictures WHERE eventID=" + input.eventID + ";";
+			queryString = "DELETE FROM Comments WHERE eventID=" + input.eventID + ";";
 
 			// delete the event pictures of the event
-			connection.query(queryString, (error: string, rows: any) => {
+			connection.query(queryString, (error: string) => {
 				if (error)
 				{
 					connection.end();
@@ -78,7 +78,7 @@ export async function deleteEvent(request: Request, response: Response, next: Ca
 
 				queryString = "DELETE FROM Events WHERE ID=" + input.eventID + ";";
 
-				connection.query(queryString, (error: string, rows: any) => {
+				connection.query(queryString, (error: string) => {
 					if (error)
 					{
 						connection.end();
