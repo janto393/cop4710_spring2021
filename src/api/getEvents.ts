@@ -25,16 +25,17 @@ interface SqlEvent
 	isPublic: boolean,
 	numAttendees: number,
 	eventCapacity: number,
-	eventPictureID: number,
-	eventPicture: mysql.Types.MEDIUM_BLOB,
-	eventPicturePosition: number
+	eventComment: string,
+	commentTimetag: Date,
+	commenterFirstname: string,
+	commenterLastname: string
 }
 
-interface EventPicture
+interface Comment
 {
-	ID: number,
-	picture: Buffer,
-	position: number
+	author: string,
+	timetag: Date,
+	comment: string
 }
 
 interface Event
@@ -63,20 +64,21 @@ interface Event
 	isPublic: boolean,
 	numAttendees: number,
 	capacity: number,
-	eventPictures: Array<EventPicture>
+	comments: Comment[]
 }
 
 interface EndpointInput
 {
-	schoolID: number,
-	rsoID: number | undefined
+	universityID: number,
+	includePrivate: boolean,
+	rsoID?: number
 }
 
 interface EndpointReturn
 {
 	success: boolean,
 	error: string,
-	events: Array<Event>
+	events: Event[]
 }
 
 /**
@@ -105,30 +107,42 @@ function createEventQuery(info: EndpointInput): string
 		"Events.isPublic AS isPublic,\n",
 		"Events.numAttendees AS numAttendees,\n",
 		"Events.capacity AS eventCapacity,\n",
-		"EP.ID AS eventPictureID,\n",
-		"EP.picture AS eventPicture,\n",
-		"EP.position AS eventPicturePosition\n"
+		"COM.comment AS eventComment,\n",
+		"COM.timetag AS commentTimetag,\n",
+		"Users.firstName AS commenterFirstname,\n",
+		"Users.lastName AS commenterLastname\n"
 	];
 
 	const fromStatement: string = "FROM Events\n";
 
 	let conditionalJoin: string;
 
-	if (info.rsoID === undefined)
+	if (info.rsoID !== undefined)
 	{
-		conditionalJoin = "INNER JOIN Events AS E1 ON (Events.ID=E1.ID AND (Events.isPublic<>false))\n"
+		console.log("RSO events");
+		// Include private and rso events. If a student is part of an RSO, then it is implied that they are part of the university
+		conditionalJoin = "INNER JOIN Events AS E1 ON ((Events.ID=E1.ID) AND (E1.schoolID=" + String(info.universityID) + "))";
+	}
+	else if (info.includePrivate === true)
+	{
+		console.log("Private events");
+		// the way the if statements are structured, we know to only include private, non-rso events
+		conditionalJoin = "INNER JOIN Events AS E1 ON ((Events.ID=E1.ID) AND (E1.schoolID=" + String(info.universityID) + ") AND (E1.rsoID is NULL))";
 	}
 	else
 	{
-		conditionalJoin = "INNER JOIN Events AS E1 ON (Events.ID=E1.ID AND ((Events.schoolID=" + info.schoolID + " AND Events.rsoID=" + info.rsoID + " AND Events.isPublic=false) OR (Events.schoolID=" + info.schoolID + " AND Events.isPublic=true)))\n";
+		console.log("public events");
+		// only include public events at the university
+		conditionalJoin = "INNER JOIN Events AS E1 ON ((Events.ID=E1.ID) AND (E1.schoolID=" + info.universityID + ") AND (E1.isPublic=true))";
 	}
 
 	const joinStatements: Array<string> = [
 		conditionalJoin,
 		"LEFT JOIN Registered_Student_Organizations AS RSO ON (RSO.ID=Events.rsoID AND RSO.universityID=Events.schoolID)\n",
-		"LEFT JOIN Event_Pictures AS EP ON (Events.ID=EP.eventID)\n", // creates separate event records for each picture
 		"LEFT JOIN Meeting_Types AS MT ON (Events.meetingType=MT.ID)\n",
-		"LEFT JOIN States AS ST ON (Events.stateID=ST.ID)\n"
+		"LEFT JOIN States AS ST ON (Events.stateID=ST.ID)\n",
+		"LEFT JOIN Comments AS COM ON (Events.ID=COM.eventID)\n", // creates multiple records for the same event for each comment
+		"LEFT JOIN Users ON (COM.userID=Users.ID)\n"
 	];
 
 	const orderByStatement: string = "ORDER BY Events.ID ASC;";
@@ -156,7 +170,8 @@ function createEventQuery(info: EndpointInput): string
 export async function getEvents(request: Request, response: Response, next: CallableFunction): Promise<void>
 {
 	let input: EndpointInput = {
-		schoolID: request.body.schoolID,
+		universityID: request.body.universityID,
+		includePrivate: request.body.includePrivate,
 		rsoID: request.body.rsoID
 	};
 
@@ -200,21 +215,20 @@ export async function getEvents(request: Request, response: Response, next: Call
 			/**
 			 * ParsedEvents:
 			 *   Set to store all the event IDs that have been parsed. The query in it's
-			 *   current form returns a separate record for each event picture record and
+			 *   current form returns a separate record for each event comment record and
 			 *   we only want a single record for each event in the return package with
-			 *   an array of the base64 encoded pictures
+			 *   an array of the comments for the event
 			 * 
 			 * parsedEventIndexes:
 			 *   Hash map to store the indexes of eventIDs in the returnPackage array so we
-			 *   can access them when parsing the pictures of each event. The key is the
+			 *   can access them when parsing the comments of each event. The key is the
 			 *   eventID and the value is the index at which the event is located.
 			 */
 			let parsedEvents: Set<number> = new Set();
 			let parsedEventIndexes: Map<number, number> = new Map();
 
 			// parse all the returned events into the return package
-			let i: number;
-			for (i = 0; i < rows.length; i++)
+			for (let i: number = 0; i < rows.length; i++)
 			{
 				let rawData: SqlEvent = rows[i];
 				
@@ -252,11 +266,11 @@ export async function getEvents(request: Request, response: Response, next: Call
 						isPublic: rawData.isPublic,
 						numAttendees: rawData.numAttendees,
 						capacity: rawData.eventCapacity,
-						eventPictures: [
+						comments: [
 							{
-								ID: rawData.eventPictureID,
-								picture: Buffer.from(rawData.eventPicture.toString(), "base64"),
-								position: rawData.eventPicturePosition
+								author: (rawData.commenterFirstname + " " + rawData.commenterLastname),
+								timetag: new Date(rawData.commentTimetag),
+								comment: rawData.eventComment
 							}
 						]
 					};
@@ -264,7 +278,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 					returnPackage.events.push(event);
 				}
 
-				// we are parsing a picture for an event where the event info has
+				// we are parsing a comment for an event where the event info has
 				// already been parsed
 				else
 				{
@@ -275,17 +289,18 @@ export async function getEvents(request: Request, response: Response, next: Call
 					// due to flaws in the API, so just skip the current record
 					if (eventIndex === undefined)
 					{
+						console.warn("Encountered event that was not in parsedEventIndexes set");
 						continue;
 					}
 
-					let parsedPicture: EventPicture = {
-						ID: rawData.eventPictureID,
-						picture: Buffer.from(rawData.eventPicture.toString(), "base64"),
-						position: rawData.eventPicturePosition
-					};
+					let parsedComment: Comment = {
+						author: (rawData.commenterFirstname + " " + rawData.commenterLastname),
+						timetag: new Date(rawData.commentTimetag),
+						comment: rawData.eventComment
+					}
 
 					// add the picture to the parsed event
-					returnPackage.events[eventIndex].eventPictures.push(parsedPicture);
+					returnPackage.events[eventIndex].comments.push(parsedComment);
 				}
 			}
 
