@@ -7,18 +7,18 @@ import configureSqlConnection from "../util/configureSqlConnection";
 interface EndpointInput
 {
 	eventID: number,
-	schoolID: number | undefined,
-	stateID: number | undefined,
-	rsoID: number | undefined,
-	meetingType: number | undefined,
-	name: string | undefined,
-	description: string | undefined,
-	address: string | undefined,
-	city: string | undefined,
-	zip: string | undefined,
-	room: string | undefined,
-	isPublic: boolean | undefined,
-	capacity: number | undefined
+	schoolID?: number,
+	stateID?: number,
+	rsoID?: number,
+	meetingType?: number,
+	name?: string,
+	description?: string,
+	address?: string,
+	city?: string,
+	zip?: string,
+	room?: string,
+	isPublic?: boolean,
+	capacity?: number
 }
 
 interface EndpointReturn
