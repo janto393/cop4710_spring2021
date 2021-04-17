@@ -107,6 +107,10 @@ const HomeContainer: React.FC<any> = ({
         <Snackbar
           open={true}
           autoHideDuration={5000}
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
           onClose={() => setCanDisplayToast(false)}
         >
           <Alert
