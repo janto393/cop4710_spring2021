@@ -12,8 +12,15 @@ import { useState } from "react";
 import { useStudUser } from "./hooks/useStudUser";
 
 const App = () => {
-  const [isLoading, setIsLoading] = useState(false);
   const { studUser, setStudUser } = useStudUser();
+  const [isLoading, setIsLoading] = useState(false);
+  const [isValid, setIsValid] = useState(false);
+  const [canDisplayToast, setCanDisplayToast] = useState(false);
+
+  // Account Tiers
+  // 3. super admin -> canSee(everything)
+  // 2. rso -> canSee('home', 'register rso', 'view requests')
+  // 1. student -> canSee('home', 'register rso')
 
   return (
     <Router>
@@ -36,20 +43,47 @@ const App = () => {
 
         {/* rest of the app will go below */}
         <Route path="/home" exact>
-          <HomeContainer>
-						{/* Events list will go here */}
-					</HomeContainer>
+          <HomeContainer studUser={studUser}>
+            <h1>Events go here</h1>
+          </HomeContainer>
         </Route>
 
         <Route path="/createEvent" exact>
-          <HomeContainer>
-            <EventForm studUser={studUser} />
+          <HomeContainer
+            isValid={isValid}
+            canDisplayToast={canDisplayToast}
+            setCanDisplayToast={setCanDisplayToast}
+          >
+            <EventForm
+              studUser={studUser}
+              setIsValid={setIsValid}
+              setCanDisplayToast={setCanDisplayToast}
+            />
           </HomeContainer>
         </Route>
 
         <Route path="/registerRso" exact>
-          <HomeContainer>
-            <RegisterRsoForm />
+          <HomeContainer
+            isValid={isValid}
+            canDisplayToast={canDisplayToast}
+            setCanDisplayToast={setCanDisplayToast}
+          >
+            <RegisterRsoForm
+              studUser={studUser}
+              setIsLoading={setIsLoading}
+              setIsValid={setIsValid}
+              setCanDisplayToast={setCanDisplayToast}
+            />
+          </HomeContainer>
+        </Route>
+
+        <Route path="/viewRequests" exact>
+          <HomeContainer
+            isValid={isValid}
+            canDisplayToast={canDisplayToast}
+            setCanDisplayToast={setCanDisplayToast}
+          >
+            <h1>View Requests</h1>
           </HomeContainer>
         </Route>
       </Switch>

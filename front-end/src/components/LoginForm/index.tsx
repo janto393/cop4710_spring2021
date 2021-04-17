@@ -39,6 +39,10 @@ const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
 
     const { email, password } = form;
 
+    // awful design
+    localStorage.setItem("email", email.value);
+    localStorage.setItem("password", password.value);
+
     const { data } = await axios.post(`${baseUrl}/login`, {
       username: email.value,
       password: password.value,
