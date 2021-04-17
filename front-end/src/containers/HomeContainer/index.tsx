@@ -118,7 +118,7 @@ const HomeContainer: React.FC<any> = ({
             severity={!isValid ? "error" : "success"}
           >
             {!isValid
-              ? "Email domain must be the same"
+              ? "Error submitting request."
               : "Request succussfully submitted!"}
           </Alert>
         </Snackbar>
