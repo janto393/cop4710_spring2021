@@ -6,7 +6,7 @@ import configureSqlConnection from "../util/configureSqlConnection";
 
 // type imports
 import { NewUser } from "../commonTypes/UserTypes";
-import { SqlProfilePictures, SqlUser } from "src/commonTypes/sqlSchema";
+import { SqlUser } from "src/commonTypes/sqlSchema";
 
 /**
  * only returns success and error because website will redirect
@@ -37,7 +37,6 @@ export async function register(request: Request, response: Response, next: Calla
 
   // configure mysql connection data
   const connectionData: mysql.ConnectionConfig = configureSqlConnection();
-
   const connection: mysql.Connection = mysql.createConnection(connectionData);
 
   try
