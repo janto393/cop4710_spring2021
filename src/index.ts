@@ -4,6 +4,7 @@ import express, { Request, Response } from "express";
 
 // Endpoint imports
 import { approveDenyRSOs } from "./api/approveDenyRSOs";
+import { approveDenyStudents } from "./api/approveDenyStudents";
 import { createAttendee } from "./api/createAttendee";
 import { createEvent } from "./api/createEvent";
 import { createMeetingType } from "./api/createMeetingType";
@@ -52,6 +53,7 @@ app.get('/', (_, res) => {
 });
 
 app.post("/api/approveDenyRSOs", approveDenyRSOs);
+app.post("/api/approveDenyStudents", approveDenyStudents);
 app.post("/api/createAttendee", createAttendee);
 app.post("/api/createEvent", createEvent);
 app.post("/api/createMeetingType", createMeetingType);
