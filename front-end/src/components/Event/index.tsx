@@ -9,7 +9,9 @@ import StarRatingComponent from "react-star-rating-component";
 import { TextField } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
 
-const Event: React.FC<any> = () => {
+const Event: React.FC<any> = (props: any) => {
+  const { studUser } = props;
+
   const setIsLoading = useLoadingUpdate();
   const [rating, setRating] = useState(0);
   // TODO: DELETE MOCK EVENT

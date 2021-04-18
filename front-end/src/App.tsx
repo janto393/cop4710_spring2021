@@ -41,7 +41,7 @@ const App = () => {
         {/* rest of the app will go below */}
         <Route path="/home" exact>
           <HomeContainer studUser={studUser}>
-            <Event />
+            <Event studUser={studUser} />
           </HomeContainer>
         </Route>
 
