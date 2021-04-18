@@ -42,7 +42,7 @@ const INITIAL_FORM_STATE = {
 const RegisterRsoForm: React.FC<RegisterRsoFormType> = (
   props: RegisterRsoFormType
 ) => {
-  const { studUser, setIsLoading, setIsValid, setCanDisplayToast } = props;
+  const { studUser, setIsValid, setCanDisplayToast } = props;
   const { email, universityID } = studUser;
   const universityEmailDomain = email.split("@")[1];
   const [form, setForm] = useState(INITIAL_FORM_STATE);

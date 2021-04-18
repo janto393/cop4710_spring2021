@@ -8,6 +8,7 @@ import { ucfCoordinates, ufCoordinates } from "src/Utils/mapUtils";
 import StarRatingComponent from "react-star-rating-component";
 import { TextField } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
+import { GetEventsRequest } from "src/types/apiRequestBodies";
 
 const Event: React.FC<any> = () => {
   const setIsLoading = useLoadingUpdate();
@@ -38,7 +39,11 @@ const Event: React.FC<any> = () => {
 
   useEffect(() => {
     setIsLoading(true);
-    // here's where our GET /api/events should go
+    
+		// let payload: GetEventsRequest = {
+		// 	universityID: 
+		// };
+
     setTimeout(() => {
       console.log("Events returned from api call...");
       setIsLoading(false);
