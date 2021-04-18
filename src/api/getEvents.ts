@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import * as mysql from "mysql";
+import getLattitudeAndLongitude, { Coordinates } from "../util/fetchCoordinates";
 
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
@@ -64,6 +65,7 @@ interface Event
 	isPublic: boolean,
 	numAttendees: number,
 	capacity: number,
+	coordinates: Coordinates,
 	comments: Comment[]
 }
 
@@ -129,8 +131,7 @@ function createEventQuery(info: EndpointInput): string
 	}
 	else
 	{
-		// only include public events at the university
-		conditionalJoin = "INNER JOIN Events AS E1 ON ((Events.ID=E1.ID) AND (E1.schoolID=" + info.universityID + ") AND (E1.isPublic=true))";
+		conditionalJoin = "INNER JOIN Events AS E1 ON (Events.ID=E1.ID AND ((Events.schoolID=" + info.universityID + " AND Events.rsoID=" + info.rsoID + " AND Events.isPublic=false) OR (Events.schoolID=" + info.universityID + " AND Events.isPublic=true)))\n";
 	}
 
 	const joinStatements: Array<string> = [
@@ -198,7 +199,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 	{
 		let queryString: string = createEventQuery(input);
 
-		connection.query(queryString, (error: string, rows: Array<SqlEvent>) => {
+		connection.query(queryString, async (error: string, rows: Array<SqlEvent>): Promise<void> => {
 			if (error)
 			{
 				connection.end();
@@ -238,6 +239,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 					// store the index at which the event will be stored
 					parsedEventIndexes.set(rawData.eventID, returnPackage.events.length);
 
+
 					let event: Event = {
 						schoolID: rawData.schoolID,
 						address: rawData.eventAddress,
@@ -263,14 +265,24 @@ export async function getEvents(request: Request, response: Response, next: Call
 						isPublic: rawData.isPublic,
 						numAttendees: rawData.numAttendees,
 						capacity: rawData.eventCapacity,
-						comments: [
-							{
-								author: (rawData.commenterFirstname + " " + rawData.commenterLastname),
-								timetag: new Date(rawData.commentTimetag),
-								comment: rawData.eventComment
-							}
-						]
+						coordinates: {},
+						comments: []
 					};
+
+					// get event Coordinates
+					let eventCoords: Coordinates = await getLattitudeAndLongitude(event.address, event.city, event.state.name, event.zip);
+					event.coordinates.latitude = eventCoords.latitude;
+					event.coordinates.longitude = eventCoords.longitude;
+
+					// include comment if it exists (will be null if event has no comments)
+					if (rawData.eventComment !== null)
+					{
+						event.comments.push({
+							author: (rawData.commenterFirstname + " " + rawData.commenterLastname),
+							timetag: new Date(rawData.commentTimetag),
+							comment: rawData.eventComment
+						});
+					}
 
 					returnPackage.events.push(event);
 				}

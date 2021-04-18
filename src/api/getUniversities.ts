@@ -3,6 +3,7 @@ import * as mysql from "mysql";
 
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
+import getLattitudeAndLongitude, { Coordinates } from "../util/fetchCoordinates";
 
 // type imports
 import { CampusPicture, University } from "src/commonTypes/universityTypes";
@@ -10,7 +11,7 @@ import { SqlUniversity } from "src/commonTypes/sqlSchema";
 
 interface EndpointInput
 {
-	schoolID?: number
+	universityID?: number
 }
 
 interface EndpointReturn
@@ -47,10 +48,10 @@ function createUniversityQuery(info: EndpointInput): string
 	const fromStatement: string = "FROM Universities AS UN\n";
 
 	// only used when only selecting a specific university
-	const optionalJoin: string = "INNER JOIN Universities AS UN1 ON (UN1.ID=" + String(info.schoolID) + ")\n";
+	const optionalJoin: string = "INNER JOIN Universities AS UN1 ON (UN1.ID=" + String(info.universityID) + ")\n";
 
 	const joinStatements: Array<string> = [
-		"LEFT JOIN States AS ST ON (ST.ID=UN.ID)\n",
+		"LEFT JOIN States AS ST ON (ST.ID=UN.stateID)\n",
 		"LEFT JOIN Campus_Pictures AS CP ON (CP.universityID=UN.ID)\n"
 	];
 
@@ -65,7 +66,7 @@ function createUniversityQuery(info: EndpointInput): string
 
 	query = query.concat(fromStatement);
 
-	if (info.schoolID !== undefined)
+	if (info.universityID !== undefined)
 	{
 		query = query.concat(optionalJoin);
 	}
@@ -83,7 +84,7 @@ function createUniversityQuery(info: EndpointInput): string
 export async function getUniversities(request: Request, response: Response, next: CallableFunction): Promise<void>
 {
 	let input: EndpointInput = {
-		schoolID: request.body.schoolID
+		universityID: request.body.universityID
 	};
 
 	let returnPackage: EndpointReturn = {
@@ -112,7 +113,7 @@ export async function getUniversities(request: Request, response: Response, next
 	{
 		let queryString: string = createUniversityQuery(input);
 
-		connection.query(queryString, (error: mysql.MysqlError, rows: Array<SqlUniversity>) => {
+		connection.query(queryString, async (error: mysql.MysqlError, rows: Array<SqlUniversity>) => {
 			if (error)
 			{
 				connection.end();
@@ -175,8 +176,14 @@ export async function getUniversities(request: Request, response: Response, next
 						phoneNumber: rawData.phoneNumber,
 						numStudents: rawData.numStudents,
 						email: rawData.email,
-						campusPictures: [picture]
+						campusPictures: [picture],
+						coordinates: {}
 					};
+
+					// fetch the coordinates of the university
+					let universityCoordinates: Coordinates = await getLattitudeAndLongitude(university.address.address, university.address.city, university.address.state.name, university.address.zip);
+					university.coordinates.latitude = universityCoordinates.latitude;
+					university.coordinates.longitude = universityCoordinates.longitude;
 
 					returnPackage.universities.push(university);
 				}
