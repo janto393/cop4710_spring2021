@@ -1,5 +1,55 @@
-.event-card-container .map-container .map {
-  height: 271px;
+.home-container .content-container .map-container .map {
+  height: 150px;
   width: 100%;
   margin: auto;
+}
+.home-container .content-container .event-card {
+  margin: 5px;
+}
+.home-container .content-container .event-card-buttons-container {
+  text-align: right;
+}
+
+.home-container .content-container .event-card-buttons-container .event-button {
+  text-align: center;
+}
+
+.home-container .content-container .event-description-item {
+  margin: 15px;
+}
+
+.home-container .content-container .event-title-item {
+  margin: 15px;
+}
+
+.home-container
+  .content-container
+  .event-card-buttons-container
+  .event-button-liked {
+  text-align: center;
+}
+
+/* like/dislike button */
+
+.home-container
+  .content-container
+  .event-card-buttons-container
+  .event-button-liked
+  .MuiButtonBase-root {
+  color: blue;
+}
+
+.home-container
+  .content-container
+  .event-card-buttons-container
+  .event-button-disliked {
+  text-align: center;
+}
+
+.home-container
+  .content-container
+  .event-card-buttons-container
+  .event-button-disliked
+  .MuiButtonBase-root {
+  color: red;
 }

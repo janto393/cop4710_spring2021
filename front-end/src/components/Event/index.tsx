@@ -1,10 +1,15 @@
 import "./index.css";
 
 import React, { useEffect, useState } from "react";
-import { Card, Grid, Typography } from "@material-ui/core";
+import { Button, Card, Grid, Typography } from "@material-ui/core";
 import { useLoadingUpdate } from "src/Context/LoadingProvider";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { ucfCoordinates } from "src/Utils/mapUtils";
+import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
+import { ThumbDown } from "@material-ui/icons";
+import CommentIcon from "@material-ui/icons/Comment";
+import GradeIcon from "@material-ui/icons/Grade";
+import StarRatingComponent from "react-star-rating-component";
 
 export type EventType = {
   eventID?: number;
@@ -40,6 +45,7 @@ const Event: React.FC<any> = () => {
     },
   ]);
   const setIsLoading = useLoadingUpdate();
+  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     setIsLoading(true);
@@ -63,15 +69,15 @@ const Event: React.FC<any> = () => {
   );
 
   return (
-    <Grid container direction="column" className="event-card-container">
-      {events.map((event) => {
+    <>
+      {events.map((event, index) => {
         const { eventName, eventDescription } = event;
 
         return (
-          <Grid item xs={8}>
+          <Grid item xs={8} className="event-card" key={index}>
             <Card raised>
               {/* event title */}
-              <Grid item xs={12}>
+              <Grid item xs={12} className="event-title-item">
                 <Typography variant="h4">{eventName}</Typography>
               </Grid>
 
@@ -81,27 +87,39 @@ const Event: React.FC<any> = () => {
               </Grid>
 
               {/* event description */}
-              <Grid item xs={12}>
+              <Grid item xs={12} className="event-description-item">
                 <Typography variant="body1">{eventDescription}</Typography>
               </Grid>
 
-              {/* sub to event/comment on event/rate event buttons */}
-              <Grid item xs={3}>
-                COMMENT
-              </Grid>
+              {/* comments could go here */}
 
-              <Grid item xs={3}>
-                RATE
-              </Grid>
+              {/* event buttons */}
+              <Grid
+                container
+                direction="row"
+                justify="flex-end"
+                className="event-card-buttons-container"
+              >
+                <Grid item xs={2} className="event-button">
+                  <Button onClick={() => console.log("comment!")}>
+                    <CommentIcon />
+                  </Button>
+                </Grid>
 
-              <Grid item xs={3}>
-                SUBSCRIBE TO EVENT
+                <Grid item xs={2}>
+                  <StarRatingComponent
+                    name="rate"
+                    starCount={5}
+                    value={rating}
+                    onStarClick={(nextValue) => setRating(nextValue)}
+                  />
+                </Grid>
               </Grid>
             </Card>
           </Grid>
         );
       })}
-    </Grid>
+    </>
   );
 };
 
