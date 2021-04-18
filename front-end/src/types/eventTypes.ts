@@ -1,26 +1,41 @@
 import { Coordinates, University } from "./dropDownTypes";
 
+export interface Comment
+{
+	author: string,
+	timetag: Date,
+	comment: string
+}
+
 export interface Event
 {
 	ID: number
-	university: University,
+	schoolID: number,
 	address: string,
 	city: string,
-	stateID: number,
+	state: {
+		ID: number,
+		name: string,
+		acronym: string
+	},
 	zip: string,
 	rso: {
 		ID: number,
 		name: string
 	},
-	meetingTypeID: number,
+	meetingType: {
+		ID: number,
+		name: string
+	},
 	name: string,
 	description: string,
 	room: string,
 	rating: number,
 	isPublic: boolean,
+	numAttendees: number,
 	capacity: number,
-	eventPictures: Array<Buffer>,
-	coordinates: Coordinates
+	coordinates: Coordinates,
+	comments: Comment[]
 }
 
 export interface EventFormData extends NewEvent
