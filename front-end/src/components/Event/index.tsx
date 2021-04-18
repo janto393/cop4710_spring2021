@@ -5,47 +5,25 @@ import { Button, Card, Grid, Typography } from "@material-ui/core";
 import { useLoadingUpdate } from "src/Context/LoadingProvider";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { ucfCoordinates } from "src/Utils/mapUtils";
-import ThumbUpAltIcon from "@material-ui/icons/ThumbUpAlt";
-import { ThumbDown } from "@material-ui/icons";
-import CommentIcon from "@material-ui/icons/Comment";
-import GradeIcon from "@material-ui/icons/Grade";
 import StarRatingComponent from "react-star-rating-component";
-
-export type EventType = {
-  eventID?: number;
-  schoolID?: number;
-  rsoID?: number;
-  rsoName?: string;
-  meetingTypeID?: number;
-  meetingTypeName?: string;
-  eventName?: string;
-  eventDescription?: string;
-  eventAddress?: string;
-  eventCity?: string;
-  stateID?: number;
-  stateName?: string;
-  stateAcronym?: string;
-  eventZip?: string;
-  eventRoom?: string;
-  eventRating?: number;
-  isPublic?: boolean;
-  numAttendees?: number;
-  eventCapacity?: number;
-  eventComment?: string;
-  commentTimetag?: Date;
-  commenterFirstname?: string;
-  commenterLastname?: string;
-};
+import { TextField } from "@material-ui/core";
+import PersonIcon from "@material-ui/icons/Person";
 
 const Event: React.FC<any> = () => {
-  const [events, setEvents] = useState<Array<EventType>>([
+  const setIsLoading = useLoadingUpdate();
+  const [rating, setRating] = useState(0);
+  // TODO: DELETE MOCK EVENT
+  const [events, setEvents] = useState<Array<any>>([
     {
       eventName: "UCF Event!",
       eventDescription: "An event that's taking place here at this university.",
+      comments: [
+        "loved this event!",
+        "can't wait to go!",
+        "will this event be streamed?",
+      ],
     },
   ]);
-  const setIsLoading = useLoadingUpdate();
-  const [rating, setRating] = useState(0);
 
   useEffect(() => {
     setIsLoading(true);
@@ -57,64 +35,120 @@ const Event: React.FC<any> = () => {
   }, []);
 
   const getMap = (
-    <MapContainer
-      center={ucfCoordinates}
-      zoom={15}
-      scrollWheelZoom={true}
-      className="map"
-    >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <Marker position={ucfCoordinates} />
-    </MapContainer>
+    <Grid container className="map-container">
+      <MapContainer
+        center={ucfCoordinates}
+        zoom={15}
+        scrollWheelZoom={true}
+        className="map"
+      >
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        <Marker position={ucfCoordinates} />
+      </MapContainer>
+    </Grid>
   );
+
+  // TODO: 1. update/delete comment
+  const getComments = (comments: any) => {
+    return (
+      <Grid container direction="column" className="comment-section">
+        <Grid item xs={12}>
+          <Typography variant="h6">Comments</Typography>
+        </Grid>
+
+        <hr />
+
+        <Grid item xs={12}>
+          {comments?.map((comment: any) => {
+            return (
+              <Grid container direction="row">
+                {/* name */}
+                <Grid item xs={1}>
+                  <PersonIcon />
+                </Grid>
+                <Grid container item xs={11} direction="column">
+                  <Grid item xs={4}>
+                    <Typography variant="caption" id="comment-section-name">
+                      Jamil Gonzalez
+                    </Typography>
+                  </Grid>
+                  {/* comment */}
+                  <Grid item xs={8}>
+                    <Typography variant="body1" id="comment-section-comment">
+                      {comment}
+                    </Typography>
+                  </Grid>
+                </Grid>
+              </Grid>
+            );
+          })}
+        </Grid>
+
+        <Grid item xs={12} className="comment-section-new">
+          <TextField
+            multiline
+            label="comments"
+            className="comments"
+            onChange={() =>
+              console.log("need to store and add this to event comments")
+            }
+          />
+        </Grid>
+      </Grid>
+    );
+  };
+
+  const getDescription = (eventDescription: any) => {
+    return (
+      <Grid item xs={12} className="event-description-item">
+        <Typography variant="h4">Description</Typography>
+        <Typography variant="body1">{eventDescription}</Typography>
+      </Grid>
+    );
+  };
+
+  const getEventHeader = (eventName: any) => {
+    return (
+      <Grid container direction="row">
+        {/* event title */}
+        <Grid item xs={9} className="event-title-item">
+          <Typography variant="h4">{eventName}</Typography>
+        </Grid>
+        {/* ratings */}
+        <Grid item xs={2} className="rating">
+          <StarRatingComponent
+            name="rate"
+            starCount={5}
+            value={rating}
+            onStarClick={(nextValue) => {
+              // send rating to backend
+              setRating(nextValue); // so the component knows what start to turn yellow
+            }}
+          />
+        </Grid>
+      </Grid>
+    );
+  };
 
   return (
     <>
       {events.map((event, index) => {
-        const { eventName, eventDescription } = event;
+        const { eventName, eventDescription, comments } = event;
 
         return (
           <Grid item xs={8} className="event-card" key={index}>
             <Card raised>
-              {/* event title */}
-              <Grid item xs={12} className="event-title-item">
-                <Typography variant="h4">{eventName}</Typography>
-              </Grid>
+              {/* event rating */}
+              {getEventHeader(eventName)}
 
-              {/* event map */}
-              <Grid container className="map-container">
-                {getMap}
-              </Grid>
+              {/* map */}
+              {getMap}
 
               {/* event description */}
-              <Grid item xs={12} className="event-description-item">
-                <Typography variant="body1">{eventDescription}</Typography>
-              </Grid>
+              {getDescription(eventDescription)}
 
-              {/* comments could go here */}
-
-              {/* event buttons */}
-              <Grid
-                container
-                direction="row"
-                justify="flex-end"
-                className="event-card-buttons-container"
-              >
-                <Grid item xs={2} className="event-button">
-                  <Button onClick={() => console.log("comment!")}>
-                    <CommentIcon />
-                  </Button>
-                </Grid>
-
-                <Grid item xs={2}>
-                  <StarRatingComponent
-                    name="rate"
-                    starCount={5}
-                    value={rating}
-                    onStarClick={(nextValue) => setRating(nextValue)}
-                  />
-                </Grid>
-              </Grid>
+              {/* comments */}
+              {getComments(comments)}
             </Card>
           </Grid>
         );

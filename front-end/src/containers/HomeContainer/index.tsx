@@ -51,7 +51,7 @@ const HomeContainer: React.FC<any> = ({
     {
       title: "Create Event",
       onClick: () => history.push("/createEvent"),
-      visibility: [2],
+      visibility: [1, 2, 3],
     },
     {
       title: "Register RSO",

@@ -6,6 +6,11 @@
 .home-container .content-container .event-card {
   margin: 5px;
 }
+
+.home-container .content-container .event-card .rating {
+  padding-top: 25px;
+}
+
 .home-container .content-container .event-card-buttons-container {
   text-align: right;
 }
@@ -52,4 +57,31 @@
   .event-button-disliked
   .MuiButtonBase-root {
   color: red;
+}
+
+.home-container .content-container .comments-item {
+  margin: 0 15px 10px;
+}
+
+.home-container .content-container .comment-section {
+  padding: 20px;
+}
+
+#comment-section-comment {
+  margin: 5px 15px;
+  width: auto;
+  height: 40px;
+  border-radius: 15px;
+}
+
+#comment-section-name {
+  margin: 5px 15px;
+  width: auto;
+  height: 40px;
+  border-radius: 15px;
+  font-weight: bold;
+}
+
+hr {
+  width: 95%;
 }
