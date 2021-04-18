@@ -3,35 +3,42 @@ import "./index.css";
 import React, { useEffect, useState } from "react";
 import { Card, Grid, Typography } from "@material-ui/core";
 import { useLoadingUpdate } from "src/Context/LoadingProvider";
+import { MapContainer, TileLayer, Marker } from "react-leaflet";
+import { ucfCoordinates } from "src/Utils/mapUtils";
 
 export type EventType = {
-  eventID: number;
-  schoolID: number;
-  rsoID: number;
-  rsoName: string;
-  meetingTypeID: number;
-  meetingTypeName: string;
-  eventName: string;
-  eventDescription: string;
-  eventAddress: string;
-  eventCity: string;
-  stateID: number;
-  stateName: string;
-  stateAcronym: string;
-  eventZip: string;
-  eventRoom: string;
-  eventRating: number;
-  isPublic: boolean;
-  numAttendees: number;
-  eventCapacity: number;
-  eventComment: string;
-  commentTimetag: Date;
-  commenterFirstname: string;
-  commenterLastname: string;
+  eventID?: number;
+  schoolID?: number;
+  rsoID?: number;
+  rsoName?: string;
+  meetingTypeID?: number;
+  meetingTypeName?: string;
+  eventName?: string;
+  eventDescription?: string;
+  eventAddress?: string;
+  eventCity?: string;
+  stateID?: number;
+  stateName?: string;
+  stateAcronym?: string;
+  eventZip?: string;
+  eventRoom?: string;
+  eventRating?: number;
+  isPublic?: boolean;
+  numAttendees?: number;
+  eventCapacity?: number;
+  eventComment?: string;
+  commentTimetag?: Date;
+  commenterFirstname?: string;
+  commenterLastname?: string;
 };
 
 const Event: React.FC<any> = () => {
-  const [events, setEvents] = useState<Array<EventType>>([]);
+  const [events, setEvents] = useState<Array<EventType>>([
+    {
+      eventName: "UCF Event!",
+      eventDescription: "An event that's taking place here at this university.",
+    },
+  ]);
   const setIsLoading = useLoadingUpdate();
 
   useEffect(() => {
@@ -42,6 +49,18 @@ const Event: React.FC<any> = () => {
       setIsLoading(false);
     }, 2000);
   }, []);
+
+  const getMap = (
+    <MapContainer
+      center={ucfCoordinates}
+      zoom={15}
+      scrollWheelZoom={true}
+      className="map"
+    >
+      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+      <Marker position={ucfCoordinates} />
+    </MapContainer>
+  );
 
   return (
     <Grid container direction="column" className="event-card-container">
@@ -57,8 +76,8 @@ const Event: React.FC<any> = () => {
               </Grid>
 
               {/* event map */}
-              <Grid item xs={12}>
-                map goes here
+              <Grid container className="map-container">
+                {getMap}
               </Grid>
 
               {/* event description */}

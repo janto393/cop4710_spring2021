@@ -9,12 +9,12 @@ import {
   Typography,
 } from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import Snackbar from "@material-ui/core/Snackbar";
 import StudMenu from "../../components/StudMenu";
 import { useHistory } from "react-router";
-import { useLoading, useLoadingUpdate } from "src/Context/LoadingProvider";
+import { useLoading } from "src/Context/LoadingProvider";
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -40,10 +40,7 @@ const HomeContainer: React.FC<any> = ({
   studUser,
 }) => {
   const isLoading = useLoading();
-  const setIsLoading = useLoadingUpdate();
   const history = useHistory();
-
-  console.log(isLoading);
 
   const menuItems = [
     {
