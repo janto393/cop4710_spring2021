@@ -23,7 +23,7 @@ interface EndpointReturn
 	RSOs: Array<RSO>
 }
 
-export async function getApprovedRSOs(request: Request, response: Response, next: CallableFunction): Promise<void>
+export async function getRSOs(request: Request, response: Response, next: CallableFunction): Promise<void>
 {
 	let input: EndpointInput = {
 		universityID: request.body.universityID,
