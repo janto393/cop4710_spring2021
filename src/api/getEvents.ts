@@ -263,14 +263,17 @@ export async function getEvents(request: Request, response: Response, next: Call
 						isPublic: rawData.isPublic,
 						numAttendees: rawData.numAttendees,
 						capacity: rawData.eventCapacity,
-						comments: [
-							{
-								author: (rawData.commenterFirstname + " " + rawData.commenterLastname),
-								timetag: new Date(rawData.commentTimetag),
-								comment: rawData.eventComment
-							}
-						]
+						comments: []
 					};
+
+					if (rawData.eventComment !== null)
+					{
+						event.comments.push({
+							author: (rawData.commenterFirstname + " " + rawData.commenterLastname),
+							timetag: new Date(rawData.commentTimetag),
+							comment: rawData.eventComment
+						});
+					}
 
 					returnPackage.events.push(event);
 				}
