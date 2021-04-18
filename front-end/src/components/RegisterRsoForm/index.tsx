@@ -5,7 +5,12 @@ import { FormInputType } from "../LoginForm";
 import { StudUser } from "src/hooks/useStudUser";
 import produce from "immer";
 import { useState } from "react";
+import { CreateRsoRequest } from "src/types/apiRequestBodies";
+import { CreateRsoReponse } from "src/types/apiResponseBodies";
 import { useLoadingUpdate } from "src/Context/LoadingProvider";
+
+// util imports
+import buildpath from "../../Utils/buildpath";
 
 export type RegisterRsoFormType = {
   studUser: StudUser;
@@ -37,8 +42,8 @@ const INITIAL_FORM_STATE = {
 const RegisterRsoForm: React.FC<RegisterRsoFormType> = (
   props: RegisterRsoFormType
 ) => {
-  const { studUser, setIsValid, setCanDisplayToast } = props;
-  const { email } = studUser;
+  const { studUser, setIsLoading, setIsValid, setCanDisplayToast } = props;
+  const { email, universityID } = studUser;
   const universityEmailDomain = email.split("@")[1];
   const [form, setForm] = useState(INITIAL_FORM_STATE);
   const setIsLoading = useLoadingUpdate();
@@ -74,7 +79,33 @@ const RegisterRsoForm: React.FC<RegisterRsoFormType> = (
 
     if (isFormValid()) {
       setIsValid(true);
-      console.log("submit request");
+      
+			let payload: CreateRsoRequest = {
+				universityID: universityID,
+				name: form.rsoName.value
+			};
+
+			let request: Object = {
+				method: "POST",
+				body: JSON.stringify(payload),
+				headers: {
+					"Content-Type": "application/json"
+				}
+			};
+
+			fetch(buildpath("/api/createRSO"), request)
+			.then((response: Response): Promise<CreateRsoReponse> => {
+				return response.json();
+			})
+			.then((data: CreateRsoReponse): void => {
+				if (!data.success)
+				{
+					console.error(data.error);
+					return;
+				}
+		
+				console.log("RSO created successfully");
+			});
     } else {
       setIsValid(false);
     }
