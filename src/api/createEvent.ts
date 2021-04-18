@@ -7,7 +7,7 @@ import configureSqlConnection from "../util/configureSqlConnection";
 interface EndpointReturn
 {
 	success: boolean,
-	error: string
+	error: string | mysql.MysqlError
 }
 
 interface NewEvent
@@ -17,7 +17,7 @@ interface NewEvent
 	city: string,
 	stateID: number,
 	zip: string
-	rsoID: number,
+	rsoID?: number,
 	meetingTypeID: number
 	name: string,
 	description: string,
@@ -25,8 +25,7 @@ interface NewEvent
 	rating: number,
 	isPublic: boolean,
 	numAttendees: number,
-	capacity: number,
-	eventPictures: Array<mysql.Types.MEDIUM_BLOB>
+	capacity: number
 }
 
 function generateNewEventQuery(input: NewEvent): string
@@ -34,16 +33,16 @@ function generateNewEventQuery(input: NewEvent): string
 	let s: string = "INSERT INTO Events (\nschoolID,\nstateID,\nrsoID,\nmeetingType,\nname,\ndescription,\naddress,\ncity,\nzip,\nroom,\nrating,\nisPublic,\nnumAttendees,\ncapacity)\nVALUES (\n";
 
 	// process schoolID
-	s = s.concat(input.schoolID + ",\n");
+	s = s.concat(String(input.schoolID) + ",\n");
 
 	// process stateID
-	s = s.concat(input.stateID + ",\n");
+	s = s.concat(String(input.stateID) + ",\n");
 
 	// process rsoID
-	s = s.concat(input.rsoID + ",\n");
+	s = s.concat(((input.rsoID === undefined) ? "null" : String(input.rsoID)) + ",\n");
 
 	// process meetingType (ID value)
-	s = s.concat(input.meetingTypeID + ",\n");
+	s = s.concat(String(input.meetingTypeID) + ",\n");
 
 	// process event name
 	s = s.concat("'" + input.name + "',\n");
@@ -81,57 +80,6 @@ function generateNewEventQuery(input: NewEvent): string
 	return s;
 }
 
-function generateEventPictureQuery(pictures: Array<mysql.Types.MEDIUM_BLOB>, eventID: number): string
-{
-	const MAX_EVENT_PICTURES: number = 7;
-	let query: string = "INSERT INTO Event_Pictures (\neventID,\npicture,\nposition)\nVALUES\n";
-
-	/**
-	 * Generate an insertion statement for the maximum number of pictures an
-	 * event can have.
-	 * 
-	 * If there are fewer pictures than the max limit, the records are still
-	 * created with an empty blob so they can be modified later
-	 */
-	let i: number;
-	for (i = 0; i < MAX_EVENT_PICTURES; i++)
-	{
-		let s: string = "("
-
-		// fill in eventID;
-		s = s.concat(String(eventID) + ",\n");
-
-		// insert an empty blob if the picture at the specified index is null
-		if (pictures[i] === null)
-		{
-			s = s.concat("'',\n");
-		}
-		else
-		{
-			s = s.concat("'" + pictures[i] + "',\n");
-		}
-
-		// fill in picture position
-		s = s.concat(String(i+1) + "\n");
-
-		s = s.concat(")")
-
-		if (i == MAX_EVENT_PICTURES - 1)
-		{
-			s = s.concat(";\n");
-		}
-		else
-		{
-			s = s.concat(",\n");
-		}
-
-		// append the insertion statement to the overall query
-		query = query.concat(s);
-	}
-
-	return query;
-}
-
 export async function createEvent(request: Request, response: Response, next: CallableFunction): Promise<void>
 {
 	let returnPackage: EndpointReturn = {
@@ -153,8 +101,7 @@ export async function createEvent(request: Request, response: Response, next: Ca
 		rating: request.body.rating,
 		isPublic: request.body.isPublic,
 		numAttendees: 0,
-		capacity: request.body.capacity,
-		eventPictures: request.body.eventPictures
+		capacity: request.body.capacity
 	};
 
 	const connectionData: mysql.ConnectionConfig = configureSqlConnection();
@@ -173,15 +120,13 @@ export async function createEvent(request: Request, response: Response, next: Ca
 		return;
 	}
 
-	
-
 	try
 	{
 		// generate query string that inserts the appropriate data in the events table
 		let queryString: string = generateNewEventQuery(input);
 
 		// insert the event into the database
-		connection.query(queryString, (error: string, rows: any) => {
+		connection.query(queryString, (error: mysql.MysqlError) => {
 			if (error)
 			{
 				connection.end();
@@ -192,27 +137,12 @@ export async function createEvent(request: Request, response: Response, next: Ca
 				return;
 			}
 
-			let newEventID: number = rows.insertId;
-			queryString = generateEventPictureQuery(input.eventPictures, newEventID);
-
-			// insert new pictures into the database
-			connection.query(queryString, (error: string, rows: any) => {
-				if (error)
-				{
-					connection.end();
-					returnPackage.error = error;
-					response.json(returnPackage);
-					response.status(500);
-					response.send();
-					return;
-				}
-
-				returnPackage.success = true;
-				response.json(returnPackage);
-				response.status(200);
-				response.send();
-				return;
-			});
+			connection.end();
+			returnPackage.success = true;
+			response.json(returnPackage);
+			response.status(200);
+			response.send();
+			return;
 		});
 	}
 	catch (e)
