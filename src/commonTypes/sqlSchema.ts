@@ -24,10 +24,18 @@ export interface SqlCampusPictures
 export interface SqlComment
 {
 	ID: number,
-	timeTag: mysql.Types.DATE,
+	timeTag: Date,
 	comment: string,
 	userID: number,
 	eventID: number
+}
+
+export interface SqlRating
+{
+	ID: number,
+	userID: number,
+	eventID: number,
+	rating: number,
 }
 
 export interface SqlEventPictures

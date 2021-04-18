@@ -4,6 +4,7 @@ import express, { Request, Response } from "express";
 
 // Endpoint imports
 import { approveDenyRSOs } from "./api/approveDenyRSOs";
+import { commentEvent } from "./api/commentEvent";
 import { createAttendee } from "./api/createAttendee";
 import { createEvent } from "./api/createEvent";
 import { createMeetingType } from "./api/createMeetingType";
@@ -17,6 +18,7 @@ import { getRso } from "./api/getRso";
 import { getStates } from "./api/getStates";
 import { getUniversities } from "./api/getUniversities";
 import { login } from "./api/login";
+import { rateEvent } from "./api/rateEvent";
 import { register } from "./api/register";
 import { updateEvent } from "./api/updateEvent";
 import { updateRso } from "./api/updateRso";
@@ -51,6 +53,7 @@ app.get('/', (_, res) => {
 });
 
 app.post("/api/approveDenyRSOs", approveDenyRSOs);
+app.post("/api/commentEvent", commentEvent);
 app.post("/api/createAttendee", createAttendee);
 app.post("/api/createEvent", createEvent);
 app.post("/api/createMeetingType", createMeetingType);
@@ -64,6 +67,7 @@ app.post("/api/getRso", getRso);
 app.post("/api/getStates", getStates);
 app.post("/api/getUniversities", getUniversities);
 app.post("/api/login", login);
+app.post("/api/rateEvent", rateEvent);
 app.post("/api/register", register);
 app.post("/api/updateEvent", updateEvent);
 app.post("/api/updateRso", updateRso);
