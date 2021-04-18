@@ -9,11 +9,12 @@ import {
   Typography,
 } from "@material-ui/core";
 import MuiAlert, { AlertProps } from "@material-ui/lab/Alert";
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 
 import Snackbar from "@material-ui/core/Snackbar";
 import StudMenu from "../../components/StudMenu";
 import { useHistory } from "react-router";
+import { useLoading } from "src/Context/LoadingProvider";
 
 function Alert(props: AlertProps) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -33,12 +34,12 @@ const filterLinks = (userVisibility: number, menuItems: Array<MenuItem>) => {
 
 const HomeContainer: React.FC<any> = ({
   children,
-  isLoading,
   canDisplayToast,
   isValid,
   setCanDisplayToast,
   studUser,
 }) => {
+  const isLoading = useLoading();
   const history = useHistory();
 
   const menuItems = [
@@ -50,7 +51,7 @@ const HomeContainer: React.FC<any> = ({
     {
       title: "Create Event",
       onClick: () => history.push("/createEvent"),
-      visibility: [2],
+      visibility: [1, 2, 3],
     },
     {
       title: "Register RSO",
@@ -95,8 +96,8 @@ const HomeContainer: React.FC<any> = ({
             </Grid>
             <StudMenu />
           </Toolbar>
-          {isLoading && <LinearProgress />}
         </AppBar>
+        {isLoading && <LinearProgress />}
       </Grid>
 
       {/* events will render inside this container */}

@@ -26,7 +26,6 @@ export interface NewUser
 	lastname: string,
 	email: string,
 	universityID: number,
-	rsoID: number,
 	role: number,
 	profilePicture: ProfilePicture | undefined
 }

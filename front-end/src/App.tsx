@@ -3,6 +3,7 @@ import "./index.css";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
 import EventForm from "./components/EventForm";
+import Event from "./components/Event";
 import HomeContainer from "./containers/HomeContainer";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
@@ -13,7 +14,6 @@ import { useStudUser } from "./hooks/useStudUser";
 
 const App = () => {
   const { studUser, setStudUser } = useStudUser();
-  const [isLoading, setIsLoading] = useState(false);
   const [isValid, setIsValid] = useState(false);
   const [canDisplayToast, setCanDisplayToast] = useState(false);
 
@@ -27,24 +27,21 @@ const App = () => {
       <Switch>
         {/* splash page routes */}
         <Route path="/" exact>
-          <LoginPageContainer isLoading={isLoading}>
-            <LoginForm setStudUser={setStudUser} setIsLoading={setIsLoading} />
+          <LoginPageContainer>
+            <LoginForm setStudUser={setStudUser} />
           </LoginPageContainer>
         </Route>
 
         <Route path="/register" exact>
-          <LoginPageContainer isLoading={isLoading}>
-            <RegisterForm
-              setStudUser={setStudUser}
-              setIsLoading={setIsLoading}
-            />
+          <LoginPageContainer>
+            <RegisterForm setStudUser={setStudUser} />
           </LoginPageContainer>
         </Route>
 
         {/* rest of the app will go below */}
         <Route path="/home" exact>
           <HomeContainer studUser={studUser}>
-            <h1>Events go here</h1>
+            <Event />
           </HomeContainer>
         </Route>
 
@@ -70,7 +67,6 @@ const App = () => {
           >
             <RegisterRsoForm
               studUser={studUser}
-              setIsLoading={setIsLoading}
               setIsValid={setIsValid}
               setCanDisplayToast={setCanDisplayToast}
             />

@@ -10,9 +10,10 @@ import { SqlRso } from "../commonTypes/sqlSchema";
 
 interface EndpointInput
 {
-	rsoID: number | undefined,
-	name: string | undefined,
 	universityID: number,
+	getApproved: boolean, // if false, only returns unapproved rsos
+	rsoID?: number,
+	name?: string
 }
 
 interface EndpointReturn
@@ -22,12 +23,13 @@ interface EndpointReturn
 	RSOs: Array<RSO>
 }
 
-export async function getRso(request: Request, response: Response, next: CallableFunction): Promise<void>
+export async function getRSOs(request: Request, response: Response, next: CallableFunction): Promise<void>
 {
 	let input: EndpointInput = {
+		universityID: request.body.universityID,
+		getApproved: request.body.getApproved,
 		rsoID: request.body.rsoID,
-		name: request.body.name,
-		universityID: request.body.universityID
+		name: request.body.name
 	};
 
 	let returnPackage: EndpointReturn = {
@@ -54,7 +56,7 @@ export async function getRso(request: Request, response: Response, next: Callabl
 
 	try
 	{
-		let queryString: string = "SELECT * FROM Registered_Student_Organizations AS rso WHERE rso.universityID=" + input.universityID;
+		let queryString: string = "SELECT * FROM Registered_Student_Organizations AS rso WHERE rso.isApproved=" + String(input.getApproved) + " AND rso.universityID=" + input.universityID;
 
 		if (input.name !== undefined)
 		{

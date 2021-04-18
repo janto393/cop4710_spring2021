@@ -6,7 +6,7 @@ export interface Address
 	zip: string
 }
 
-export interface Coordinate
+export interface Coordinates
 {
 	latitude: string,
 	longitude: string
@@ -43,5 +43,5 @@ export interface University
 	numStudents: number,
 	email: string,
 	campusPictures: Array<Buffer>,
-	coordinates: Coordinate
+	coordinates: Coordinates
 }

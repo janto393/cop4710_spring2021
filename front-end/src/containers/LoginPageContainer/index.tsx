@@ -4,15 +4,12 @@ import { Grid, LinearProgress } from "@material-ui/core";
 
 import LoginImage from "../../components/Images/LoginImage";
 import React from "react";
+import { useLoading } from "src/Context/LoadingProvider";
 
-export type LoginPageProps = {
-  isLoading: boolean;
-};
+export type LoginPageProps = {};
 
-const LoginPageContainer: React.FC<LoginPageProps> = ({
-  children,
-  isLoading,
-}) => {
+const LoginPageContainer: React.FC<LoginPageProps> = ({ children }) => {
+  const isLoading = useLoading();
   return (
     <>
       <Grid

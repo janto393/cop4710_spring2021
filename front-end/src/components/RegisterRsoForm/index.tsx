@@ -7,13 +7,13 @@ import produce from "immer";
 import { useState } from "react";
 import { CreateRsoRequest } from "src/types/apiRequestBodies";
 import { CreateRsoReponse } from "src/types/apiResponseBodies";
+import { useLoadingUpdate } from "src/Context/LoadingProvider";
 
 // util imports
 import buildpath from "../../Utils/buildpath";
 
 export type RegisterRsoFormType = {
   studUser: StudUser;
-  setIsLoading: Function;
   setIsValid: Function;
   setCanDisplayToast: Function;
 };
@@ -46,6 +46,7 @@ const RegisterRsoForm: React.FC<RegisterRsoFormType> = (
   const { email, universityID } = studUser;
   const universityEmailDomain = email.split("@")[1];
   const [form, setForm] = useState(INITIAL_FORM_STATE);
+  const setIsLoading = useLoadingUpdate();
 
   const isFormValid = (): boolean => {
     const { member1, member2, member3, member4, member5 } = form;
