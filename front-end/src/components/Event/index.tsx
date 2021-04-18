@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import { Button, Card, Grid, Typography } from "@material-ui/core";
 import { useLoadingUpdate } from "src/Context/LoadingProvider";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
-import { ucfCoordinates } from "src/Utils/mapUtils";
+import { ucfCoordinates, ufCoordinates } from "src/Utils/mapUtils";
 import StarRatingComponent from "react-star-rating-component";
 import { TextField } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
@@ -18,10 +18,21 @@ const Event: React.FC<any> = () => {
       eventName: "UCF Event!",
       eventDescription: "An event that's taking place here at this university.",
       comments: [
-        "loved this event!",
-        "can't wait to go!",
-        "will this event be streamed?",
+        { comment: "loved this event!", name: "Jamil" },
+        { comment: "can't wait to go!", name: "Jon" },
+        { comment: "will this event be streamed?", name: "Troy" },
       ],
+      coordinates: ucfCoordinates,
+    },
+    {
+      eventName: "UF Event!",
+      eventDescription: "An event that's taking place here at this university.",
+      comments: [
+        { comment: "loved this event!", name: "Nolan" },
+        { comment: "can't wait to go!", name: "Jon" },
+        { comment: "will this event be streamed?", name: "Troy" },
+      ],
+      coordinates: ufCoordinates,
     },
   ]);
 
@@ -34,19 +45,21 @@ const Event: React.FC<any> = () => {
     }, 2000);
   }, []);
 
-  const getMap = (
-    <Grid container className="map-container">
-      <MapContainer
-        center={ucfCoordinates}
-        zoom={15}
-        scrollWheelZoom={true}
-        className="map"
-      >
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        <Marker position={ucfCoordinates} />
-      </MapContainer>
-    </Grid>
-  );
+  const getMap = (coordinates: any) => {
+    return (
+      <Grid container className="map-container">
+        <MapContainer
+          center={coordinates}
+          zoom={15}
+          scrollWheelZoom={true}
+          className="map"
+        >
+          <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+          <Marker position={coordinates} />
+        </MapContainer>
+      </Grid>
+    );
+  };
 
   // TODO: 1. update/delete comment
   const getComments = (comments: any) => {
@@ -69,13 +82,13 @@ const Event: React.FC<any> = () => {
                 <Grid container item xs={11} direction="column">
                   <Grid item xs={4}>
                     <Typography variant="caption" id="comment-section-name">
-                      Jamil Gonzalez
+                      {comment.name}
                     </Typography>
                   </Grid>
                   {/* comment */}
                   <Grid item xs={8}>
                     <Typography variant="body1" id="comment-section-comment">
-                      {comment}
+                      {comment.comment}
                     </Typography>
                   </Grid>
                 </Grid>
@@ -101,7 +114,7 @@ const Event: React.FC<any> = () => {
   const getDescription = (eventDescription: any) => {
     return (
       <Grid item xs={12} className="event-description-item">
-        <Typography variant="h4">Description</Typography>
+        <Typography variant="h5">Description</Typography>
         <Typography variant="body1">{eventDescription}</Typography>
       </Grid>
     );
@@ -133,7 +146,7 @@ const Event: React.FC<any> = () => {
   return (
     <>
       {events.map((event, index) => {
-        const { eventName, eventDescription, comments } = event;
+        const { eventName, eventDescription, comments, coordinates } = event;
 
         return (
           <Grid item xs={8} className="event-card" key={index}>
@@ -142,7 +155,7 @@ const Event: React.FC<any> = () => {
               {getEventHeader(eventName)}
 
               {/* map */}
-              {getMap}
+              {getMap(coordinates)}
 
               {/* event description */}
               {getDescription(eventDescription)}
