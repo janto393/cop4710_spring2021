@@ -1,25 +1,22 @@
-import React from "react";
 import {
-	useState,
-	useEffect
-} from "react";
-import {
-	DropDownData,
-	fetchDropDownData,
-	createEvent,
-	updateEvent
+  DropDownData,
+  createEvent,
+  fetchDropDownData,
+  updateEvent,
 } from "./apiFetches";
+import { FieldType, formMap } from "../../Utils/formUtils";
 import {
-	MAX_EVENT_PICTURES,
-	INITIAL_FORM_STATE,
-	initializeEventState,
-	FormState
+  FormState,
+  INITIAL_FORM_STATE,
+  MAX_EVENT_PICTURES,
+  initializeEventState,
 } from "./componentSetup";
+import { useEffect, useState } from "react";
 
 import { Event } from "../../types/eventTypes";
-import { FieldType, formMap } from "../../Utils/formUtils";
 import { FormFieldType } from "../StudForm";
 import { FormInputType } from "../LoginForm";
+import React from "react";
 import StudForm from "../StudForm/index";
 import { StudUser } from "../../hooks/useStudUser";
 import produce from "immer";
@@ -27,13 +24,15 @@ import produce from "immer";
 export type ManipulateEventProps = {
   studUser: StudUser;
   event?: Event;
+  setIsValid: Function;
+  setCanDisplayToast: Function;
 };
 
 const EventForm: React.FC<ManipulateEventProps> = (
-	props: ManipulateEventProps
+  props: ManipulateEventProps
 ) => {
-  const { studUser } = props;
-  const isNewEvent: boolean = (props.event === undefined);
+  const { studUser, event, setIsValid, setCanDisplayToast } = props;
+  const isNewEvent: boolean = props.event === undefined;
   const [form, setForm] = useState<FormState>(INITIAL_FORM_STATE);
 
   const handleChange = (field: string, update: FormInputType) => {
@@ -46,10 +45,18 @@ const EventForm: React.FC<ManipulateEventProps> = (
   };
 
   // hooks to store information to be used in drop-downs
-  const [meetingTypes, setMeetingTypes] = useState<Map<string, number>>(new Map<string, number>());
-	const [RSOs, setRSOs] = useState<Map<string, number>>(new Map<string, number>());
-	const [states, setStates] = useState<Map<string, number>>(new Map<string, number>());
-	const [universities, setUniversities] = useState<Map<string, number>>(new Map<string, number>());
+  const [meetingTypes, setMeetingTypes] = useState<Map<string, number>>(
+    new Map<string, number>()
+  );
+  const [RSOs, setRSOs] = useState<Map<string, number>>(
+    new Map<string, number>()
+  );
+  const [states, setStates] = useState<Map<string, number>>(
+    new Map<string, number>()
+  );
+  const [universities, setUniversities] = useState<Map<string, number>>(
+    new Map<string, number>()
+  );
 
   const FORM_FIELDS: Array<FormFieldType> = [
     {
@@ -108,30 +115,45 @@ const EventForm: React.FC<ManipulateEventProps> = (
   ];
 
   useEffect(() => {
-    fetchDropDownData(props.studUser.universityID)
-		.then((dropDownData: DropDownData) => {
-			setMeetingTypes(dropDownData.meetingTypes);
-			setRSOs(dropDownData.RSOs);
-			setStates(dropDownData.states);
-			setUniversities(dropDownData.universities);
-		});
+    fetchDropDownData(props.studUser.universityID).then(
+      (dropDownData: DropDownData) => {
+        setMeetingTypes(dropDownData.meetingTypes);
+        setRSOs(dropDownData.RSOs);
+        setStates(dropDownData.states);
+        setUniversities(dropDownData.universities);
+      }
+    );
   }, []);
 
-	// package the drop down hooks to be passed to the submit functions
-	let dropDownMaps: DropDownData = {
-		universities: universities,
-		states: states,
-		RSOs: RSOs,
-		meetingTypes: meetingTypes
-	};
+  // package the drop down hooks to be passed to the submit functions
+  let dropDownMaps: DropDownData = {
+    universities: universities,
+    states: states,
+    RSOs: RSOs,
+    meetingTypes: meetingTypes,
+  };
 
   return (
     <StudForm
       title="Create Event"
       formFields={FORM_FIELDS}
-      buttonText={(props.event === undefined) ? "Create Event" : "Update Event"}
+      buttonText={props.event === undefined ? "Create Event" : "Update Event"}
       handleChange={handleChange}
-      handleClick={(isNewEvent) ? () => {createEvent(form, dropDownMaps)} : () => {updateEvent(form, dropDownMaps, props.event)}}
+      handleClick={
+        isNewEvent
+          ? () => {
+              createEvent(form, dropDownMaps, setIsValid, setCanDisplayToast);
+            }
+          : () => {
+              updateEvent(
+                form,
+                dropDownMaps,
+                setIsValid,
+                setCanDisplayToast,
+                props.event
+              );
+            }
+      }
     />
   );
 };

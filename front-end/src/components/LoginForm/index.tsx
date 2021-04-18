@@ -2,15 +2,14 @@ import React, { useState } from "react";
 import StudForm, { FormFieldType } from "../StudForm";
 
 import { FieldType } from "../../Utils/formUtils";
-import { StudUser } from "../../hooks/useStudUser";
 import axios from "axios";
 import { baseUrl } from "../../Utils/apiUtils";
 import produce from "immer";
 import { useHistory } from "react-router";
+import { useLoadingUpdate } from "src/Context/LoadingProvider";
 
 export type LoginFormProps = {
   setStudUser: Function;
-  setIsLoading: Function;
 };
 
 export type FormInputType = {
@@ -30,14 +29,19 @@ const INITIAL_FORM_STATE = {
 };
 
 const LoginForm: React.FC<LoginFormProps> = (props: LoginFormProps) => {
-  const { setStudUser, setIsLoading } = props;
+  const { setStudUser } = props;
   const [form, setForm] = useState(INITIAL_FORM_STATE);
   const history = useHistory();
+  const setIsLoading = useLoadingUpdate();
 
   const logIn = async () => {
     setIsLoading(true);
 
     const { email, password } = form;
+
+    // awful design
+    localStorage.setItem("email", email.value);
+    localStorage.setItem("password", password.value);
 
     const { data } = await axios.post(`${baseUrl}/login`, {
       username: email.value,
