@@ -14,10 +14,10 @@ import axios from "axios";
 import { baseUrl } from "../../Utils/apiUtils";
 import produce from "immer";
 import { useHistory } from "react-router";
+import { useLoadingUpdate } from "src/Context/LoadingProvider";
 
 export type RegisterProps = {
   setStudUser: Function;
-  setIsLoading: Function;
 };
 
 const INITIAL_FORM_STATE = {
@@ -52,9 +52,9 @@ const INITIAL_FORM_STATE = {
 };
 
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
-  const { setIsLoading } = props;
   const [form, setForm] = useState(INITIAL_FORM_STATE);
   const history = useHistory();
+  const setIsLoading = useLoadingUpdate();
 
   const registerUser = async () => {
     setIsLoading(true);

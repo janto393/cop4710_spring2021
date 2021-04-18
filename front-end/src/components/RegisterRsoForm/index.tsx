@@ -5,10 +5,10 @@ import { FormInputType } from "../LoginForm";
 import { StudUser } from "src/hooks/useStudUser";
 import produce from "immer";
 import { useState } from "react";
+import { useLoadingUpdate } from "src/Context/LoadingProvider";
 
 export type RegisterRsoFormType = {
   studUser: StudUser;
-  setIsLoading: Function;
   setIsValid: Function;
   setCanDisplayToast: Function;
 };
@@ -37,10 +37,11 @@ const INITIAL_FORM_STATE = {
 const RegisterRsoForm: React.FC<RegisterRsoFormType> = (
   props: RegisterRsoFormType
 ) => {
-  const { studUser, setIsLoading, setIsValid, setCanDisplayToast } = props;
+  const { studUser, setIsValid, setCanDisplayToast } = props;
   const { email } = studUser;
   const universityEmailDomain = email.split("@")[1];
   const [form, setForm] = useState(INITIAL_FORM_STATE);
+  const setIsLoading = useLoadingUpdate();
 
   const isFormValid = (): boolean => {
     const { member1, member2, member3, member4, member5 } = form;
