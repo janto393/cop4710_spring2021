@@ -106,3 +106,5 @@ dist
 # Typescript build directories
 build/
 dist/
+
+.DS_Store

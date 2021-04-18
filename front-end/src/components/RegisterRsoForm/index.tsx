@@ -42,7 +42,7 @@ const INITIAL_FORM_STATE = {
 const RegisterRsoForm: React.FC<RegisterRsoFormType> = (
   props: RegisterRsoFormType
 ) => {
-  const { studUser, setIsLoading, setIsValid, setCanDisplayToast } = props;
+  const { studUser, setIsValid, setCanDisplayToast } = props;
   const { email, universityID } = studUser;
   const universityEmailDomain = email.split("@")[1];
   const [form, setForm] = useState(INITIAL_FORM_STATE);
@@ -79,33 +79,34 @@ const RegisterRsoForm: React.FC<RegisterRsoFormType> = (
 
     if (isFormValid()) {
       setIsValid(true);
-      
-			let payload: CreateRsoRequest = {
-				universityID: universityID,
-				name: form.rsoName.value
-			};
 
-			let request: Object = {
-				method: "POST",
-				body: JSON.stringify(payload),
-				headers: {
-					"Content-Type": "application/json"
-				}
-			};
+      let payload: CreateRsoRequest = {
+        universityID: universityID,
+        name: form.rsoName.value,
+      };
 
-			fetch(buildpath("/api/createRSO"), request)
-			.then((response: Response): Promise<CreateRsoReponse> => {
-				return response.json();
-			})
-			.then((data: CreateRsoReponse): void => {
-				if (!data.success)
-				{
-					console.error(data.error);
-					return;
-				}
-		
-				console.log("RSO created successfully");
-			});
+      let request: Object = {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      fetch(buildpath("/api/createRSO"), request)
+        .then(
+          (response: Response): Promise<CreateRsoReponse> => {
+            return response.json();
+          }
+        )
+        .then((data: CreateRsoReponse): void => {
+          if (!data.success) {
+            console.error(data.error);
+            return;
+          }
+
+          console.log("RSO created successfully");
+        });
     } else {
       setIsValid(false);
     }
