@@ -43,12 +43,12 @@ const ViewRequests: React.FC<any> = (props: any) => {
                 justify="center"
               >
                 {/* event title */}
-                <Grid item xs={6} className="event-title-item">
+                <Grid item xs={9} className="event-title-item">
                   <Typography variant="h5">{name}</Typography>
                 </Grid>
 
                 {/* approve button */}
-                <Grid item xs={3}>
+                <Grid item xs={1}>
                   <Button
                     onClick={() => console.log("api call that sends approve")}
                   >
@@ -57,7 +57,7 @@ const ViewRequests: React.FC<any> = (props: any) => {
                 </Grid>
 
                 {/* deny button */}
-                <Grid item xs={2}>
+                <Grid item xs={1}>
                   <Button
                     onClick={() => console.log("api call that sends deny")}
                   >
