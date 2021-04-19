@@ -196,6 +196,7 @@ export async function getUniversities(request: Request, response: Response, next
 					// due to flaws in the API, so just skip the current record
 					if (universityIndex === undefined)
 					{
+						console.error("Error in API mappint logic in getUniversities endpoint");
 						continue;
 					}
 
