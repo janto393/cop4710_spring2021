@@ -64,10 +64,11 @@ const Events: React.FC<any> = (props: any) => {
       )
       .then((data: GetEventResponse) => {
         if (!data.success) {
-          console.error(data.error);
+          alert("Error loading events.");
+          setIsLoading(false);
           return;
         }
-
+        setIsLoading(false);
         setEvents(data.events);
       });
   }, []);
