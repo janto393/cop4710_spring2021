@@ -106,20 +106,19 @@ export function initializeEventState(event?: Event): EventFormData
 	// currently defined in the event
 	if (event !== undefined)
 	{
-		formState.schoolID = event.university.ID;
+		formState.schoolID = event.schoolID;
 		formState.address = event.address;
 		formState.city = event.city;
-		formState.stateID = event.stateID;
+		formState.stateID = event.state.ID;
 		formState.zip = event.zip;
 		formState.rsoID = event.rso.ID;
-		formState.meetingTypeID = event.meetingTypeID;
+		formState.meetingTypeID = event.meetingType.ID;
 		formState.name = event.name;
 		formState.description = event.description;
 		formState.room = event.room;
 		formState.rating = event.rating;
 		formState.isPublic = event.isPublic;
 		formState.capacity = event.capacity;
-		formState.eventPictures = event.eventPictures;
 	}
 
 	return formState;

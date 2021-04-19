@@ -41,6 +41,7 @@ interface Comment
 
 interface Event
 {
+	ID: number,
 	schoolID: number,
 	address: string,
 	city: string,
@@ -241,6 +242,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 
 
 					let event: Event = {
+						ID: rawData.eventID,
 						schoolID: rawData.schoolID,
 						address: rawData.eventAddress,
 						city: rawData.eventCity,

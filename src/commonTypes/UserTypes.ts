@@ -1,14 +1,9 @@
-/**
- * Interfaces related to Users
- */
-
-import * as mysql from "mysql";
+import { RSO } from "./rsoTypes";
 
 export interface ProfilePicture
 {
-	pictureID: number,
-	userID: number,
-	picture: mysql.Types.MEDIUM_BLOB
+	ID: number,
+	picture: string
 }
 
 export interface Role
@@ -27,7 +22,7 @@ export interface NewUser
 	email: string,
 	universityID: number,
 	role: number,
-	profilePicture: ProfilePicture | undefined
+	profilePicture?: ProfilePicture
 }
 
 export interface UserWithPassword
@@ -39,9 +34,9 @@ export interface UserWithPassword
 	lastname: string,
 	email: string,
 	universityID: number,
-	rsoID: number,
 	role: number,
-	profilePicture: ProfilePicture | undefined
+	profilePicture?: ProfilePicture,
+	RSOs: RSO[]
 }
 
 export interface UserWithoutPassword
@@ -52,7 +47,7 @@ export interface UserWithoutPassword
 	lastname: string,
 	email: string,
 	universityID: number,
-	rsoID: number,
 	role: number,
-	profilePicture: ProfilePicture | undefined
+	profilePicture?: ProfilePicture,
+	RSOs: RSO[]
 }

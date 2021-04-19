@@ -15,10 +15,12 @@ import StudForm from "../StudForm";
 import { FieldType } from "src/Utils/formUtils";
 import { FormInputType } from "../LoginForm";
 import produce from "immer";
+import { GetEventsRequest } from "src/types/apiRequestBodies";
 
 const Event: React.FC<any> = (props: any) => {
   const { studUser } = props;
   const [isEditingComment, setIsEditingComment] = useState(false);
+
   const setIsLoading = useLoadingUpdate();
   const [rating, setRating] = useState(0);
   // TODO: DELETE MOCK EVENT
@@ -37,7 +39,11 @@ const Event: React.FC<any> = (props: any) => {
 
   useEffect(() => {
     setIsLoading(true);
-    // here's where our GET /api/events should go
+
+    // let payload: GetEventsRequest = {
+    // 	universityID:
+    // };
+
     setTimeout(() => {
       console.log("Events returned from api call...");
       setIsLoading(false);
