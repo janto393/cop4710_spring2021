@@ -232,7 +232,7 @@ const Events: React.FC<any> = (props: any) => {
     );
   };
 
-  const getEventHeader = (eventName: any, eventID: number) => {
+  const getEventHeader = (eventName: any, eventID: number, rating: number) => {
     return (
       <Grid container direction="row">
         {/* event title */}
@@ -264,6 +264,7 @@ const Events: React.FC<any> = (props: any) => {
               fetch(buildpath("/api/rateEvent"), request)
                 .then(
                   (response: Response): Promise<DefaultApiResponse> => {
+                    setRating(nextValue);
                     return response.json();
                   }
                 )
@@ -303,13 +304,13 @@ const Events: React.FC<any> = (props: any) => {
   return (
     <>
       {events.map((event, index) => {
-        const { ID, name, description, comments, coordinates } = event;
+        const { ID, name, description, comments, coordinates, rating } = event;
 
         return (
           <Grid item xs={10} className="event-card" key={index}>
             <Card raised>
               {/* event rating */}
-              {getEventHeader(name, ID)}
+              {getEventHeader(name, ID, rating)}
 
               {/* map */}
               {getMap(coordinates)}
