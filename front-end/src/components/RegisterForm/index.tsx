@@ -130,10 +130,80 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     },
   ];
 
+  const superAdminFormFields: Array<FormFieldType> = [
+    {
+      fieldTitle: "Select account type",
+      fieldType: FieldType.DROP_DOWN,
+      selectItems: ACCOUNT_TYPE_DROPDOWN,
+    },
+    {
+      fieldTitle: "University name",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Address",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "City",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "State ID",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Zip code",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Description",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Phone number",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Email",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Campus pictures",
+      fieldType: FieldType.IMAGE_UPLOAD,
+    },
+    {
+      fieldTitle: "First name",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Last name",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Email",
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Password",
+      isPasswordField: true,
+      fieldType: FieldType.TEXT_FIELD,
+    },
+    {
+      fieldTitle: "Confirm password",
+      isPasswordField: true,
+      fieldType: FieldType.TEXT_FIELD,
+    },
+  ];
+
   const getSelectAccountType = (
     <StudForm
       title="Register"
-      formFields={formFields}
+      formFields={
+        form.accountType.value === "Super Admin"
+          ? superAdminFormFields
+          : formFields
+      }
       buttonText={"Submit"}
       handleClick={registerUser}
       handleChange={handleChange}

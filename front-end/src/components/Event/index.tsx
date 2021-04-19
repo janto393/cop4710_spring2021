@@ -14,17 +14,25 @@ import Dialog from "@material-ui/core/Dialog";
 import StudForm from "../StudForm";
 import { FieldType } from "src/Utils/formUtils";
 import { FormInputType } from "../LoginForm";
-import produce from "immer";
-import { CreateEventComment, DeleteEventCommentRequest, GetEventsRequest, RateEventRequest, UpdateEventCommentRequest } from "src/types/apiRequestBodies";
-import { DefaultApiResponse, GetEventResponse } from "src/types/apiResponseBodies";
+import {
+  CreateEventComment,
+  DeleteEventCommentRequest,
+  GetEventsRequest,
+  RateEventRequest,
+  UpdateEventCommentRequest,
+} from "src/types/apiRequestBodies";
+import {
+  DefaultApiResponse,
+  GetEventResponse,
+} from "src/types/apiResponseBodies";
 import buildpath from "../../Utils/buildpath";
-import { Comment, Event } from "../../types/eventTypes";
+import { Comment, Event } from "src/types/eventTypes";
 import { Coordinates } from "src/types/dropDownTypes";
 
 const Events: React.FC<any> = (props: any) => {
   const { studUser } = props;
   const [isEditingComment, setIsEditingComment] = useState(false);
-	const [universityID, setUniversity] = useState<number>(studUser.universityID);
+  const [universityID, setUniversity] = useState<number>(studUser.universityID);
 
   const setIsLoading = useLoadingUpdate();
   const [rating, setRating] = useState(0);
@@ -35,12 +43,12 @@ const Events: React.FC<any> = (props: any) => {
     setIsLoading(true);
 
     let payload: GetEventsRequest = {
-    	universityID: universityID,
-			includePrivate: (universityID === studUser.universityID),
-			RSOs: ((universityID === studUser.universityID) ? studUser.RSOs : undefined)
+      universityID: universityID,
+      includePrivate: universityID === studUser.universityID,
+      RSOs: universityID === studUser.universityID ? studUser.RSOs : undefined,
     };
 
-		let request: Object = {
+    let request: Object = {
       method: "POST",
       body: JSON.stringify(payload),
       headers: {
@@ -48,34 +56,35 @@ const Events: React.FC<any> = (props: any) => {
       },
     };
 
-		fetch(buildpath("/api/getEvents"), request)
-		.then((response: Response): Promise<GetEventResponse> => {
-			return response.json();
-		})
-		.then((data: GetEventResponse) => {
-			if (!data.success)
-			{
-				console.error(data.error);
-				return;
-			}
+    fetch(buildpath("/api/getEvents"), request)
+      .then(
+        (response: Response): Promise<GetEventResponse> => {
+          return response.json();
+        }
+      )
+      .then((data: GetEventResponse) => {
+        if (!data.success) {
+          console.error(data.error);
+          return;
+        }
 
-			setEvents(data.events);
-		});
+        setEvents(data.events);
+      });
   }, []);
 
   const getMap = (coordinates: Coordinates) => {
-		const {latitude, longitude} = coordinates;
+    const { latitude, longitude } = coordinates;
 
     return (
       <Grid container className="map-container">
         <MapContainer
-          center={[latitude, longitude]}
+          center={[latitude ?? 0, longitude ?? 0]}
           zoom={15}
           scrollWheelZoom={true}
           className="map"
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-          <Marker position={[latitude, longitude]} />
+          <Marker position={[latitude ?? 0, longitude ?? 0]} />
         </MapContainer>
       </Grid>
     );
@@ -83,36 +92,37 @@ const Events: React.FC<any> = (props: any) => {
 
   const removeComment = (comment: Comment) => {
     let payload: DeleteEventCommentRequest = {
-			commentID: comment.ID
-		};
+      commentID: comment.ID,
+    };
 
-		let request: Object = {
-			method: "POST",
-			body: JSON.stringify(payload),
-			headers: {
-				"Content-Type": "application/json",
-			},
-		};
+    let request: Object = {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
 
-		setIsLoading(true);
-		fetch(buildpath("/api/deleteEventComment"), request)
-		.then((response: Response): Promise<DefaultApiResponse> => {
-			return response.json();
-		})
-		.then((data: DefaultApiResponse) => {
-			if (!data.success)
-			{
-				console.error(data.error);
-				setIsLoading(false);
-				return;
-			}
+    setIsLoading(true);
+    fetch(buildpath("/api/deleteEventComment"), request)
+      .then(
+        (response: Response): Promise<DefaultApiResponse> => {
+          return response.json();
+        }
+      )
+      .then((data: DefaultApiResponse) => {
+        if (!data.success) {
+          console.error(data.error);
+          setIsLoading(false);
+          return;
+        }
 
-			setIsLoading(false);
-		});
+        setIsLoading(false);
+      });
   };
 
   const editComment = (comment: Comment) => {
-		setCommentUpdate(comment);
+    setCommentUpdate(comment);
     setIsEditingComment(true);
   };
 
@@ -151,18 +161,22 @@ const Events: React.FC<any> = (props: any) => {
 
               {/* edit */}
               <Grid item xs={1}>
-                <Button onClick={() => {
-										editComment(comment);
-									}}>
+                <Button
+                  onClick={() => {
+                    editComment(comment);
+                  }}
+                >
                   <EditIcon />
                 </Button>
               </Grid>
 
               {/* delete */}
               <Grid item xs={1}>
-                <Button onClick={() => {
-										removeComment(comment)
-									}}>
+                <Button
+                  onClick={() => {
+                    removeComment(comment);
+                  }}
+                >
                   <CloseIcon />
                 </Button>
               </Grid>
@@ -175,36 +189,33 @@ const Events: React.FC<any> = (props: any) => {
             label="comments"
             className="comments"
             onSubmit={() => {
-							// let payload: CreateEventComment = {
-							// 	userID: studUser.userID,
-							// 	eventID: eventID,
-							// 	comment: commentUpdate
-							// };
-					
-							// let request: Object = {
-							// 	method: "POST",
-							// 	body: JSON.stringify(payload),
-							// 	headers: {
-							// 		"Content-Type": "application/json",
-							// 	},
-							// };
-					
-							// setIsLoading(true);
-							// fetch(buildpath("/api/getEvents"), request)
-							// .then((response: Response): Promise<GetEventResponse> => {
-							// 	return response.json();
-							// })
-							// .then((data: GetEventResponse) => {
-							// 	if (!data.success)
-							// 	{
-							// 		console.error(data.error);
-							// 		setIsLoading(false);
-							// 		return;
-							// 	}
-					
-							// 	setIsLoading(false);
-							// });
-						}}
+              // let payload: CreateEventComment = {
+              // 	userID: studUser.userID,
+              // 	eventID: eventID,
+              // 	comment: commentUpdate
+              // };
+              // let request: Object = {
+              // 	method: "POST",
+              // 	body: JSON.stringify(payload),
+              // 	headers: {
+              // 		"Content-Type": "application/json",
+              // 	},
+              // };
+              // setIsLoading(true);
+              // fetch(buildpath("/api/getEvents"), request)
+              // .then((response: Response): Promise<GetEventResponse> => {
+              // 	return response.json();
+              // })
+              // .then((data: GetEventResponse) => {
+              // 	if (!data.success)
+              // 	{
+              // 		console.error(data.error);
+              // 		setIsLoading(false);
+              // 		return;
+              // 	}
+              // 	setIsLoading(false);
+              // });
+            }}
             variant="filled"
           />
         </Grid>
@@ -235,36 +246,36 @@ const Events: React.FC<any> = (props: any) => {
             starCount={5}
             value={rating}
             onStarClick={(nextValue) => {
-              
-							let payload: RateEventRequest = {
-								userID: studUser.userID,
-								eventID: eventID,
-								rating: nextValue
-							};
+              let payload: RateEventRequest = {
+                userID: studUser.userID,
+                eventID: eventID,
+                rating: nextValue,
+              };
 
-							let request: Object = {
-								method: "POST",
-								body: JSON.stringify(payload),
-								headers: {
-									"Content-Type": "application/json",
-								},
-							};
+              let request: Object = {
+                method: "POST",
+                body: JSON.stringify(payload),
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              };
 
-							setIsLoading(true);
-							fetch(buildpath("/api/rateEvent"), request)
-							.then((response: Response): Promise<DefaultApiResponse> => {
-								return response.json();
-							})
-							.then((data: DefaultApiResponse) => {
-								if (!data.success)
-								{
-									console.error(data.error);
-									setIsLoading(false);
-									return;
-								}
+              setIsLoading(true);
+              fetch(buildpath("/api/rateEvent"), request)
+                .then(
+                  (response: Response): Promise<DefaultApiResponse> => {
+                    return response.json();
+                  }
+                )
+                .then((data: DefaultApiResponse) => {
+                  if (!data.success) {
+                    console.error(data.error);
+                    setIsLoading(false);
+                    return;
+                  }
 
-								setIsLoading(false);
-							});
+                  setIsLoading(false);
+                });
 
               setRating(nextValue); // so the component knows what start to turn yellow
             }}
@@ -276,17 +287,17 @@ const Events: React.FC<any> = (props: any) => {
 
   // this is the updated comment we need to send via api request
   const [commentUpdate, setCommentUpdate] = useState<Comment>({
-		ID: -1,
-		author: "",
-		comment: "",
-		timetag: new Date()
-	});
+    ID: -1,
+    author: "",
+    comment: "",
+    timetag: new Date(),
+  });
 
   const handleChange = (field: string, update: FormInputType) => {
     setCommentUpdate({
-			...commentUpdate,
-			comment: update.value
-		});
+      ...commentUpdate,
+      comment: update.value,
+    });
   };
 
   return (
@@ -325,36 +336,37 @@ const Events: React.FC<any> = (props: any) => {
           buttonText="Submit"
           handleChange={handleChange}
           handleClick={() => {
-						let payload: UpdateEventCommentRequest = {
-							commentID: commentUpdate.ID,
-							comment: commentUpdate.comment
-						};
-				
-						let request: Object = {
-							method: "POST",
-							body: JSON.stringify(payload),
-							headers: {
-								"Content-Type": "application/json",
-							},
-						};
-				
-						setIsLoading(true);
-						fetch(buildpath("/api/updateEventComment"), request)
-						.then((response: Response): Promise<DefaultApiResponse> => {
-							return response.json();
-						})
-						.then((data: DefaultApiResponse) => {
-							if (!data.success)
-							{
-								console.error(data.error);
-								setIsLoading(false);
-								return;
-							}
-				
-							setIsEditingComment(false);
-							setIsLoading(false);
-						});
-					}}
+            let payload: UpdateEventCommentRequest = {
+              commentID: commentUpdate.ID,
+              comment: commentUpdate.comment,
+            };
+
+            let request: Object = {
+              method: "POST",
+              body: JSON.stringify(payload),
+              headers: {
+                "Content-Type": "application/json",
+              },
+            };
+
+            setIsLoading(true);
+            fetch(buildpath("/api/updateEventComment"), request)
+              .then(
+                (response: Response): Promise<DefaultApiResponse> => {
+                  return response.json();
+                }
+              )
+              .then((data: DefaultApiResponse) => {
+                if (!data.success) {
+                  console.error(data.error);
+                  setIsLoading(false);
+                  return;
+                }
+
+                setIsEditingComment(false);
+                setIsLoading(false);
+              });
+          }}
         />
       </Dialog>
     </>
