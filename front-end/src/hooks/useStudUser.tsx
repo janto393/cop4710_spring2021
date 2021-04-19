@@ -7,7 +7,7 @@ export type StudUser = {
   lastname: string;
   email: string;
   universityID: number;
-  rsoID: number;
+  rsoID: Array<number>;
   role?: number;
   profilePicture?: any;
 };
@@ -19,7 +19,7 @@ const INITIAL_VALUE: StudUser = {
   lastname: "",
   email: "",
   universityID: 1,
-  rsoID: 1,
+  rsoID: [],
   role: 1,
 };
 

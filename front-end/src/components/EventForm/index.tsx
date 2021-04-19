@@ -115,7 +115,7 @@ const EventForm: React.FC<ManipulateEventProps> = (
   ];
 
   useEffect(() => {
-    fetchDropDownData(props.studUser.universityID).then(
+    fetchDropDownData(props.studUser.universityID, true).then(
       (dropDownData: DropDownData) => {
         setMeetingTypes(dropDownData.meetingTypes);
         setRSOs(dropDownData.RSOs);

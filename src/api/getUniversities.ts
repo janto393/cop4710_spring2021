@@ -18,7 +18,7 @@ interface EndpointReturn
 {
 	success: boolean,
 	error: string | mysql.MysqlError,
-	universities: Array<University>
+	universities: University[]
 }
 
 /**
@@ -155,7 +155,7 @@ export async function getUniversities(request: Request, response: Response, next
 
 					let picture: CampusPicture = {
 						ID: rawData.pictureID,
-						picture: Buffer.from(rawData.picture.toString()),
+						picture: rawData.picture.toString(),
 						position: rawData.picturePosition
 					};
 
@@ -196,12 +196,13 @@ export async function getUniversities(request: Request, response: Response, next
 					// due to flaws in the API, so just skip the current record
 					if (universityIndex === undefined)
 					{
+						console.error("Error in API mappint logic in getUniversities endpoint");
 						continue;
 					}
 
 					let picture: CampusPicture = {
 						ID: rawData.pictureID,
-						picture: Buffer.from(rawData.picture.toString()),
+						picture: rawData.picture.toString(),
 						position: rawData.picturePosition
 					};
 

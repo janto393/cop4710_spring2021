@@ -4,6 +4,7 @@ import getLattitudeAndLongitude, { Coordinates } from "../util/fetchCoordinates"
 
 // utility imports
 import configureSqlConnection from "../util/configureSqlConnection";
+import { RSO } from "src/commonTypes/rsoTypes";
 
 interface SqlEvent
 {
@@ -26,6 +27,7 @@ interface SqlEvent
 	isPublic: boolean,
 	numAttendees: number,
 	eventCapacity: number,
+	commentID: number,
 	eventComment: string,
 	commentTimetag: Date,
 	commenterFirstname: string,
@@ -34,6 +36,7 @@ interface SqlEvent
 
 interface Comment
 {
+	ID: number,
 	author: string,
 	timetag: Date,
 	comment: string
@@ -41,6 +44,7 @@ interface Comment
 
 interface Event
 {
+	ID: number,
 	schoolID: number,
 	address: string,
 	city: string,
@@ -73,7 +77,7 @@ interface EndpointInput
 {
 	universityID: number,
 	includePrivate: boolean,
-	rsoID?: number
+	RSOs?: RSO[]
 }
 
 interface EndpointReturn
@@ -109,6 +113,7 @@ function createEventQuery(info: EndpointInput): string
 		"Events.isPublic AS isPublic,\n",
 		"Events.numAttendees AS numAttendees,\n",
 		"Events.capacity AS eventCapacity,\n",
+		"COM.ID AS commentID,\n",
 		"COM.comment AS eventComment,\n",
 		"COM.timetag AS commentTimetag,\n",
 		"Users.firstName AS commenterFirstname,\n",
@@ -119,19 +124,36 @@ function createEventQuery(info: EndpointInput): string
 
 	let conditionalJoin: string;
 
-	if (info.rsoID !== undefined)
+	if (info.RSOs !== undefined)
 	{
+		let rsoCriteria: string = "(";
+
+		for (let i: number = 0; i < info.RSOs.length; i++)
+		{
+			rsoCriteria = rsoCriteria.concat("Events.rsoID=" + String(info.RSOs[i].ID));
+
+			if (i !== info.RSOs.length - 1)
+			{
+				rsoCriteria = rsoCriteria.concat(" OR ");
+			}
+			else
+			{
+				rsoCriteria = rsoCriteria.concat(")");
+			}
+		}
+
 		// Include private and rso events. If a student is part of an RSO, then it is implied that they are part of the university
-		conditionalJoin = "INNER JOIN Events AS E1 ON ((Events.ID=E1.ID) AND (E1.schoolID=" + String(info.universityID) + "))";
+		conditionalJoin = "INNER JOIN Events AS E1 ON ((Events.ID=E1.ID) AND (E1.schoolID=" + String(info.universityID) + ") AND " + rsoCriteria + ")\n";
 	}
 	else if (info.includePrivate === true)
 	{
 		// the way the if statements are structured, we know to only include private, non-rso events
-		conditionalJoin = "INNER JOIN Events AS E1 ON ((Events.ID=E1.ID) AND (E1.schoolID=" + String(info.universityID) + ") AND (E1.rsoID is NULL))";
+		conditionalJoin = "INNER JOIN Events AS E1 ON ((Events.ID=E1.ID) AND (E1.schoolID=" + String(info.universityID) + ") AND (E1.rsoID is NULL))\n";
 	}
 	else
 	{
-		conditionalJoin = "INNER JOIN Events AS E1 ON (Events.ID=E1.ID AND ((Events.schoolID=" + info.universityID + " AND Events.rsoID=" + info.rsoID + " AND Events.isPublic=false) OR (Events.schoolID=" + info.universityID + " AND Events.isPublic=true)))\n";
+		// include only public events
+		conditionalJoin = "INNER JOIN Events AS E1 ON (Events.ID=E1.ID AND ((Events.schoolID=" + info.universityID + " AND Events.rsoID=null AND Events.isPublic=false) OR (Events.schoolID=" + info.universityID + " AND Events.isPublic=true)))\n";
 	}
 
 	const joinStatements: Array<string> = [
@@ -170,7 +192,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 	let input: EndpointInput = {
 		universityID: request.body.universityID,
 		includePrivate: request.body.includePrivate,
-		rsoID: request.body.rsoID
+		RSOs: request.body.RSOs
 	};
 
 	let returnPackage: EndpointReturn = {
@@ -241,6 +263,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 
 
 					let event: Event = {
+						ID: rawData.eventID,
 						schoolID: rawData.schoolID,
 						address: rawData.eventAddress,
 						city: rawData.eventCity,
@@ -278,6 +301,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 					if (rawData.eventComment !== null)
 					{
 						event.comments.push({
+							ID: rawData.commentID,
 							author: (rawData.commenterFirstname + " " + rawData.commenterLastname),
 							timetag: new Date(rawData.commentTimetag),
 							comment: rawData.eventComment
@@ -303,6 +327,7 @@ export async function getEvents(request: Request, response: Response, next: Call
 					}
 
 					let parsedComment: Comment = {
+						ID: rawData.commentID,
 						author: (rawData.commenterFirstname + " " + rawData.commenterLastname),
 						timetag: new Date(rawData.commentTimetag),
 						comment: rawData.eventComment

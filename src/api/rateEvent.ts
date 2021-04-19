@@ -50,7 +50,6 @@ export async function rateEvent(request: Request, response: Response, next: Call
 		return;
 	}
 
-
 	try
 	{
 		let queryString: string = "SELECT * FROM Ratings WHERE eventID=" + String(input.eventID) + " AND userID=" + String(input.userID) + ";";
@@ -81,7 +80,6 @@ export async function rateEvent(request: Request, response: Response, next: Call
 			queryString = "INSERT INTO Ratings (eventID, userID, rating) VALUES (" + String(input.eventID) + ", " + String(input.userID) + ", " + String(input.rating) + ");";
 
 			//insert rating into database
-
 			connection.query(queryString, (error: mysql.MysqlError, rows: Array<any>) => {
 				if (error)
 				{

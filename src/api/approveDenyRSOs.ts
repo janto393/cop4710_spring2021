@@ -155,7 +155,7 @@ export async function approveDenyRSOs(request: Request, response: Response, next
 	catch (e)
 	{
 		connection.end();
-		returnPackage.error = e.toString;
+		returnPackage.error = e.toString();
 		response.json(returnPackage);
 		response.status(500);
 		response.send();

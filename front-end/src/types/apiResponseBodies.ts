@@ -26,9 +26,14 @@ export interface CreateRsoReponse extends DefaultApiResponse
 	readonly rsoData: RSO
 }
 
+export interface CreateUniversityResponse extends DefaultApiResponse
+{
+	readonly universityID?: number
+}
+
 export interface GetEventResponse extends DefaultApiResponse
 {
-	readonly events: Array<Event>
+	readonly events: Event[]
 }
 
 export interface GetMeetingTypesResponse extends DefaultApiResponse

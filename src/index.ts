@@ -5,11 +5,13 @@ import express, { Request, Response } from "express";
 // Endpoint imports
 import { approveDenyRSOs } from "./api/approveDenyRSOs";
 import { approveDenyStudents } from "./api/approveDenyStudents";
-import { commentEvent } from "./api/commentEvent";
 import { createAttendee } from "./api/createAttendee";
 import { createEvent } from "./api/createEvent";
+import { createEventComment } from "./api/createEventComment";
+import { deleteEventComment } from "./api/deleteEventComment";
 import { createMeetingType } from "./api/createMeetingType";
 import { createRso } from "./api/createRso";
+import { createUniversity } from "./api/createUniversity";
 import { deleteAttendee } from "./api/deleteAttendee";
 import { deleteEvent } from "./api/deleteEvent";
 import { deleteRso } from "./api/deleteRso";
@@ -24,8 +26,8 @@ import { login } from "./api/login";
 import { rateEvent } from "./api/rateEvent";
 import { register } from "./api/register";
 import { updateEvent } from "./api/updateEvent";
+import { updateEventComment } from "./api/updateEventComment";
 import { updateRso } from "./api/updateRso";
-import { updateUser } from "./api/updateUser";
 
 dotenv.config();
 
@@ -34,7 +36,7 @@ const PORT = process.env.PORT || 5000;
 
 // bodyParser configuration
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 // Access Control Logic
 app.use((request: Request, response: Response, next: CallableFunction) => 
@@ -57,13 +59,15 @@ app.get('/', (_, res) => {
 
 app.post("/api/approveDenyRSOs", approveDenyRSOs);
 app.post("/api/approveDenyStudents", approveDenyStudents);
-app.post("/api/commentEvent", commentEvent);
+app.post("/api/createEventComment", createEventComment);
 app.post("/api/createAttendee", createAttendee);
 app.post("/api/createEvent", createEvent);
 app.post("/api/createMeetingType", createMeetingType);
 app.post("/api/createRso", createRso);
+app.post("/api/createUniversity", createUniversity);
 app.post("/api/deleteAttendee", deleteAttendee);
 app.post("/api/deleteEvent", deleteEvent);
+app.post("/api/deleteEventComment", deleteEventComment);
 app.post("/api/deleteRso", deleteRso);
 app.post("/api/getEvents", getEvents);
 app.post("/api/getMeetingTypes", getMeetingTypes);
@@ -76,7 +80,7 @@ app.post("/api/login", login);
 app.post("/api/rateEvent", rateEvent);
 app.post("/api/register", register);
 app.post("/api/updateEvent", updateEvent);
+app.post("/api/updateEventComment", updateEventComment);
 app.post("/api/updateRso", updateRso);
-app.post("/api/updateUser", updateUser);
 
 app.listen(PORT, () => console.log("Running on port " + PORT));

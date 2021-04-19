@@ -26,7 +26,8 @@ export interface DropDownData {
 
 // fetch data from the api
 export const fetchDropDownData = async (
-  universityID: number
+  universityID: number,
+	getApprovedRSOs: boolean
 ): Promise<DropDownData> => {
   let data: DropDownData = {
     states: new Map<string, number>(),
@@ -36,7 +37,7 @@ export const fetchDropDownData = async (
   };
 
   data.states = await fetchStates();
-  data.RSOs = await fetchAllRSOs(universityID);
+  data.RSOs = await fetchAllRSOs(universityID, getApprovedRSOs);
   data.meetingTypes = await fetchMeetingTypes();
   data.universities = await fetchUniversityData(universityID);
 

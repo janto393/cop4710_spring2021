@@ -3,7 +3,7 @@ import "./index.css";
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 
 import EventForm from "./components/EventForm";
-import Event from "./components/Event";
+import Events from "./components/Event";
 import HomeContainer from "./containers/HomeContainer";
 import LoginForm from "./components/LoginForm";
 import LoginPageContainer from "./containers/LoginPageContainer/index";
@@ -41,7 +41,7 @@ const App = () => {
         {/* rest of the app will go below */}
         <Route path="/home" exact>
           <HomeContainer studUser={studUser}>
-            <Event studUser={studUser} />
+            <Events studUser={studUser} />
           </HomeContainer>
         </Route>
 
