@@ -5,43 +5,95 @@ import * as mysql from "mysql";
 import configureSqlConnection from "../util/configureSqlConnection";
 
 // type imports
-import { ProfilePicture, UserWithoutPassword } from "../commonTypes/UserTypes";
-import { SqlProfilePictures, SqlUser } from "src/commonTypes/sqlSchema";
+import { UserWithoutPassword } from "../commonTypes/UserTypes";
+import { RSO } from "../commonTypes/rsoTypes";
 
-export interface LoginReturnPackage
+interface SqlLoginResult
+{
+	userID: number,
+	username: string,
+	firstname: string,
+	lastname: string,
+	userEmail: string,
+	userUniversityID: number,
+	userRole: number,
+	profilePictureID: number,
+	profilePicture: mysql.Types.MEDIUM_BLOB,
+	memberGroupID: number,
+	rsoID: number,
+	rsoName: string,
+	rsoUniversityID: number
+}
+
+interface LoginReturnPackage
 {
 	success: boolean,
 	error: string,
-	userData: UserWithoutPassword
+	userData?: UserWithoutPassword
 };
 
-export interface LoginCredentials
+interface LoginCredentials
 {
 	username: string,
 	password: string
+}
+
+function generateLoginQuery(username: string, password: string): string
+{
+	let query: string = "SELECT\n";
+
+	const selectFields: string[] = [
+		"Users.ID AS userID,\n",
+		"Users.username AS username,\n",
+		"Users.firstName AS firstname,\n",
+		"Users.lastName AS lastname,\n",
+		"Users.email AS userEmail,\n",
+		"Users.universityID AS userUniversityID,\n",
+		"Users.role AS userRole,\n",
+		"PFP.ID AS profilePictureID,\n",
+		"PFP.picture AS profilePicture,\n",
+		"MG.ID AS memberGroupID,\n",
+		"RSO.ID AS rsoID,\n",
+		"RSO.name AS rsoName,\n",
+		"RSO.universityID AS rsoUniversityID\n"
+	];
+
+	const fromClause: string = "FROM Users\n";
+
+	const conditionalJoin: string = "INNER JOIN Users AS U1 ON (U1.ID=Users.ID AND Users.username='" + username + "' AND Users.password='" + password + "')\n";
+
+	const joinStatements: string[] = [
+		conditionalJoin,
+		"LEFT JOIN Profile_Pictures AS PFP ON (Users.ID=PFP.userID)\n",
+		"LEFT JOIN Member_Groups AS MG ON (MG.userID=Users.ID)\n", // creates a separate user record for every RSO they have joined
+		"LEFT JOIN Registered_Student_Organizations AS RSO ON (MG.rsoID=RSO.ID)\n"
+	];
+
+	for (let i: number = 0; i < selectFields.length; i++)
+	{
+		query = query.concat(selectFields[i]);
+	}
+
+	query = query.concat(fromClause);
+
+	for (let i: number = 0; i < joinStatements.length; i++)
+	{
+		query = query.concat(joinStatements[i]);
+	}
+
+	query = query.concat(";");
+
+	return query;
 }
 
 export async function login(request: Request, response: Response, next: CallableFunction): Promise<void>
 {
 	let returnPackage: LoginReturnPackage = {
 		success: false,
-		error: '',
-		userData: {
-			userID: -1,
-			username: '',
-			firstname: '',
-			lastname: '',
-			email: '',
-			universityID: -1,
-			rsoID: -1,
-			role: -1,
-			profilePicture: undefined
-		}
+		error: ''
 	};
 
-	// configure mysql connection data
 	const connectionData: mysql.ConnectionConfig = configureSqlConnection();
-
 	const connection: mysql.Connection = mysql.createConnection(connectionData);
 
 	try
@@ -63,13 +115,12 @@ export async function login(request: Request, response: Response, next: Callable
 		password: request.body.password
 	};
 
-	let queryString: string = "SELECT * FROM Users WHERE Users.username='" + loginData.username + "'";
-	queryString = queryString.concat(" AND Users.password='" + loginData.password + "';");
-
-	// query the database for the Users with matching credentials
 	try
 	{
-		connection.query(queryString, (error: string, rows: Array<SqlUser>) => {
+		let queryString: string = generateLoginQuery(loginData.username, loginData.password);
+
+		// query the database for the Users with matching credentials
+		connection.query(queryString, (error: string, rows: Array<SqlLoginResult>) => {
 			if (error)
 			{
 				connection.end();
@@ -81,7 +132,7 @@ export async function login(request: Request, response: Response, next: Callable
 			}
 
 			// return with error if no user was found
-			if (rows.length < 1)
+			if ((rows === undefined) || (rows.length < 1))
 			{
 				connection.end();
 				returnPackage.error = "Username of Password incorrect";
@@ -91,52 +142,63 @@ export async function login(request: Request, response: Response, next: Callable
 				return;
 			}
 
-			let userData: SqlUser = rows[0];
-
-			// transfer query data to returnPackage fields
-			returnPackage.userData.userID = userData.ID;
-			returnPackage.userData.username = userData.username;
-			returnPackage.userData.firstname = userData.firstName;
-			returnPackage.userData.lastname = userData.lastName;
-			returnPackage.userData.email = userData.email;
-			returnPackage.userData.universityID = userData.universityID;
-			returnPackage.userData.role = userData.role;
-			returnPackage.userData.rsoID = userData.rsoID;
-
-			queryString = "SELECT * FROM Profile_Pictures as PFP WHERE PFP.userID=" + returnPackage.userData.userID + ";";
-
-			// get the profile picture if one exists
-			connection.query(queryString, (error: string, rows: Array<SqlProfilePictures>) => {
-				if (error)
+			for (let i: number = 0; i < rows.length; i++)
+			{
+				// if this is the first record we're processing, we need to
+				// initialize all the user data
+				if (i === 0)
 				{
-					connection.end();
-					returnPackage.error = error;
-					response.json(returnPackage);
-					response.status(500);
-					response.send();
-					return;
-				}
-
-				// only parse the profile picture data if one exists
-				if (rows.length > 0)
-				{
-					let rawData: SqlProfilePictures = rows[0];
-					let parsedData: ProfilePicture = {
-						pictureID: rawData.ID,
+					let rawData: SqlLoginResult = rows[i];
+					let userData: UserWithoutPassword = {
 						userID: rawData.userID,
-						picture: rawData.picture
+						username: rawData.username,
+						firstname: rawData.firstname,
+						lastname: rawData.lastname,
+						email: rawData.userEmail,
+						universityID: rawData.userUniversityID,
+						role: rawData.userRole,
+						profilePicture: {
+							ID: rawData.profilePictureID,
+							picture: (rawData.profilePicture.toString() !== "") ? rawData.profilePicture.toString() : undefined
+						},
+						RSOs: [
+							{
+								ID: rawData.rsoID,
+								name: rawData.rsoName,
+								universityID: rawData.rsoUniversityID
+							}
+						]
 					};
 
-					returnPackage.userData.profilePicture = parsedData;
+					returnPackage.userData = userData
 				}
 
-				returnPackage.success = true;
-				response.json(returnPackage);
-				response.status(200);
-				response.send();
-				connection.end();
-				return;
-			});
+				// we already logged the user info, we just need to log the additional RSO
+				else
+				{
+					let rawData: SqlLoginResult = rows[i];
+					let rso: RSO = {
+						ID: rawData.rsoID,
+						name: rawData.rsoName,
+						universityID: rawData.rsoUniversityID
+					};
+
+					if (returnPackage.userData === undefined)
+					{
+						console.error("Error detected in Login endpoint where user Data is not being stored");
+					}
+					else
+					{
+						returnPackage.userData.RSOs.push(rso);
+					}
+				}
+			}
+
+			returnPackage.success = true;
+			response.json(returnPackage);
+			response.status(200);
+			response.send();
+			return;
 		});
 	}
 	catch (e)
