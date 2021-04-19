@@ -17,10 +17,11 @@ import produce from "immer";
 import { useHistory } from "react-router";
 import { useLoadingUpdate } from "src/Context/LoadingProvider";
 import { useEffect } from "react";
-import { fetchStates } from "src/Utils/apiDropDownData";
+import { fetchStates, fetchUniversityData } from "src/Utils/apiDropDownData";
 import { CreateUniversityRequest } from "src/types/apiRequestBodies";
 import { CreateUniversityResponse, GetStatesResponse } from "src/types/apiResponseBodies";
 import buildpath from "src/Utils/buildpath";
+import { stringify } from "querystring";
 
 export type RegisterProps = {
   setStudUser: Function;
@@ -92,6 +93,7 @@ const INITIAL_FORM_STATE = {
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
   const [form, setForm] = useState(INITIAL_FORM_STATE);
 	const [states, setStates] = useState<Map<string, number>>(new Map<string, number>());
+	const [universities, setUniversities] = useState<Map<string, number>>(new Map<string, number>());
   const history = useHistory();
   const setIsLoading = useLoadingUpdate();
 
@@ -99,6 +101,11 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
 		fetchStates()
 		.then((data: Map<string, number>) => {
 			setStates(data);
+		});
+
+		fetchUniversityData()
+		.then((data: Map<string, number>) => {
+			setUniversities(data);
 		});
 	}, []);
 
@@ -108,20 +115,22 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
 		// variable to hold the universityID if we are registering a super-admin
 		let universityID: number = -1;
 
+		const stateID: number | undefined = states.get(form.state.value);
+
 		/**
 		 * If we are registering a super-admin, we have to create the university first
 		 */
 		if (form.accountType.value === "Super Admin")
 		{
 			let payload: CreateUniversityRequest = {
-				name: "",
-				address: "",
-				city: "",
-				stateID: 0,
-				zip: "",
-				description: "",
-				phoneNumber: "",
-				email: "",
+				name: form.name.value,
+				address: form.address.value,
+				city: form.city.value,
+				stateID: (stateID !== undefined) ? stateID : 0,
+				zip: form.zipCode.value,
+				description: form.description.value,
+				phoneNumber: form.phoneNumber.value,
+				email: form.email.value,
 				campusPictures: []
 			};
 
@@ -133,7 +142,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
 				},
 			};
 
-			let response: CreateUniversityResponse = await (await fetch(buildpath("/api/creatUniversity"), request)).json();
+			let response: CreateUniversityResponse = await (await fetch(buildpath("/api/createUniversity"), request)).json();
 
 			if (!response.success)
 			{
@@ -158,16 +167,23 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       firstname,
       lastname,
       email,
-      password,
-      name,
-      address,
-      city,
-      state,
-      zipCode,
-      description,
-      phoneNumber,
-      campusPics,
+      password
     } = form;
+
+		if ((accountType.value === "Student"))
+		{
+			let matchedID: number | undefined = universities.get(form.university.value);
+
+			if (matchedID !== undefined)
+			{
+				universityID = matchedID;
+			}
+			else
+			{
+				console.error("Error in matching universities");
+				return;
+			}
+		}
 
     const payload = {
       username: email.value,
@@ -175,7 +191,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       firstname: firstname.value,
       lastname: lastname.value,
       email: email.value,
-      universityID: (accountType.value === "Super Admin") ? universityID : universityIdMap.get(university.value),
+      universityID: universityID,
       role: (accountType.value === "Student") ? 1 : 3,
     };
     const { data } = await axios.post(
@@ -185,7 +201,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
 
     // temp response alert
     data.success === true
-      ? history.push("/home")
+      ? history.push("/")
       : alert("Error creating account!");
 
     setIsLoading(false);
@@ -209,7 +225,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     {
       fieldTitle: "Select your University",
       fieldType: FieldType.DROP_DOWN,
-      selectItems: UNIVERSITY_DROPDOWN,
+      selectItems: Array.from(universities.keys()),
     },
     {
       fieldTitle: "First name",

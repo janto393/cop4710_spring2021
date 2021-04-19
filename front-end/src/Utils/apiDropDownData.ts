@@ -98,7 +98,7 @@ export const fetchMeetingTypes = async (): Promise<Map<string, number>> => {
 };
 
 export const fetchUniversityData = async (
-  universityID: number
+  universityID?: number
 ): Promise<Map<string, number>> => {
   let payload: GetUniversitiesRequest = {};
 
