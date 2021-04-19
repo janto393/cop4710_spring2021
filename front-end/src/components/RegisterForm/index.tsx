@@ -49,6 +49,38 @@ const INITIAL_FORM_STATE = {
     value: "",
     isValid: null,
   },
+  name: {
+    value: "",
+    isValid: null,
+  },
+  address: {
+    value: "",
+    isValid: null,
+  },
+  city: {
+    value: "",
+    isValid: null,
+  },
+  state: {
+    value: "",
+    isValid: null,
+  },
+  zipCode: {
+    value: "",
+    isValid: null,
+  },
+  description: {
+    value: "",
+    isValid: null,
+  },
+  phoneNumber: {
+    value: "",
+    isValid: null,
+  },
+  campusPics: {
+    value: "",
+    isValid: null,
+  },
 };
 
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
@@ -66,9 +98,17 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       lastname,
       email,
       password,
+      name,
+      address,
+      city,
+      state,
+      zipCode,
+      description,
+      phoneNumber,
+      campusPics,
     } = form;
 
-    const { data } = await axios.post(`${baseUrl}/register`, {
+    const payload = {
       username: email.value,
       password: password.value,
       firstname: firstname.value,
@@ -76,7 +116,24 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       email: email.value,
       universityID: universityIdMap.get(university.value),
       role: accountType.value === "Student" ? 1 : 1,
-    });
+    };
+
+    const superAdminPayload = {
+      ...payload,
+      name: name.value,
+      addres: address.value,
+      city: city.value,
+      state: state.value,
+      zipCode: zipCode.value,
+      description: description.value,
+      phoneNumber: phoneNumber.value,
+      campusPics: campusPics.value,
+    };
+
+    const { data } = await axios.post(
+      `${baseUrl}/register`,
+      accountType.value === "Student" ? payload : superAdminPayload
+    );
 
     // temp response alert
     data.success === true
@@ -149,7 +206,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       fieldType: FieldType.TEXT_FIELD,
     },
     {
-      fieldTitle: "State ID",
+      fieldTitle: "State",
       fieldType: FieldType.TEXT_FIELD,
     },
     {
@@ -162,10 +219,6 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     },
     {
       fieldTitle: "Phone number",
-      fieldType: FieldType.TEXT_FIELD,
-    },
-    {
-      fieldTitle: "Email",
       fieldType: FieldType.TEXT_FIELD,
     },
     {
