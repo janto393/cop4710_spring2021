@@ -159,7 +159,7 @@ export async function login(request: Request, response: Response, next: Callable
 						role: rawData.userRole,
 						profilePicture: {
 							ID: rawData.profilePictureID,
-							picture: (rawData.profilePicture.toString() !== "") ? rawData.profilePicture.toString() : undefined
+							picture: ((rawData.profilePicture.toString() !== "") ? rawData.profilePicture.toString() : "")
 						},
 						RSOs: [
 							{

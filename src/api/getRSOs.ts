@@ -20,7 +20,7 @@ interface EndpointReturn
 {
 	success: boolean,
 	error: string,
-	RSOs: Array<RSO>
+	RSOs: RSO[]
 }
 
 export async function getRSOs(request: Request, response: Response, next: CallableFunction): Promise<void>

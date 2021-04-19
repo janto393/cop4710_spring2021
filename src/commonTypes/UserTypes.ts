@@ -1,14 +1,9 @@
-/**
- * Interfaces related to Users
- */
-
-import * as mysql from "mysql";
 import { RSO } from "./rsoTypes";
 
 export interface ProfilePicture
 {
 	ID: number,
-	picture?: string
+	picture: string
 }
 
 export interface Role
