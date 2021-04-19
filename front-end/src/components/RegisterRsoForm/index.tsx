@@ -79,33 +79,34 @@ const RegisterRsoForm: React.FC<RegisterRsoFormType> = (
 
     if (isFormValid()) {
       setIsValid(true);
-      
-			let payload: CreateRsoRequest = {
-				universityID: universityID,
-				name: form.rsoName.value
-			};
 
-			let request: Object = {
-				method: "POST",
-				body: JSON.stringify(payload),
-				headers: {
-					"Content-Type": "application/json"
-				}
-			};
+      let payload: CreateRsoRequest = {
+        universityID: universityID,
+        name: form.rsoName.value,
+      };
 
-			fetch(buildpath("/api/createRSO"), request)
-			.then((response: Response): Promise<CreateRsoReponse> => {
-				return response.json();
-			})
-			.then((data: CreateRsoReponse): void => {
-				if (!data.success)
-				{
-					console.error(data.error);
-					return;
-				}
-		
-				console.log("RSO created successfully");
-			});
+      let request: Object = {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
+
+      fetch(buildpath("/api/createRSO"), request)
+        .then(
+          (response: Response): Promise<CreateRsoReponse> => {
+            return response.json();
+          }
+        )
+        .then((data: CreateRsoReponse): void => {
+          if (!data.success) {
+            console.error(data.error);
+            return;
+          }
+
+          console.log("RSO created successfully");
+        });
     } else {
       setIsValid(false);
     }

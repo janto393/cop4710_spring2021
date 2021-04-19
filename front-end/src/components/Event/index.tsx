@@ -8,9 +8,19 @@ import { ucfCoordinates, ufCoordinates } from "src/Utils/mapUtils";
 import StarRatingComponent from "react-star-rating-component";
 import { TextField } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
+import CloseIcon from "@material-ui/icons/Close";
+import EditIcon from "@material-ui/icons/Edit";
+import Dialog from "@material-ui/core/Dialog";
+import StudForm from "../StudForm";
+import { FieldType } from "src/Utils/formUtils";
+import { FormInputType } from "../LoginForm";
+import produce from "immer";
 import { GetEventsRequest } from "src/types/apiRequestBodies";
 
-const Event: React.FC<any> = () => {
+const Event: React.FC<any> = (props: any) => {
+  const { studUser } = props;
+  const [isEditingComment, setIsEditingComment] = useState(false);
+
   const setIsLoading = useLoadingUpdate();
   const [rating, setRating] = useState(0);
   // TODO: DELETE MOCK EVENT
@@ -19,30 +29,20 @@ const Event: React.FC<any> = () => {
       eventName: "UCF Event!",
       eventDescription: "An event that's taking place here at this university.",
       comments: [
-        { comment: "loved this event!", name: "Jamil" },
-        { comment: "can't wait to go!", name: "Jon" },
-        { comment: "will this event be streamed?", name: "Troy" },
+        { comment: "loved this event!", name: "Jamil Gonzalez" },
+        { comment: "can't wait to go!", name: "Jon Alliot" },
+        { comment: "will this event be streamed?", name: "Troy Perez" },
       ],
       coordinates: ucfCoordinates,
-    },
-    {
-      eventName: "UF Event!",
-      eventDescription: "An event that's taking place here at this university.",
-      comments: [
-        { comment: "loved this event!", name: "Nolan" },
-        { comment: "can't wait to go!", name: "Jon" },
-        { comment: "will this event be streamed?", name: "Troy" },
-      ],
-      coordinates: ufCoordinates,
     },
   ]);
 
   useEffect(() => {
     setIsLoading(true);
-    
-		// let payload: GetEventsRequest = {
-		// 	universityID: 
-		// };
+
+    // let payload: GetEventsRequest = {
+    // 	universityID:
+    // };
 
     setTimeout(() => {
       console.log("Events returned from api call...");
@@ -66,6 +66,14 @@ const Event: React.FC<any> = () => {
     );
   };
 
+  const removeComment = () => {
+    console.log("comment removed!");
+  };
+
+  const editComment = () => {
+    setIsEditingComment(true);
+  };
+
   // TODO: 1. update/delete comment
   const getComments = (comments: any) => {
     return (
@@ -76,40 +84,54 @@ const Event: React.FC<any> = () => {
 
         <hr />
 
-        <Grid item xs={12}>
-          {comments?.map((comment: any) => {
-            return (
-              <Grid container direction="row">
-                {/* name */}
-                <Grid item xs={1}>
-                  <PersonIcon />
+        {comments?.map((comment: any) => {
+          return (
+            <Grid container direction="row">
+              {/* name */}
+              <Grid item xs={1}>
+                <PersonIcon />
+              </Grid>
+              <Grid container item xs={9} direction="column">
+                {/* user name */}
+                <Grid item xs={4}>
+                  <Typography variant="caption" id="comment-section-name">
+                    {comment.name}
+                  </Typography>
                 </Grid>
-                <Grid container item xs={11} direction="column">
-                  <Grid item xs={4}>
-                    <Typography variant="caption" id="comment-section-name">
-                      {comment.name}
-                    </Typography>
-                  </Grid>
-                  {/* comment */}
-                  <Grid item xs={8}>
-                    <Typography variant="body1" id="comment-section-comment">
-                      {comment.comment}
-                    </Typography>
-                  </Grid>
+
+                {/* comment */}
+                <Grid item xs={7}>
+                  <Typography variant="body1" id="comment-section-comment">
+                    {comment.comment}
+                  </Typography>
                 </Grid>
               </Grid>
-            );
-          })}
-        </Grid>
 
+              {/* edit */}
+              <Grid item xs={1}>
+                <Button onClick={editComment}>
+                  <EditIcon />
+                </Button>
+              </Grid>
+
+              {/* delete */}
+              <Grid item xs={1}>
+                <Button onClick={removeComment}>
+                  <CloseIcon />
+                </Button>
+              </Grid>
+            </Grid>
+          );
+        })}
         <Grid item xs={12} className="comment-section-new">
           <TextField
             multiline
             label="comments"
             className="comments"
             onChange={() =>
-              console.log("need to store and add this to event comments")
+              console.log("send api request with payload and refetch")
             }
+            variant="filled"
           />
         </Grid>
       </Grid>
@@ -119,8 +141,8 @@ const Event: React.FC<any> = () => {
   const getDescription = (eventDescription: any) => {
     return (
       <Grid item xs={12} className="event-description-item">
-        <Typography variant="h5">Description</Typography>
-        <Typography variant="body1">{eventDescription}</Typography>
+        <Typography variant="h6">Description</Typography>
+        <Typography variant="body2">{eventDescription}</Typography>
       </Grid>
     );
   };
@@ -148,13 +170,20 @@ const Event: React.FC<any> = () => {
     );
   };
 
+  // this is the updated comment we need to send via api request
+  const [commentUpdate, setCommentUpdate] = useState("");
+
+  const handleChange = (field: string, update: FormInputType) => {
+    setCommentUpdate(update.value);
+  };
+
   return (
     <>
       {events.map((event, index) => {
         const { eventName, eventDescription, comments, coordinates } = event;
 
         return (
-          <Grid item xs={8} className="event-card" key={index}>
+          <Grid item xs={10} className="event-card" key={index}>
             <Card raised>
               {/* event rating */}
               {getEventHeader(eventName)}
@@ -171,6 +200,21 @@ const Event: React.FC<any> = () => {
           </Grid>
         );
       })}
+      <Dialog
+        open={isEditingComment}
+        onBackdropClick={() => setIsEditingComment(false)}
+        className="edit-comment"
+      >
+        <StudForm
+          title="Edit comment"
+          formFields={[
+            { fieldTitle: "comment", fieldType: FieldType.TEXT_FIELD },
+          ]}
+          buttonText="Submit"
+          handleChange={handleChange}
+          handleClick={() => null}
+        />
+      </Dialog>
     </>
   );
 };
