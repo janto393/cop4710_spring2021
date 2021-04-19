@@ -3,6 +3,8 @@
  * does not require a request body.
  */
 
+import { RSO } from "./dropDownTypes";
+
 export interface CreateAttendeeRequest
 {
 	userID: number,
@@ -28,6 +30,13 @@ export interface CreateEventRequest
 	eventPictures: Array<Buffer>
 }
 
+export interface CreateEventComment
+{
+	comment: string,
+	userID: number,
+	eventID: number
+}
+
 export interface CreateMeetingTypeRequest
 {
 	name: string
@@ -50,6 +59,11 @@ export interface DeleteEventRequest
 	eventID: number
 }
 
+export interface DeleteEventCommentRequest
+{
+	commentID: number
+}
+
 export interface DeleteRsoRequest
 {
 	rsoID: number
@@ -59,7 +73,7 @@ export interface GetEventsRequest
 {
 	universityID: number,
 	includePrivate: boolean,
-	rsoID?: number
+	RSOs?: RSO[]
 }
 
 export interface GetRsoRequest
@@ -78,6 +92,13 @@ export interface LoginRequest
 {
 	username: string,
 	password: string
+}
+
+export interface RateEventRequest
+{
+	userID: number,
+	eventID: number,
+	rating: number
 }
 
 export interface RegisterRequest
@@ -107,6 +128,12 @@ export interface UpdateEventRequest
 	room?: string,
 	isPublic?: boolean,
 	capacity?: number
+}
+
+export interface UpdateEventCommentRequest
+{
+	commentID: number,
+	comment: string
 }
 
 export interface UpdateRsoRequest

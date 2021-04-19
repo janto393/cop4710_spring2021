@@ -28,7 +28,7 @@ export interface CreateRsoReponse extends DefaultApiResponse
 
 export interface GetEventResponse extends DefaultApiResponse
 {
-	readonly events: Array<Event>
+	readonly events: Event[]
 }
 
 export interface GetMeetingTypesResponse extends DefaultApiResponse

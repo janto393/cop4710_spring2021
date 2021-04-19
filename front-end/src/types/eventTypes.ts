@@ -2,6 +2,7 @@ import { Coordinates, University } from "./dropDownTypes";
 
 export interface Comment
 {
+	ID: number,
 	author: string,
 	timetag: Date,
 	comment: string
@@ -9,7 +10,7 @@ export interface Comment
 
 export interface Event
 {
-	ID: number
+	ID: number,
 	schoolID: number,
 	address: string,
 	city: string,

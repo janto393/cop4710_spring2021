@@ -20,7 +20,8 @@ interface EndpointInput
 interface EndpointReturn
 {
 	success: boolean,
-	error: string | mysql.MysqlError
+	error: string | mysql.MysqlError,
+	universityID?: number
 }
 
 function makeStringLiteral(s: string): string
