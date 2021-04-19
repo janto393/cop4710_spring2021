@@ -149,6 +149,11 @@ export async function login(request: Request, response: Response, next: Callable
 				if (i === 0)
 				{
 					let rawData: SqlLoginResult = rows[i];
+					let rso: RSO = {
+						ID: rawData.rsoID,
+						name: rawData.rsoName,
+						universityID: rawData.rsoUniversityID
+					};
 					let userData: UserWithoutPassword = {
 						userID: rawData.userID,
 						username: rawData.username,
@@ -161,13 +166,7 @@ export async function login(request: Request, response: Response, next: Callable
 							ID: rawData.profilePictureID,
 							picture: ((rawData.profilePicture.toString() !== "") ? rawData.profilePicture.toString() : "")
 						},
-						RSOs: [
-							{
-								ID: rawData.rsoID,
-								name: rawData.rsoName,
-								universityID: rawData.rsoUniversityID
-							}
-						]
+						RSOs: (rso.ID !== null) ? [rso] : undefined
 					};
 
 					returnPackage.userData = userData
@@ -189,7 +188,10 @@ export async function login(request: Request, response: Response, next: Callable
 					}
 					else
 					{
-						returnPackage.userData.RSOs.push(rso);
+						if ((returnPackage.userData !== undefined) && (returnPackage.userData.RSOs !== undefined))
+						{
+							returnPackage.userData.RSOs.push(rso);
+						}
 					}
 				}
 			}

@@ -130,6 +130,7 @@ export async function createUniversity(request: Request, response: Response, nex
 	{
 		let queryString: string = generateUniversityQuery(input);
 		
+		// insert new university into the database
 		connection.query(queryString, (error: mysql.MysqlError, result: mysql.OkPacket) => {
 			if (error)
 			{
@@ -141,8 +142,13 @@ export async function createUniversity(request: Request, response: Response, nex
 				return;
 			}
 
+			// return the ID of the university because this endpoint can only be called
+			// by a super-admin upon registering
+			returnPackage.universityID = result.insertId;
+
 			queryString = generateCampusPicturesQuery(result.insertId, input.campusPictures);
 
+			// insert campus pictures into the database
 			connection.query(queryString, (error: mysql.MysqlError) => {
 				if (error)
 				{
