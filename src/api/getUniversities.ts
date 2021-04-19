@@ -153,12 +153,6 @@ export async function getUniversities(request: Request, response: Response, next
 					// store the index at which the university will be stored
 					parsedUniversityIndexes.set(rawData.universityID, returnPackage.universities.length);
 
-					let picture: CampusPicture = {
-						ID: rawData.pictureID,
-						picture: rawData.picture.toString(),
-						position: rawData.picturePosition
-					};
-
 					let university: University = {
 						ID: rawData.universityID,
 						address: {
@@ -176,9 +170,21 @@ export async function getUniversities(request: Request, response: Response, next
 						phoneNumber: rawData.phoneNumber,
 						numStudents: rawData.numStudents,
 						email: rawData.email,
-						campusPictures: [picture],
+						campusPictures: [],
 						coordinates: {}
 					};
+
+					// only read the picture data if we have a picture associated with the record
+					if (rawData.picture !== null)
+					{
+						let picture: CampusPicture = {
+							ID: rawData.pictureID,
+							picture: rawData.picture.toString(),
+							position: rawData.picturePosition
+						};
+
+						university.campusPictures.push(picture);
+					}
 
 					// fetch the coordinates of the university
 					let universityCoordinates: Coordinates = await getLattitudeAndLongitude(university.address.address, university.address.city, university.address.state.name, university.address.zip);
