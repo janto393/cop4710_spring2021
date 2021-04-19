@@ -56,7 +56,7 @@ export const fetchAllRSOs = async (universityID: number): Promise<Map<string, nu
 		},
 	};
 
-	let response: GetRsoResponse = await (await fetch(buildpath("/api/getRso"), request)).json();
+	let response: GetRsoResponse = await (await fetch(buildpath("/api/getRSOs"), request)).json();
 	let mappedRSOs: Map<string, number> = new Map<string, number>();
 
 	if (!response.success)
