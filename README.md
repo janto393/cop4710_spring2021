@@ -5,6 +5,6 @@ This repo contains the front-end/backend nodejs server code for the COP4710, Spr
 ## Developers
 
 - [JonElliot Antognoni](https://github.com/Deadcoast)
-- Jamile Gonzalez
+- Jamil Gonzalez
 - Troy Morgan
 - Nolan Schafer
