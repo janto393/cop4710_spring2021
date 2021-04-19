@@ -20,7 +20,7 @@
 }
 
 .home-container .content-container .event-description-item {
-  margin: 15px;
+  margin: 15px 15px 0;
 }
 
 .home-container .content-container .event-title-item {
@@ -67,11 +67,18 @@
   padding: 20px;
 }
 
+.home-container .content-container .comment-section-new .comments {
+  width: 100%;
+}
+
 #comment-section-comment {
   margin: 5px 15px;
   width: auto;
   height: 40px;
   border-radius: 15px;
+  color: grey;
+  font-family: Verdana, Geneva, Tahoma, sans-serif;
+  font-size: small;
 }
 
 #comment-section-name {
@@ -83,5 +90,5 @@
 }
 
 hr {
-  width: 95%;
+  width: 100%;
 }

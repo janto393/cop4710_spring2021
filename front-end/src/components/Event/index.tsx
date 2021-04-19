@@ -20,21 +20,11 @@ const Event: React.FC<any> = (props: any) => {
       eventName: "UCF Event!",
       eventDescription: "An event that's taking place here at this university.",
       comments: [
-        { comment: "loved this event!", name: "Jamil" },
-        { comment: "can't wait to go!", name: "Jon" },
-        { comment: "will this event be streamed?", name: "Troy" },
+        { comment: "loved this event!", name: "Jamil Gonzalez" },
+        { comment: "can't wait to go!", name: "Jon Alliot" },
+        { comment: "will this event be streamed?", name: "Troy Perez" },
       ],
       coordinates: ucfCoordinates,
-    },
-    {
-      eventName: "UF Event!",
-      eventDescription: "An event that's taking place here at this university.",
-      comments: [
-        { comment: "loved this event!", name: "Nolan" },
-        { comment: "can't wait to go!", name: "Jon" },
-        { comment: "will this event be streamed?", name: "Troy" },
-      ],
-      coordinates: ufCoordinates,
     },
   ]);
 
@@ -73,40 +63,38 @@ const Event: React.FC<any> = (props: any) => {
 
         <hr />
 
-        <Grid item xs={12}>
-          {comments?.map((comment: any) => {
-            return (
-              <Grid container direction="row">
-                {/* name */}
-                <Grid item xs={1}>
-                  <PersonIcon />
+        {comments?.map((comment: any) => {
+          return (
+            <Grid container direction="row">
+              {/* name */}
+              <Grid item xs={1}>
+                <PersonIcon />
+              </Grid>
+              <Grid container item xs={11} direction="column">
+                <Grid item xs={4}>
+                  <Typography variant="caption" id="comment-section-name">
+                    {comment.name}
+                  </Typography>
                 </Grid>
-                <Grid container item xs={11} direction="column">
-                  <Grid item xs={4}>
-                    <Typography variant="caption" id="comment-section-name">
-                      {comment.name}
-                    </Typography>
-                  </Grid>
-                  {/* comment */}
-                  <Grid item xs={8}>
-                    <Typography variant="body1" id="comment-section-comment">
-                      {comment.comment}
-                    </Typography>
-                  </Grid>
+                {/* comment */}
+                <Grid item xs={8}>
+                  <Typography variant="body1" id="comment-section-comment">
+                    {comment.comment}
+                  </Typography>
                 </Grid>
               </Grid>
-            );
-          })}
-        </Grid>
-
+            </Grid>
+          );
+        })}
         <Grid item xs={12} className="comment-section-new">
           <TextField
             multiline
             label="comments"
             className="comments"
             onChange={() =>
-              console.log("need to store and add this to event comments")
+              console.log("send api request with payload and refetch")
             }
+            variant="filled"
           />
         </Grid>
       </Grid>
@@ -116,8 +104,8 @@ const Event: React.FC<any> = (props: any) => {
   const getDescription = (eventDescription: any) => {
     return (
       <Grid item xs={12} className="event-description-item">
-        <Typography variant="h5">Description</Typography>
-        <Typography variant="body1">{eventDescription}</Typography>
+        <Typography variant="h6">Description</Typography>
+        <Typography variant="body2">{eventDescription}</Typography>
       </Grid>
     );
   };
@@ -151,7 +139,7 @@ const Event: React.FC<any> = (props: any) => {
         const { eventName, eventDescription, comments, coordinates } = event;
 
         return (
-          <Grid item xs={8} className="event-card" key={index}>
+          <Grid item xs={10} className="event-card" key={index}>
             <Card raised>
               {/* event rating */}
               {getEventHeader(eventName)}
