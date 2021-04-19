@@ -49,5 +49,5 @@ export interface UserWithoutPassword
 	universityID: number,
 	role: number,
 	profilePicture?: ProfilePicture,
-	RSOs: RSO[]
+	RSOs?: RSO[]
 }
