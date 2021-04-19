@@ -92,3 +92,7 @@
 hr {
   width: 100%;
 }
+
+.form-card .MuiCardContent-root {
+  background-color: grey;
+}

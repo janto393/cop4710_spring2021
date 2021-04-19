@@ -8,10 +8,17 @@ import { ucfCoordinates, ufCoordinates } from "src/Utils/mapUtils";
 import StarRatingComponent from "react-star-rating-component";
 import { TextField } from "@material-ui/core";
 import PersonIcon from "@material-ui/icons/Person";
+import CloseIcon from "@material-ui/icons/Close";
+import EditIcon from "@material-ui/icons/Edit";
+import Dialog from "@material-ui/core/Dialog";
+import StudForm from "../StudForm";
+import { FieldType } from "src/Utils/formUtils";
+import { FormInputType } from "../LoginForm";
+import produce from "immer";
 
 const Event: React.FC<any> = (props: any) => {
   const { studUser } = props;
-
+  const [isEditingComment, setIsEditingComment] = useState(false);
   const setIsLoading = useLoadingUpdate();
   const [rating, setRating] = useState(0);
   // TODO: DELETE MOCK EVENT
@@ -53,6 +60,14 @@ const Event: React.FC<any> = (props: any) => {
     );
   };
 
+  const removeComment = () => {
+    console.log("comment removed!");
+  };
+
+  const editComment = () => {
+    setIsEditingComment(true);
+  };
+
   // TODO: 1. update/delete comment
   const getComments = (comments: any) => {
     return (
@@ -70,18 +85,34 @@ const Event: React.FC<any> = (props: any) => {
               <Grid item xs={1}>
                 <PersonIcon />
               </Grid>
-              <Grid container item xs={11} direction="column">
+              <Grid container item xs={9} direction="column">
+                {/* user name */}
                 <Grid item xs={4}>
                   <Typography variant="caption" id="comment-section-name">
                     {comment.name}
                   </Typography>
                 </Grid>
+
                 {/* comment */}
-                <Grid item xs={8}>
+                <Grid item xs={7}>
                   <Typography variant="body1" id="comment-section-comment">
                     {comment.comment}
                   </Typography>
                 </Grid>
+              </Grid>
+
+              {/* edit */}
+              <Grid item xs={1}>
+                <Button onClick={editComment}>
+                  <EditIcon />
+                </Button>
+              </Grid>
+
+              {/* delete */}
+              <Grid item xs={1}>
+                <Button onClick={removeComment}>
+                  <CloseIcon />
+                </Button>
               </Grid>
             </Grid>
           );
@@ -133,6 +164,13 @@ const Event: React.FC<any> = (props: any) => {
     );
   };
 
+  // this is the updated comment we need to send via api request
+  const [commentUpdate, setCommentUpdate] = useState("");
+
+  const handleChange = (field: string, update: FormInputType) => {
+    setCommentUpdate(update.value);
+  };
+
   return (
     <>
       {events.map((event, index) => {
@@ -156,6 +194,21 @@ const Event: React.FC<any> = (props: any) => {
           </Grid>
         );
       })}
+      <Dialog
+        open={isEditingComment}
+        onBackdropClick={() => setIsEditingComment(false)}
+        className="edit-comment"
+      >
+        <StudForm
+          title="Edit comment"
+          formFields={[
+            { fieldTitle: "comment", fieldType: FieldType.TEXT_FIELD },
+          ]}
+          buttonText="Submit"
+          handleChange={handleChange}
+          handleClick={() => null}
+        />
+      </Dialog>
     </>
   );
 };
