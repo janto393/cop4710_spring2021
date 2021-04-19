@@ -135,7 +135,7 @@ export async function login(request: Request, response: Response, next: Callable
 			if ((rows === undefined) || (rows.length < 1))
 			{
 				connection.end();
-				returnPackage.error = "Username of Password incorrect";
+				returnPackage.error = "Username or Password incorrect";
 				response.json(returnPackage);
 				response.status(400);
 				response.send();
