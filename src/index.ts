@@ -36,7 +36,7 @@ const PORT = process.env.PORT || 5000;
 
 // bodyParser configuration
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 // Access Control Logic
 app.use((request: Request, response: Response, next: CallableFunction) => 

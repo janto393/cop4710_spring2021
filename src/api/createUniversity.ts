@@ -82,7 +82,7 @@ function generateCampusPicturesQuery(universityID: number, pictures: string[]): 
 	{
 		let statement: string = "INSERT INTO Campus_Pictures (universityID, picture, position) VALUES (";
 		statement = statement.concat(String(universityID) + ", ");
-		statement = statement.concat("'" + pictures[i] + "', ");
+		statement = statement.concat(makeStringLiteral(pictures[i]) + ", ");
 		statement = statement.concat(String(i) + "); ");
 
 		query = query.concat(statement);
@@ -147,6 +147,17 @@ export async function createUniversity(request: Request, response: Response, nex
 			returnPackage.universityID = result.insertId;
 
 			queryString = generateCampusPicturesQuery(result.insertId, input.campusPictures);
+
+			// don't execute picture query if there are no pictures to insert
+			if (input.campusPictures.length < 1)
+			{
+				connection.end();
+				returnPackage.success = true;
+				response.json(returnPackage);
+				response.status(200);
+				response.send();
+				return;
+			}
 
 			// insert campus pictures into the database
 			connection.query(queryString, (error: mysql.MysqlError) => {

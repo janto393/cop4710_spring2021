@@ -43,6 +43,19 @@ export interface CreateRsoRequest {
   universityID: number;
 }
 
+export interface CreateUniversityRequest
+{
+	name: string,
+	address: string,
+	city: string,
+	stateID: number,
+	zip: string,
+	description: string,
+	phoneNumber: string,
+	email: string,
+	campusPictures: string[]
+}
+
 export interface DeleteAttendeeRequest {
   userID: number;
   eventID: number;
@@ -57,7 +70,7 @@ export interface DeleteEventCommentRequest {
 }
 
 export interface DeleteRsoRequest {
-  rsoID: number;
+  rsoID: number
 }
 
 export interface GetEventsRequest {
@@ -67,9 +80,10 @@ export interface GetEventsRequest {
 }
 
 export interface GetRsoRequest {
-  rsoID?: number;
-  name?: string;
-  universityID: number;
+	universityID: number,
+	getApproved: boolean,
+  rsoID?: number,
+  name?: string
 }
 
 export interface GetUniversitiesRequest {

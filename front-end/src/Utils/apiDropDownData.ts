@@ -38,7 +38,7 @@ export const fetchStates = async (): Promise<Map<string, number>> => {
 	return mappedStates;
 };
 
-export const fetchAllRSOs = async (universityID: number): Promise<Map<string, number>> => {
+export const fetchAllRSOs = async (universityID: number, getApproved: boolean): Promise<Map<string, number>> => {
 	if (typeof universityID === "string") {
 		console.error("UniversityID is not numeric");
 	}
@@ -46,6 +46,7 @@ export const fetchAllRSOs = async (universityID: number): Promise<Map<string, nu
 	let payload: GetRsoRequest = {
 		// TODO: Remove hard coded values when app is functional
 		universityID: (typeof universityID === "string") ? 1 : universityID,
+		getApproved: getApproved
 	};
 
 	let request: Object = {
