@@ -90,9 +90,20 @@ export interface GetUniversitiesRequest {
   universityID?: number;
 }
 
+export interface JoinRsoRequest {
+	userID: number,
+	universityID: number,
+	rsoID: number
+}
+
 export interface LoginRequest {
   username: string;
   password: string;
+}
+
+export interface LeaveRsoRequest {
+	userID: number,
+	rsoID: number
 }
 
 export interface RateEventRequest {

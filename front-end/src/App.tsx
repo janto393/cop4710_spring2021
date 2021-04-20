@@ -11,6 +11,8 @@ import RegisterForm from "./components/RegisterForm";
 import RegisterRsoForm from "./components/RegisterRsoForm";
 import { useState } from "react";
 import { useStudUser } from "./hooks/useStudUser";
+import ViewRequests from "./components/ViewRequests";
+import JoinLeaveRSO from "./components/JoinLeaveRSO";
 
 const App = () => {
   const { studUser, setStudUser } = useStudUser();
@@ -79,7 +81,17 @@ const App = () => {
             canDisplayToast={canDisplayToast}
             setCanDisplayToast={setCanDisplayToast}
           >
-            <h1>View Requests</h1>
+            <ViewRequests studUser={studUser} />
+          </HomeContainer>
+        </Route>
+
+        <Route path="/join" exact>
+          <HomeContainer
+            isValid={isValid}
+            canDisplayToast={canDisplayToast}
+            setCanDisplayToast={setCanDisplayToast}
+          >
+            <JoinLeaveRSO studUser={studUser} />
           </HomeContainer>
         </Route>
       </Switch>
