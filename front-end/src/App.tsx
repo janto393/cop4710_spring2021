@@ -91,7 +91,7 @@ const App = () => {
             canDisplayToast={canDisplayToast}
             setCanDisplayToast={setCanDisplayToast}
           >
-            <JoinLeaveRSO studUser={studUser} />
+            <JoinLeaveRSO studUser={studUser} setStudUser={setStudUser} />
           </HomeContainer>
         </Route>
       </Switch>

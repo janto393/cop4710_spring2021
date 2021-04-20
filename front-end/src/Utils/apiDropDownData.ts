@@ -37,39 +37,42 @@ export const fetchStates = async (): Promise<Map<string, number>> => {
   return mappedStates;
 };
 
-export const fetchAllRSOs = async (universityID: number, getApproved: boolean): Promise<Map<string, number>> => {
-	if (typeof universityID === "string") {
-		console.error("UniversityID is not numeric");
-	}
+export const fetchAllRSOs = async (
+  universityID: number,
+  getApproved: boolean
+): Promise<Map<string, number>> => {
+  if (typeof universityID === "string") {
+    console.error("UniversityID is not numeric");
+  }
 
-	let payload: GetRsoRequest = {
-		// TODO: Remove hard coded values when app is functional
-		universityID: (typeof universityID === "string") ? 1 : universityID,
-		getApproved: getApproved
-	};
+  let payload: GetRsoRequest = {
+    // TODO: Remove hard coded values when app is functional
+    universityID: typeof universityID === "string" ? 1 : universityID,
+    getApproved: getApproved,
+  };
 
-	let request: Object = {
-		method: "POST",
-		body: JSON.stringify(payload),
-		headers: {
-			"Content-Type": "application/json",
-		},
-	};
+  let request: Object = {
+    method: "POST",
+    body: JSON.stringify(payload),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  };
 
-	let response: GetRsoResponse = await (await fetch(buildpath("/api/getRSOs"), request)).json();
-	let mappedRSOs: Map<string, number> = new Map<string, number>();
+  let response: GetRsoResponse = await (
+    await fetch(buildpath("/api/getRSOs"), request)
+  ).json();
+  let mappedRSOs: Map<string, number> = new Map<string, number>();
 
-	if (!response.success)
-	{
-		console.error(response.error);
-	}
+  if (!response.success) {
+    console.error(response.error);
+  }
 
-	for (let rso of response.RSOs)
-	{
-		mappedRSOs.set(rso.name, rso.ID);
-	}
+  for (let rso of response.RSOs) {
+    mappedRSOs.set(rso.name, rso.ID);
+  }
 
-	return mappedRSOs;
+  return mappedRSOs;
 };
 
 export const fetchMeetingTypes = async (): Promise<Map<string, number>> => {
@@ -120,7 +123,6 @@ export const fetchUniversityData = async (
     await fetch(buildpath("/api/getUniversities"), request)
   ).json();
   let mappedUniversities: Map<string, number> = new Map<string, number>();
-  console.log(mappedUniversities);
 
   if (!response.success) {
     console.error(response.error);
