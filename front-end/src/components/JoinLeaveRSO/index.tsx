@@ -66,6 +66,7 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
         name: name,
         universityID: universityID,
       });
+
       setStudUser({
         ...studUser,
         RSOs: updatedRSOList,
@@ -74,7 +75,7 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
 
     setIsLoading(false);
   };
-
+  console.log(studUser);
   const leaveRSO = async (
     rsoID: number,
     name: string,
@@ -153,7 +154,7 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
 
       <h2>College RSOs</h2>
       {universityRSOs.map((rso: any) => {
-        const { name, ID, univeristyID } = rso;
+        const { name, ID, universityID } = rso;
 
         return (
           !userRSOs.some((rso: any) => rso.ID === ID) && (
@@ -175,7 +176,7 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
                     <Grid item xs={1}>
                       <Button
                         onClick={() => {
-                          joinRSO(ID, name, univeristyID);
+                          joinRSO(ID, name, universityID);
                         }}
                       >
                         <CheckIcon />
