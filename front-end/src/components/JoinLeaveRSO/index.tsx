@@ -60,7 +60,7 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
     if (!response.success) {
       console.error(response.error);
     } else {
-      let updatedRSOList = studUser.RSOs;
+      let updatedRSOList = studUser.RSOs ?? [];
       updatedRSOList.push({
         ID: rsoID,
         name: name,
