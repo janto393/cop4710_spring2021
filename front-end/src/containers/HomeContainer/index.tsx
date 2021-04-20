@@ -63,6 +63,11 @@ const HomeContainer: React.FC<any> = ({
       onClick: () => history.push("/viewRequests"),
       visibility: [2, 3],
     },
+    {
+      title: "Join RSO",
+      onClick: () => history.push("/join"),
+      visibility: [1, 2],
+    },
   ];
 
   const visibleMenu = useMemo(() => filterLinks(studUser?.role, menuItems), []);

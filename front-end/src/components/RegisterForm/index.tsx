@@ -19,7 +19,10 @@ import { useLoadingUpdate } from "src/Context/LoadingProvider";
 import { useEffect } from "react";
 import { fetchStates, fetchUniversityData } from "src/Utils/apiDropDownData";
 import { CreateUniversityRequest } from "src/types/apiRequestBodies";
-import { CreateUniversityResponse, GetStatesResponse } from "src/types/apiResponseBodies";
+import {
+  CreateUniversityResponse,
+  GetStatesResponse,
+} from "src/types/apiResponseBodies";
 import buildpath from "src/Utils/buildpath";
 import { stringify } from "querystring";
 
@@ -92,74 +95,75 @@ const INITIAL_FORM_STATE = {
 
 const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
   const [form, setForm] = useState(INITIAL_FORM_STATE);
-	const [states, setStates] = useState<Map<string, number>>(new Map<string, number>());
-	const [universities, setUniversities] = useState<Map<string, number>>(new Map<string, number>());
+  const [states, setStates] = useState<Map<string, number>>(
+    new Map<string, number>()
+  );
+  const [universities, setUniversities] = useState<Map<string, number>>(
+    new Map<string, number>()
+  );
   const history = useHistory();
   const setIsLoading = useLoadingUpdate();
 
-	useEffect(() => {
-		fetchStates()
-		.then((data: Map<string, number>) => {
-			setStates(data);
-		});
+  useEffect(() => {
+    fetchStates().then((data: Map<string, number>) => {
+      setStates(data);
+    });
 
-		fetchUniversityData()
-		.then((data: Map<string, number>) => {
-			setUniversities(data);
-		});
-	}, []);
+    fetchUniversityData().then((data: Map<string, number>) => {
+      setUniversities(data);
+    });
+  }, []);
 
   const registerUser = async () => {
     setIsLoading(true);
-		
-		// variable to hold the universityID if we are registering a super-admin
-		let universityID: number = -1;
 
-		const stateID: number | undefined = states.get(form.state.value);
+    // variable to hold the universityID if we are registering a super-admin
+    let universityID: number = -1;
 
-		/**
-		 * If we are registering a super-admin, we have to create the university first
-		 */
-		if (form.accountType.value === "Super Admin")
-		{
-			let payload: CreateUniversityRequest = {
-				name: form.name.value,
-				address: form.address.value,
-				city: form.city.value,
-				stateID: (stateID !== undefined) ? stateID : 0,
-				zip: form.zipCode.value,
-				description: form.description.value,
-				phoneNumber: form.phoneNumber.value,
-				email: form.email.value,
-				campusPictures: []
-			};
+    const stateID: number | undefined = states.get(form.state.value);
 
-			let request: Object = {
-				method: "POST",
-				body: JSON.stringify(payload),
-				headers: {
-					"Content-Type": "application/json",
-				},
-			};
+    /**
+     * If we are registering a super-admin, we have to create the university first
+     */
+    if (form.accountType.value === "Super Admin") {
+      let payload: CreateUniversityRequest = {
+        name: form.name.value,
+        address: form.address.value,
+        city: form.city.value,
+        stateID: stateID !== undefined ? stateID : 0,
+        zip: form.zipCode.value,
+        description: form.description.value,
+        phoneNumber: form.phoneNumber.value,
+        email: form.email.value,
+        campusPictures: [],
+      };
 
-			let response: CreateUniversityResponse = await (await fetch(buildpath("/api/createUniversity"), request)).json();
+      let request: Object = {
+        method: "POST",
+        body: JSON.stringify(payload),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      };
 
-			if (!response.success)
-			{
-				console.error(response.error);
-				return;
-			}
+      let response: CreateUniversityResponse = await (
+        await fetch(buildpath("/api/createUniversity"), request)
+      ).json();
 
-			if (response.universityID !== undefined)
-			{
-				universityID = response.universityID;
-			}
-			else
-			{
-				console.error("universityID is not being returned by create university endpoint");
-				return;
-			}
-		}
+      if (!response.success) {
+        console.error(response.error);
+        return;
+      }
+
+      if (response.universityID !== undefined) {
+        universityID = response.universityID;
+      } else {
+        console.error(
+          "universityID is not being returned by create university endpoint"
+        );
+        return;
+      }
+    }
 
     const {
       accountType,
@@ -167,23 +171,21 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       firstname,
       lastname,
       email,
-      password
+      password,
     } = form;
 
-		if ((accountType.value === "Student"))
-		{
-			let matchedID: number | undefined = universities.get(form.university.value);
+    if (accountType.value === "Student") {
+      let matchedID: number | undefined = universities.get(
+        form.university.value
+      );
 
-			if (matchedID !== undefined)
-			{
-				universityID = matchedID;
-			}
-			else
-			{
-				console.error("Error in matching universities");
-				return;
-			}
-		}
+      if (matchedID !== undefined) {
+        universityID = matchedID;
+      } else {
+        console.error("Error in matching universities");
+        return;
+      }
+    }
 
     const payload = {
       username: email.value,
@@ -192,12 +194,10 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
       lastname: lastname.value,
       email: email.value,
       universityID: universityID,
-      role: (accountType.value === "Student") ? 1 : 3,
+      role: accountType.value === "Student" ? 1 : 3,
+      profilePicture: "",
     };
-    const { data } = await axios.post(
-      `${baseUrl}/register`,
-      payload
-    );
+    const { data } = await axios.post(`${baseUrl}/register`, payload);
 
     // temp response alert
     data.success === true
@@ -272,7 +272,7 @@ const RegisterForm: React.FC<RegisterProps> = (props: RegisterProps) => {
     {
       fieldTitle: "State",
       fieldType: FieldType.DROP_DOWN,
-			selectItems: Array.from(states.keys())
+      selectItems: Array.from(states.keys()),
     },
     {
       fieldTitle: "Zip code",
