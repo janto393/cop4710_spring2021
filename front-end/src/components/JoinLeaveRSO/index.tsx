@@ -91,12 +91,12 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
 
   return (
     <Grid container direction="column" className="requests-container">
+      <h2>My RSOs</h2>
       {userRSOs.map((userRso: any) => {
         const { name, ID } = userRso;
 
         return (
           <>
-            <h2>My RSOs</h2>
             <Grid item xs={12} className="request-item">
               <Card raised>
                 <Grid
@@ -127,39 +127,41 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
         );
       })}
 
+      <h2>College RSOs</h2>
       {universityRSOs.map((rso: any) => {
         const { name, ID, univeristyID } = rso;
 
         return (
-          <>
-            <h2>College RSOs</h2>
-            <Grid item xs={12} className="request-item">
-              <Card raised>
-                <Grid
-                  container
-                  direction="row"
-                  className="approve-deny-container"
-                  justify="center"
-                >
-                  {/* event title */}
-                  <Grid item xs={9} className="event-title-item">
-                    <Typography variant="h5">{name}</Typography>
-                  </Grid>
+          !userRSOs.some((rso: any) => rso.ID === ID) && (
+            <>
+              <Grid item xs={12} className="request-item">
+                <Card raised>
+                  <Grid
+                    container
+                    direction="row"
+                    className="approve-deny-container"
+                    justify="center"
+                  >
+                    {/* event title */}
+                    <Grid item xs={9} className="event-title-item">
+                      <Typography variant="h5">{name}</Typography>
+                    </Grid>
 
-                  {/* approve button */}
-                  <Grid item xs={1}>
-                    <Button
-                      onClick={() => {
-                        joinRSO(ID);
-                      }}
-                    >
-                      <CheckIcon />
-                    </Button>
+                    {/* approve button */}
+                    <Grid item xs={1}>
+                      <Button
+                        onClick={() => {
+                          joinRSO(ID);
+                        }}
+                      >
+                        <CheckIcon />
+                      </Button>
+                    </Grid>
                   </Grid>
-                </Grid>
-              </Card>
-            </Grid>
-          </>
+                </Card>
+              </Grid>
+            </>
+          )
         );
       })}
     </Grid>
