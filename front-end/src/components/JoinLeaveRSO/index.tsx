@@ -10,7 +10,7 @@ import { DefaultApiResponse } from "src/types/apiResponseBodies";
 import buildpath from "src/Utils/buildpath";
 
 const JoinLeaveRSO: React.FC<any> = (props: any) => {
-  const { studUser } = props;
+  const { studUser, setStudUser } = props;
   const { universityID } = studUser;
   const setIsLoading = useLoadingUpdate();
 
@@ -18,7 +18,6 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
   const [userRSOs, setuserRSOs] = useState(rsos ? rsos : []);
 
   const [universityRSOs, setUniversityRSOs] = useState([]);
-
   useEffect(() => {
     const getRSOs = async () => {
       setIsLoading(true);
@@ -27,14 +26,17 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
         getApproved: false,
       });
       // const notIncludingMine = data.RSOs.filter(rso => userRSOs.include())
-      console.log(data.RSOs, userRSOs);
       setUniversityRSOs(data.RSOs);
       setIsLoading(false);
     };
     getRSOs();
   }, []);
 
-  const joinRSO = async (rsoID: number): Promise<void> => {
+  const joinRSO = async (
+    rsoID: number,
+    name: string,
+    universityID: number
+  ): Promise<void> => {
     setIsLoading(true);
 
     let payload: JoinRsoRequest = {
@@ -57,12 +59,27 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
 
     if (!response.success) {
       console.error(response.error);
+    } else {
+      let updatedRSOList = studUser.RSOs;
+      updatedRSOList.push({
+        ID: rsoID,
+        name: name,
+        universityID: universityID,
+      });
+      setStudUser({
+        ...studUser,
+        RSOs: updatedRSOList,
+      });
     }
 
     setIsLoading(false);
   };
 
-  const leaveRSO = async (rsoID: number): Promise<void> => {
+  const leaveRSO = async (
+    rsoID: number,
+    name: string,
+    universityID: number
+  ): Promise<void> => {
     setIsLoading(true);
 
     let payload: LeaveRsoRequest = {
@@ -84,6 +101,13 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
 
     if (!response.success) {
       console.error(response.error);
+    } else {
+      const updatedRsos = studUser.RSOs.filter((rso: any) => rso.ID !== rsoID);
+
+      setStudUser({
+        ...studUser,
+        RSOs: updatedRsos,
+      });
     }
 
     setIsLoading(false);
@@ -114,7 +138,7 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
                   <Grid item xs={1}>
                     <Button
                       onClick={() => {
-                        leaveRSO(ID);
+                        leaveRSO(ID, name, universityID);
                       }}
                     >
                       <ClearIcon />
@@ -151,7 +175,7 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
                     <Grid item xs={1}>
                       <Button
                         onClick={() => {
-                          joinRSO(ID);
+                          joinRSO(ID, name, univeristyID);
                         }}
                       >
                         <CheckIcon />
