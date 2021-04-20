@@ -46,7 +46,12 @@ const Events: React.FC<any> = (props: any) => {
     let payload: GetEventsRequest = {
       universityID: universityID,
       includePrivate: universityID === studUser.universityID,
-      RSOs: universityID === studUser.universityID ? studUser.RSOs : undefined,
+      RSOs:
+        universityID === studUser.universityID
+          ? studUser.RSOs.length === 0
+            ? undefined
+            : studUser.RSOs
+          : undefined,
     };
 
     let request: Object = {
