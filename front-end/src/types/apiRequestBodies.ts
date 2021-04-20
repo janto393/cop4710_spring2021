@@ -5,6 +5,12 @@
 
 import { RSO } from "./dropDownTypes";
 
+type rsoID = number;
+type isApproved = boolean;
+export interface approveDenyRSOsRequest {
+	RSOs: Array<[rsoID, isApproved]>
+}
+
 export interface CreateAttendeeRequest {
   userID: number;
   eventID: number;
