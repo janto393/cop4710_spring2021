@@ -33,6 +33,7 @@ const ViewRequests: React.FC<any> = (props: any) => {
     <Grid container direction="column" className="requests-container">
       {requests.map((request: any) => {
         const { name, ID, univeristyID } = request;
+
         return (
           <Grid item xs={12} className="request-item">
             <Card raised>
