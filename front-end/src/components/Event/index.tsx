@@ -14,6 +14,7 @@ import Dialog from "@material-ui/core/Dialog";
 import StudForm from "../StudForm";
 import { FieldType } from "src/Utils/formUtils";
 import { FormInputType } from "../LoginForm";
+import ArrowUpwardIcon from "@material-ui/icons/ArrowUpward";
 import {
   CreateEventComment,
   DeleteEventCommentRequest,
@@ -128,7 +129,8 @@ const Events: React.FC<any> = (props: any) => {
   };
 
   // TODO: 1. update/delete comment
-  const getComments = (comments: any) => {
+  const getComments = (comments: any, event: any) => {
+    console.log(comments, event);
     return (
       <Grid container direction="column" className="comment-section">
         <Grid item xs={12}>
@@ -137,7 +139,8 @@ const Events: React.FC<any> = (props: any) => {
 
         <hr />
 
-        {comments?.map((comment: any) => {
+        {comments?.map((userComment: any) => {
+          const { ID, author, timetag, comment } = userComment;
           return (
             <Grid container direction="row">
               {/* name */}
@@ -148,14 +151,14 @@ const Events: React.FC<any> = (props: any) => {
                 {/* user name */}
                 <Grid item xs={4}>
                   <Typography variant="caption" id="comment-section-name">
-                    {comment.author}
+                    {author}
                   </Typography>
                 </Grid>
 
                 {/* comment */}
                 <Grid item xs={7}>
                   <Typography variant="body1" id="comment-section-comment">
-                    {comment.comment}
+                    {comment}
                   </Typography>
                 </Grid>
               </Grid>
@@ -164,7 +167,7 @@ const Events: React.FC<any> = (props: any) => {
               <Grid item xs={1}>
                 <Button
                   onClick={() => {
-                    editComment(comment);
+                    editComment(userComment);
                   }}
                 >
                   <EditIcon />
@@ -175,7 +178,7 @@ const Events: React.FC<any> = (props: any) => {
               <Grid item xs={1}>
                 <Button
                   onClick={() => {
-                    removeComment(comment);
+                    removeComment(userComment);
                   }}
                 >
                   <CloseIcon />
@@ -184,41 +187,58 @@ const Events: React.FC<any> = (props: any) => {
             </Grid>
           );
         })}
-        <Grid item xs={12} className="comment-section-new">
-          <TextField
-            multiline
-            label="comments"
-            className="comments"
-            onSubmit={() => {
-              // let payload: CreateEventComment = {
-              // 	userID: studUser.userID,
-              // 	eventID: eventID,
-              // 	comment: commentUpdate
-              // };
-              // let request: Object = {
-              // 	method: "POST",
-              // 	body: JSON.stringify(payload),
-              // 	headers: {
-              // 		"Content-Type": "application/json",
-              // 	},
-              // };
-              // setIsLoading(true);
-              // fetch(buildpath("/api/getEvents"), request)
-              // .then((response: Response): Promise<GetEventResponse> => {
-              // 	return response.json();
-              // })
-              // .then((data: GetEventResponse) => {
-              // 	if (!data.success)
-              // 	{
-              // 		console.error(data.error);
-              // 		setIsLoading(false);
-              // 		return;
-              // 	}
-              // 	setIsLoading(false);
-              // });
-            }}
-            variant="filled"
-          />
+        <Grid container direction="row">
+          <Grid item xs={10} className="comment-section-new">
+            <TextField
+              multiline
+              label="comments"
+              className="comments"
+              variant="filled"
+              onChange={(event: any) => {
+                handleChange("", {
+                  value: event.target.value,
+                  isValid: false,
+                });
+              }}
+            />
+          </Grid>
+          <Grid item xs={2}>
+            <Button
+              onClick={() => {
+                let payload: CreateEventComment = {
+                  userID: studUser.userID,
+                  eventID: event.ID,
+                  comment: commentUpdate.comment,
+                };
+
+                let request: Object = {
+                  method: "POST",
+                  body: JSON.stringify(payload),
+                  headers: {
+                    "Content-Type": "application/json",
+                  },
+                };
+
+                setIsLoading(true);
+                fetch(buildpath("/api/createEventComment"), request)
+                  .then(
+                    (response: Response): Promise<GetEventResponse> => {
+                      return response.json();
+                    }
+                  )
+                  .then((data: GetEventResponse) => {
+                    if (!data.success) {
+                      console.error(data.error);
+                      setIsLoading(false);
+                      return;
+                    }
+                    setIsLoading(false);
+                  });
+              }}
+            >
+              <ArrowUpwardIcon />
+            </Button>
+          </Grid>
         </Grid>
       </Grid>
     );
@@ -320,7 +340,7 @@ const Events: React.FC<any> = (props: any) => {
               {getDescription(description)}
 
               {/* comments */}
-              {getComments(comments)}
+              {getComments(comments, event)}
             </Card>
           </Grid>
         );
