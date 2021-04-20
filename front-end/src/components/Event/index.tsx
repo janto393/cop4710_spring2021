@@ -128,9 +128,35 @@ const Events: React.FC<any> = (props: any) => {
     setIsEditingComment(true);
   };
 
+  const getEditDelete = (author: any, userComment: any) => {
+    return author.toLowerCase() ===
+      `${studUser.firstname} ${studUser.lastname}` ? (
+      <>
+        <Grid item xs={1}>
+          <Button
+            onClick={() => {
+              editComment(userComment);
+            }}
+          >
+            <EditIcon />
+          </Button>
+        </Grid>
+
+        <Grid item xs={1}>
+          <Button
+            onClick={() => {
+              removeComment(userComment);
+            }}
+          >
+            <CloseIcon />
+          </Button>
+        </Grid>
+      </>
+    ) : null;
+  };
+
   // TODO: 1. update/delete comment
   const getComments = (comments: any, event: any) => {
-    console.log(comments, event);
     return (
       <Grid container direction="column" className="comment-section">
         <Grid item xs={12}>
@@ -163,27 +189,7 @@ const Events: React.FC<any> = (props: any) => {
                 </Grid>
               </Grid>
 
-              {/* edit */}
-              <Grid item xs={1}>
-                <Button
-                  onClick={() => {
-                    editComment(userComment);
-                  }}
-                >
-                  <EditIcon />
-                </Button>
-              </Grid>
-
-              {/* delete */}
-              <Grid item xs={1}>
-                <Button
-                  onClick={() => {
-                    removeComment(userComment);
-                  }}
-                >
-                  <CloseIcon />
-                </Button>
-              </Grid>
+              {getEditDelete(author, userComment)}
             </Grid>
           );
         })}

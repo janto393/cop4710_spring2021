@@ -23,6 +23,8 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
         universityID: universityID,
         getApproved: false,
       });
+      // const notIncludingMine = data.RSOs.filter(rso => userRSOs.include())
+      console.log(data.RSOs, userRSOs);
       setUniversityRSOs(data.RSOs);
       setIsLoading(false);
     };
