@@ -5,6 +5,9 @@ import { baseUrl } from "src/Utils/apiUtils";
 import CheckIcon from "@material-ui/icons/Check";
 import ClearIcon from "@material-ui/icons/Clear";
 import { useLoadingUpdate } from "src/Context/LoadingProvider";
+import { JoinRsoRequest, LeaveRsoRequest } from "src/types/apiRequestBodies";
+import { DefaultApiResponse } from "src/types/apiResponseBodies";
+import buildpath from "src/Utils/buildpath";
 
 const JoinLeaveRSO: React.FC<any> = (props: any) => {
   const { studUser } = props;
@@ -31,10 +34,65 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
     getRSOs();
   }, []);
 
+  const joinRSO = async (rsoID: number): Promise<void> => {
+    setIsLoading(true);
+
+    let payload: JoinRsoRequest = {
+      userID: studUser.userID,
+      universityID: studUser.universityID,
+      rsoID: rsoID,
+    };
+
+    let request: Object = {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    let response: DefaultApiResponse = await (
+      await fetch(buildpath("/api/joinRSO"), request)
+    ).json();
+
+    if (!response.success) {
+      console.error(response.error);
+    }
+
+    setIsLoading(false);
+  };
+
+  const leaveRSO = async (rsoID: number): Promise<void> => {
+    setIsLoading(true);
+
+    let payload: LeaveRsoRequest = {
+      userID: studUser.userID,
+      rsoID: rsoID,
+    };
+
+    let request: Object = {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+
+    let response: DefaultApiResponse = await (
+      await fetch(buildpath("/api/leaveRSO"), request)
+    ).json();
+
+    if (!response.success) {
+      console.error(response.error);
+    }
+
+    setIsLoading(false);
+  };
+
   return (
     <Grid container direction="column" className="requests-container">
       {userRSOs.map((userRso: any) => {
-        const { name } = userRso;
+        const { name, ID } = userRso;
 
         return (
           <>
@@ -52,12 +110,12 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
                     <Typography variant="h5">{name}</Typography>
                   </Grid>
 
-                  {/* approve button */}
+                  {/* leave button */}
                   <Grid item xs={1}>
                     <Button
-                      onClick={() =>
-                        console.log("api call that sends leave rso")
-                      }
+                      onClick={() => {
+                        leaveRSO(ID);
+                      }}
                     >
                       <ClearIcon />
                     </Button>
@@ -91,7 +149,9 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
                   {/* approve button */}
                   <Grid item xs={1}>
                     <Button
-                      onClick={() => console.log("api call that sends approve")}
+                      onClick={() => {
+                        joinRSO(ID);
+                      }}
                     >
                       <CheckIcon />
                     </Button>

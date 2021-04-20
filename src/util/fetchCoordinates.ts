@@ -15,28 +15,35 @@ async function getLattitudeAndLongitude(address: string, city: string, state: st
 {
 	let coordinates: Coordinates = {}
 
-	if (process.env.TOMTOM_KEY === undefined)
+	try
 	{
-		console.warn("TOM TOM api key not set");
+		if (process.env.TOMTOM_KEY === undefined)
+		{
+			console.warn("TOM TOM api key not set");
+			return coordinates;
+		}
+
+		const options: geocoder.GenericOptions = {
+			provider: "tomtom",
+			apiKey: process.env.TOMTOM_KEY
+		};
+
+		const geocoder: geocoder.Geocoder = node_geocoder(options);
+		let locations: Array<Entry> = await geocoder.geocode(address + " " + city + " " + state + " " + zip);
+
+		// parse the data of the first match
+		if ((locations !== undefined) && (locations.length > 0))
+		{
+			const { latitude, longitude } = locations[0];
+
+			coordinates.latitude = latitude;
+			coordinates.longitude = longitude;
+		}
+	}
+	catch (e)
+	{
 		return coordinates;
-	}
-
-	const options: geocoder.GenericOptions = {
-		provider: "tomtom",
-		apiKey: process.env.TOMTOM_KEY
-	};
-
-	const geocoder: geocoder.Geocoder = node_geocoder(options);
-	let locations: Array<Entry> = await geocoder.geocode(address + " " + city + " " + state + " " + zip);
-
-	// parse the data of the first match
-	if ((locations !== undefined) && (locations.length > 0))
-	{
-		const { latitude, longitude } = locations[0];
-
-		coordinates.latitude = latitude;
-		coordinates.longitude = longitude;
-	}
+	}	
 
 	return coordinates;
 }
