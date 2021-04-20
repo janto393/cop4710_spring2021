@@ -126,7 +126,7 @@ export async function register(request: Request, response: Response, next: Calla
           let rawData: SqlUser = rows[0];
 
 					// create SQL statement to insert user's student record into the Students table
-					queryString = "INSERT INTO Students (userID, universityID) VALUES (" + rawData.ID + ", " + rawData.universityID + ");";
+					queryString = "INSERT INTO Students (userID, universityID, isApproved) VALUES (" + rawData.ID + ", " + rawData.universityID + ", true);";
 
 					connection.query(queryString, (error: mysql.MysqlError) => {
 						if (error)
