@@ -23,7 +23,7 @@ const JoinLeaveRSO: React.FC<any> = (props: any) => {
       setIsLoading(true);
       const { data } = await axios.post(`${baseUrl}/getRSOs`, {
         universityID: universityID,
-        getApproved: false,
+        getApproved: true,
       });
       // const notIncludingMine = data.RSOs.filter(rso => userRSOs.include())
       setUniversityRSOs(data.RSOs);
